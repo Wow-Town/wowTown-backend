@@ -1,0 +1,25 @@
+name: Feature
+description: 새로 개발할 기능을 정의합니다.
+labels: [ feature ]
+body:
+  - type: textarea
+    id: what-to-develop
+    attributes:
+      label: 기능 정의
+      description: 어떤 기능을 구현하는지 구체적으로 작성합니다.
+    validations:
+      required: true
+  - type: dropdown
+    id: difficulty
+    attributes:
+      label: 예상 난이도는?
+      options:
+        - Very Easy
+        - Easy
+        - Easy but time-consuming
+        - Hard
+        - Hard and time-consuming
+        - Very Hard
+        - Might be impossible
+    validations:
+      required: true

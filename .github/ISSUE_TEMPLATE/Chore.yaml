@@ -1,0 +1,18 @@
+name: Chore
+description: 빌드 프로세스 등 기타 유틸리티의 변경을 정의합니다.
+labels: [ chore ]
+body:
+  - type: textarea
+    id: why-to-change
+    attributes:
+      label: 변경 목적
+      description: 변경 목적을 구체적으로 설명합니다.
+    validations:
+      required: true
+  - type: textarea
+    id: what-to-change
+    attributes:
+      label: 변경 적용점
+      description: before, after와 같이 무엇이 어떻게 변경되는지 설명합니다.
+    validations:
+      required: true
