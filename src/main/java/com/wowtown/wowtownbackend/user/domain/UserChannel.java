@@ -8,17 +8,25 @@ import javax.persistence.*;
 @Getter
 @Entity
 public class UserChannel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "channel_id")
-    private Channel channel;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "channel_id")
+  private Channel channel;
 
-    public UserChannel(){}
+  public UserChannel() {}
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
+  public void setChannel(Channel channel) {
+    this.channel = channel;
+  }
 }

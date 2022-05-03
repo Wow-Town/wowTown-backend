@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class WowTownBackendApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(WowTownBackendApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(WowTownBackendApplication.class, args);
+  }
 }
