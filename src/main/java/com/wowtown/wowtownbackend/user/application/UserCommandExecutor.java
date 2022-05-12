@@ -9,7 +9,6 @@ import com.wowtown.wowtownbackend.user.application.dto.request.CreateUserChannel
 import com.wowtown.wowtownbackend.user.application.dto.request.CreateUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.UpdateUserDto;
 import com.wowtown.wowtownbackend.user.domain.User;
-import com.wowtown.wowtownbackend.user.domain.UserChannel;
 import com.wowtown.wowtownbackend.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -74,7 +73,7 @@ public class UserCommandExecutor {
   }
 
   @Transactional
-  public void addUserChannel(long userId, CreateUserChannelDto dto) {
+  public boolean addUserChannel(long userId, CreateUserChannelDto dto) {
     User findUser =
         userRepository
             .findUserById(userId)
@@ -82,7 +81,6 @@ public class UserCommandExecutor {
 
     Channel findChannel = channelQueryProcessor.getChannelWithId(dto.getChannelId());
     findUser.addUserChannel(findChannel);
-
-    UserChannel userChannel = userMapper.toUserChannel(findUser, findChannel);
+    return true;
   }
 }

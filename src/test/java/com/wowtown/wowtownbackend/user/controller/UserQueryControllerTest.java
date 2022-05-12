@@ -5,6 +5,7 @@ import com.wowtown.wowtownbackend.user.application.UserQueryProcessor;
 import com.wowtown.wowtownbackend.user.application.common.PasswordEncoder;
 import com.wowtown.wowtownbackend.user.application.dto.request.LoginUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.UserEmailCheckDto;
+import com.wowtown.wowtownbackend.user.application.dto.response.GetUserChannelDto;
 import com.wowtown.wowtownbackend.user.application.dto.response.GetUserDto;
 import com.wowtown.wowtownbackend.user.domain.User;
 import com.wowtown.wowtownbackend.user.domain.UserRepository;
@@ -18,6 +19,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -71,6 +75,27 @@ class UserQueryControllerTest {
             .accept(MediaType.APPLICATION_JSON)
             .characterEncoding("UTF-8")
             .content(this.mapper.writeValueAsBytes(userEmailCheckDto));
+    // then
+    mvc.perform(builder).andExpect(status().isOk());
+  }
+
+  @Test
+  void getUserChannel() throws Exception {
+    // given
+    Long userId = 1L;
+    List<GetUserChannelDto> getUserChannelDtoList = new ArrayList<>();
+    GetUserChannelDto getUserChannelDto = new GetUserChannelDto(1L, "channel1");
+    getUserChannelDtoList.add(getUserChannelDto);
+
+    // when
+    Mockito.when(userQueryProcessor.getUserChannelWithUserId(userId))
+        .thenReturn(getUserChannelDtoList);
+
+    MockHttpServletRequestBuilder builder =
+        MockMvcRequestBuilders.get("/users/{userId}/channels", userId)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON)
+            .characterEncoding("UTF-8");
     // then
     mvc.perform(builder).andExpect(status().isOk());
   }

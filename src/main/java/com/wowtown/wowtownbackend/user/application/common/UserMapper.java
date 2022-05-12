@@ -1,11 +1,10 @@
 package com.wowtown.wowtownbackend.user.application.common;
 
-import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.user.application.dto.response.GetUserChannelDto;
 import com.wowtown.wowtownbackend.user.application.dto.response.GetUserDto;
 import com.wowtown.wowtownbackend.user.domain.User;
-import com.wowtown.wowtownbackend.user.domain.UserChannel;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -30,9 +29,8 @@ public interface UserMapper {
     return user;
   }
 
+  @Mapping(source = "id", target = "userId")
   GetUserDto toGetUserDto(User user);
-
-  UserChannel toUserChannel(User user, Channel channel);
 
   GetUserChannelDto toUserChannelDto(Long channelId, String channelName);
 }

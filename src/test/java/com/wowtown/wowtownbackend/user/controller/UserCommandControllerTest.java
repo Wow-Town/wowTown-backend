@@ -3,6 +3,7 @@ package com.wowtown.wowtownbackend.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wowtown.wowtownbackend.user.application.UserCommandExecutor;
 import com.wowtown.wowtownbackend.user.application.dto.request.ChangeUserPWDto;
+import com.wowtown.wowtownbackend.user.application.dto.request.CreateUserChannelDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.CreateUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.UpdateUserDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -107,6 +108,27 @@ public class UserCommandControllerTest {
             .accept(MediaType.APPLICATION_JSON)
             .characterEncoding("UTF-8")
             .content(this.mapper.writeValueAsBytes(createUserDto));
+
+    // then
+    mvc.perform(builder).andExpect(status().isOk());
+  }
+
+  @Test
+  public void selectUserChannel() throws Exception {
+    // given
+    Long userId = userCommandExecutor.createUser(createUserDto);
+
+    CreateUserChannelDto createUserChannelDto = new CreateUserChannelDto(1L);
+
+    // when
+    Mockito.when(userCommandExecutor.addUserChannel(userId, createUserChannelDto)).thenReturn(true);
+
+    MockHttpServletRequestBuilder builder =
+        MockMvcRequestBuilders.post("/users//{userId}/channels", userId.toString())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON)
+            .characterEncoding("UTF-8")
+            .content(this.mapper.writeValueAsBytes(createUserChannelDto));
 
     // then
     mvc.perform(builder).andExpect(status().isOk());

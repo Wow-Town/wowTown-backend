@@ -1,7 +1,12 @@
 package com.wowtown.wowtownbackend.user.application;
 
+import com.wowtown.wowtownbackend.channel.application.ChannelQueryProcessor;
+import com.wowtown.wowtownbackend.channel.application.common.ChannelMapperImpl;
+import com.wowtown.wowtownbackend.channel.application.dto.request.CreateChannelDto;
+import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.user.application.common.UserMapper;
 import com.wowtown.wowtownbackend.user.application.dto.request.ChangeUserPWDto;
+import com.wowtown.wowtownbackend.user.application.dto.request.CreateUserChannelDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.CreateUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.UpdateUserDto;
 import com.wowtown.wowtownbackend.user.domain.User;
@@ -10,6 +15,7 @@ import com.wowtown.wowtownbackend.user.infra.PasswordEncoderImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -26,11 +32,14 @@ class UserCommandExecutorTest {
 
   @InjectMocks private UserCommandExecutor userCommandExecutor;
 
+  @Mock private ChannelQueryProcessor channelQueryProcessor;
+
   @Spy private UserRepository userRepository;
 
   @Spy private PasswordEncoderImpl passwordEncoder;
 
   @Spy private UserMapper userMapper;
+  @Spy private ChannelMapperImpl channelMapper;
 
   @Test
   void createUser() {
@@ -111,9 +120,43 @@ class UserCommandExecutorTest {
     assertThat(isDeleted).isEqualTo(true);
   }
 
+  @Test
+  void addUserChannel() {
+    // given
+    // user 생성
+    CreateUserDto createUserDto = new CreateUserDto("devconf5296@gmail.com", "홍길동", "1234");
+    User user = createUserEntity(createUserDto);
+    ReflectionTestUtils.setField(user, "id", 1L);
+
+    // channel 생성
+    CreateChannelDto createChannelDto = new CreateChannelDto("channel1");
+    Channel channel = createChannelEntity(createChannelDto);
+    ReflectionTestUtils.setField(channel, "id", 1L);
+    // user에 channel 추가
+    user.addUserChannel(channel);
+    // 입장한 channel
+    CreateUserChannelDto createUserChannelDto = new CreateUserChannelDto(1L);
+
+    Long fakeUserId = 1L;
+    Long fakeChannelId = 1L;
+
+    // when
+    doReturn(Optional.of(user)).when(userRepository).findUserById(any(Long.class));
+    doReturn(channel).when(channelQueryProcessor).getChannelWithId(fakeChannelId);
+    userCommandExecutor.addUserChannel(fakeUserId, createUserChannelDto);
+
+    // then
+    assertThat(user.getUserChannelList().get(0).getUser()).isEqualTo(user);
+    assertThat(user.getUserChannelList().get(0).getChannel()).isEqualTo(channel);
+  }
+
   private User createUserEntity(CreateUserDto dto) {
     String salt = passwordEncoder.getSalt();
     String hashedPW = passwordEncoder.encode(dto.getPassword(), salt);
     return userMapper.toUser(dto.getEmail(), dto.getUserName(), hashedPW, salt);
+  }
+
+  private Channel createChannelEntity(CreateChannelDto dto) {
+    return channelMapper.toChannel(dto);
   }
 }

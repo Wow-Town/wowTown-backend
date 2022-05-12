@@ -18,6 +18,7 @@ public class UserRepositoryTest {
   String email;
 
   @BeforeEach
+  @Transactional
   void init() {
     User user = new User("devconf@gamil.com", "홍길동", "1234", "abcd");
     this.defaultUser = userRepository.save(user);
@@ -26,6 +27,7 @@ public class UserRepositoryTest {
   }
 
   @AfterEach
+  @Transactional
   void clear() {
     userRepository.deleteAll();
   }
@@ -47,12 +49,10 @@ public class UserRepositoryTest {
   @Test
   @Transactional
   void delete() {
-    // given
-    User user = userRepository.findUserById(1L).get();
     // when
-    userRepository.delete(user);
+    userRepository.delete(defaultUser);
     // then
-    assertThat(userRepository.findUserById(user.getId()).isPresent()).isFalse();
+    assertThat(userRepository.findUserById(defaultUser.getId()).isPresent()).isFalse();
   }
 
   @Test

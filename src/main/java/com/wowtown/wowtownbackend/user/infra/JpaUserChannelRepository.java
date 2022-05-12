@@ -13,6 +13,6 @@ import java.util.List;
 public interface JpaUserChannelRepository
     extends JpaRepository<UserChannel, Long>, UserChannelRepository {
   @Query(
-      "select u_ch from UserChannel as u_ch join Channel as ch on u_ch.channel.id = ch.id where u_ch.user.id =:userId")
+      "select u_ch from UserChannel as u_ch join fetch User u on u_ch.id = u.id where u_ch.user.id =:userId")
   List<UserChannel> findUserChannelByUserId(@Param("userId") Long userId);
 }

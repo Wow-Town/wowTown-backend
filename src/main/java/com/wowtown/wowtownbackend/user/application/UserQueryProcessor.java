@@ -49,7 +49,7 @@ public class UserQueryProcessor {
   }
 
   public List<GetUserChannelDto> getUserChannelWithUserId(long userId) {
-    List<GetUserChannelDto> userChannels =
+    List<GetUserChannelDto> userChannelDtoList =
         userChannelRepository.findUserChannelByUserId(userId).stream()
             .map(
                 userChannel ->
@@ -57,6 +57,6 @@ public class UserQueryProcessor {
                         userChannel.getChannel().getId(),
                         userChannel.getChannel().getChannelName()))
             .collect(Collectors.toList());
-    return userChannels;
+    return userChannelDtoList;
   }
 }

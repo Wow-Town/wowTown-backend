@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Entity
@@ -28,7 +29,7 @@ public class User {
 
   private LocalDateTime updateAt;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<UserChannel> userChannelList = new ArrayList<>();
 
   protected User() {}
@@ -36,8 +37,6 @@ public class User {
   public User(String email, String userName) {
     this.email = email;
     this.userName = userName;
-    this.hashedPW = hashedPW; // sha256 encrypt된 pw들어옴
-    this.salt = salt;
     this.createAt = LocalDateTime.now();
     this.updateAt = null;
   }
@@ -68,5 +67,22 @@ public class User {
     userChannel.setUser(this);
     userChannel.setChannel(payload);
     this.userChannelList.add(userChannel);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (!(o instanceof User)) {
+      return false;
+    }
+    User user = (User) o;
+    return this.id == user.id && this.email == user.email;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.id, this.email);
   }
 }
