@@ -15,6 +15,9 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
 
   decorator:
     datasource:
