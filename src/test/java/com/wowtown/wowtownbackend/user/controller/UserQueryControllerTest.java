@@ -7,11 +7,8 @@ import com.wowtown.wowtownbackend.user.application.dto.request.LoginUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.UserEmailCheckDto;
 import com.wowtown.wowtownbackend.user.application.dto.response.GetUserChannelDto;
 import com.wowtown.wowtownbackend.user.application.dto.response.GetUserDto;
-import com.wowtown.wowtownbackend.user.domain.User;
 import com.wowtown.wowtownbackend.user.domain.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,7 +20,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserQueryController.class)
 class UserQueryControllerTest {
@@ -37,20 +37,13 @@ class UserQueryControllerTest {
 
   @MockBean UserRepository userRepository;
 
-  @BeforeEach
-  public void init() {
-    String hashedPW = passwordEncoder.encode("1234", "abcd");
-    User user = new User("devconf5296@gmail.com", "홍길동", hashedPW, "abcd");
-    userRepository.save(user);
-  }
-
   @Test
   void login() throws Exception {
     // given
     LoginUserDto loginUserDto = new LoginUserDto("devconf5296@gmail.com", "1234");
-    GetUserDto getUserDto = new GetUserDto(0L, "devconf5296@gmail.com", "홍길동");
+    GetUserDto getUserDto = new GetUserDto(1L, "devconf5296@gmail.com", "홍길동");
     // when
-    Mockito.when(userQueryProcessor.loginUser(loginUserDto)).thenReturn(getUserDto);
+    doReturn(getUserDto).when(userQueryProcessor).loginUser(any(LoginUserDto.class));
 
     MockHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.post("/users/login")
@@ -59,7 +52,12 @@ class UserQueryControllerTest {
             .characterEncoding("UTF-8")
             .content(this.mapper.writeValueAsBytes(loginUserDto));
     // then
-    mvc.perform(builder).andExpect(status().isOk());
+    mvc.perform(builder)
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.userId").value(1L))
+        .andExpect(jsonPath("$.email").value("devconf5296@gmail.com"))
+        .andExpect(jsonPath("$.userName").value("홍길동"));
   }
 
   @Test
@@ -67,7 +65,7 @@ class UserQueryControllerTest {
     // given
     UserEmailCheckDto userEmailCheckDto = new UserEmailCheckDto("devconf5296@gmail.com");
     // when
-    Mockito.when(userQueryProcessor.checkUserEmailOverlap(userEmailCheckDto)).thenReturn(true);
+    doReturn(true).when(userQueryProcessor).checkUserEmailOverlap(any(UserEmailCheckDto.class));
 
     MockHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.post("/users/signUp/check")
@@ -76,7 +74,10 @@ class UserQueryControllerTest {
             .characterEncoding("UTF-8")
             .content(this.mapper.writeValueAsBytes(userEmailCheckDto));
     // then
-    mvc.perform(builder).andExpect(status().isOk());
+    mvc.perform(builder)
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().string(String.valueOf(true)));
   }
 
   @Test
@@ -88,8 +89,9 @@ class UserQueryControllerTest {
     getUserChannelDtoList.add(getUserChannelDto);
 
     // when
-    Mockito.when(userQueryProcessor.getUserChannelWithUserId(userId))
-        .thenReturn(getUserChannelDtoList);
+    doReturn(getUserChannelDtoList)
+        .when(userQueryProcessor)
+        .getUserChannelWithUserId(any(Long.class));
 
     MockHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.get("/users/{userId}/channels", userId)
@@ -97,6 +99,10 @@ class UserQueryControllerTest {
             .accept(MediaType.APPLICATION_JSON)
             .characterEncoding("UTF-8");
     // then
-    mvc.perform(builder).andExpect(status().isOk());
+    mvc.perform(builder)
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].channelId").value(1))
+        .andExpect(jsonPath("$[0].channelName").value("channel1"));
   }
 }
