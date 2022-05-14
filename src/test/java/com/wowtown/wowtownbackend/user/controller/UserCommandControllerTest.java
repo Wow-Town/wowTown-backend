@@ -6,8 +6,8 @@ import com.wowtown.wowtownbackend.user.application.dto.request.ChangeUserPWDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.CreateUserChannelDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.CreateUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.UpdateUserDto;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,11 +16,18 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserCommandController.class)
 public class UserCommandControllerTest {
+
+  @InjectMocks UserCommandController userCommandController;
 
   @Autowired MockMvc mvc;
 
@@ -28,17 +35,12 @@ public class UserCommandControllerTest {
 
   @MockBean UserCommandExecutor userCommandExecutor;
 
-  CreateUserDto createUserDto;
-
-  @BeforeEach
-  public void init() {
-    this.createUserDto = new CreateUserDto("devconf5296@gmail.com", "홍길동", "1234");
-  }
-
   @Test
   public void signUp() throws Exception {
+    // given
+    CreateUserDto createUserDto = new CreateUserDto("devconf5296@gmail.com", "홍길동", "1234");
     // when
-    Mockito.when(userCommandExecutor.createUser(createUserDto)).thenReturn(1L);
+    doReturn(1L).when(userCommandExecutor).createUser(any(CreateUserDto.class));
 
     MockHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.post("/users/signUp")
@@ -48,19 +50,21 @@ public class UserCommandControllerTest {
             .content(this.mapper.writeValueAsBytes(createUserDto));
 
     // then
-    mvc.perform(builder).andExpect(status().isCreated());
+    mvc.perform(builder)
+        .andDo(print())
+        .andExpect(MockMvcResultMatchers.status().isCreated())
+        .andExpect(content().string("1"));
   }
 
   @Test
   public void updateUser() throws Exception {
     // given
-    Long userId = userCommandExecutor.createUser(createUserDto);
+    Long userId = 1L;
 
     UpdateUserDto updateUserDto = new UpdateUserDto("wmf2fkrh@gmail.com", "김철수");
 
     // when
-    userCommandExecutor.updateUser(userId, updateUserDto);
-    Mockito.when(userCommandExecutor.updateUser(userId, updateUserDto)).thenReturn(true);
+    doReturn(true).when(userCommandExecutor).updateUser(any(Long.class), any(UpdateUserDto.class));
 
     MockHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.put("/users/{userId}/edit", userId.toString())
@@ -70,18 +74,23 @@ public class UserCommandControllerTest {
             .content(this.mapper.writeValueAsBytes(updateUserDto));
 
     // then
-    mvc.perform(builder).andExpect(status().isOk());
+    mvc.perform(builder)
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().string(String.valueOf(true)));
   }
 
   @Test
   public void updateUserPW() throws Exception {
     // given
-    Long userId = userCommandExecutor.createUser(createUserDto);
+    Long userId = 1L;
 
     ChangeUserPWDto changeUserPWDto = new ChangeUserPWDto("1234", "5678");
 
     // when
-    Mockito.when(userCommandExecutor.updateUserPW(userId, changeUserPWDto)).thenReturn(true);
+    doReturn(true)
+        .when(userCommandExecutor)
+        .updateUserPW(any(Long.class), any(ChangeUserPWDto.class));
 
     MockHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.put("/users/{userId}/edit/password", userId.toString())
@@ -91,13 +100,16 @@ public class UserCommandControllerTest {
             .content(this.mapper.writeValueAsBytes(changeUserPWDto));
 
     // then
-    mvc.perform(builder).andExpect(status().isOk());
+    mvc.perform(builder)
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().string(String.valueOf(true)));
   }
 
   @Test
   public void deleteUser() throws Exception {
     // given
-    Long userId = userCommandExecutor.createUser(createUserDto);
+    Long userId = 1L;
 
     // when
     Mockito.when(userCommandExecutor.deleteUser(userId)).thenReturn(true);
@@ -106,22 +118,26 @@ public class UserCommandControllerTest {
         MockMvcRequestBuilders.delete("/users/{userId}", userId.toString())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON)
-            .characterEncoding("UTF-8")
-            .content(this.mapper.writeValueAsBytes(createUserDto));
+            .characterEncoding("UTF-8");
 
     // then
-    mvc.perform(builder).andExpect(status().isOk());
+    mvc.perform(builder)
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().string(String.valueOf(true)));
   }
 
   @Test
   public void selectUserChannel() throws Exception {
     // given
-    Long userId = userCommandExecutor.createUser(createUserDto);
+    Long userId = 1L;
 
     CreateUserChannelDto createUserChannelDto = new CreateUserChannelDto(1L);
 
     // when
-    Mockito.when(userCommandExecutor.addUserChannel(userId, createUserChannelDto)).thenReturn(true);
+    doReturn(true)
+        .when(userCommandExecutor)
+        .addUserChannel(any(Long.class), any(CreateUserChannelDto.class));
 
     MockHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.post("/users//{userId}/channels", userId.toString())
@@ -131,6 +147,9 @@ public class UserCommandControllerTest {
             .content(this.mapper.writeValueAsBytes(createUserChannelDto));
 
     // then
-    mvc.perform(builder).andExpect(status().isOk());
+    mvc.perform(builder)
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().string(String.valueOf(true)));
   }
 }
