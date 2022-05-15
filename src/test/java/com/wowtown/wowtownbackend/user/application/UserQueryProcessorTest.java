@@ -1,10 +1,7 @@
 package com.wowtown.wowtownbackend.user.application;
 
-import com.wowtown.wowtownbackend.channel.application.common.ChannelMapperImpl;
-import com.wowtown.wowtownbackend.channel.application.dto.request.CreateChannelDto;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.user.application.common.UserMapper;
-import com.wowtown.wowtownbackend.user.application.dto.request.CreateUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.LoginUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.UserEmailCheckDto;
 import com.wowtown.wowtownbackend.user.application.dto.response.GetUserChannelDto;
@@ -22,6 +19,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,22 +39,28 @@ class UserQueryProcessorTest {
   @Spy private PasswordEncoderImpl passwordEncoder;
 
   @Spy private UserMapper userMapper;
-  @Spy private ChannelMapperImpl channelMapper;
 
   private User savedUser;
-  private Channel savedChannel;
+
+  private UserChannel savedUserChannel;
 
   @BeforeEach
   void init() {
-    CreateUserDto createUserDto = new CreateUserDto("devconf5296@gmail.com", "홍길동", "1234");
-    savedUser = createUserEntity(createUserDto);
+    // create user
+    String salt = passwordEncoder.getSalt();
+    String hashedPW = passwordEncoder.encode("1234", salt);
+    savedUser = new User("devconf5296@gmail.com", "홍길동", hashedPW, salt);
     ReflectionTestUtils.setField(savedUser, "id", 1L);
 
-    CreateChannelDto createChannelDto = new CreateChannelDto("channel1");
-    savedChannel = createChannelEntity(createChannelDto);
+    // create channel
+    Channel savedChannel = new Channel("channel1");
     ReflectionTestUtils.setField(savedChannel, "id", 1L);
 
-    savedUser.addUserChannel(savedChannel);
+    // create userChannel
+    savedUserChannel = new UserChannel();
+    savedUserChannel.setUser(savedUser);
+    savedUserChannel.setChannel(savedChannel);
+    ReflectionTestUtils.setField(savedUserChannel, "id", 1L);
   }
 
   @Test
@@ -98,7 +102,8 @@ class UserQueryProcessorTest {
   void getUserChannelWithUserId() {
     // given
     Long userId = savedUser.getId();
-    List<UserChannel> getUserChannelList = savedUser.getUserChannelList();
+    List<UserChannel> getUserChannelList = new ArrayList<>();
+    getUserChannelList.add(savedUserChannel);
     GetUserChannelDto getUserChannelDto = new GetUserChannelDto(1L, "channel1");
 
     // when
@@ -107,20 +112,14 @@ class UserQueryProcessorTest {
         .findUserChannelByUserId(any(Long.class));
     doReturn(getUserChannelDto)
         .when(userMapper)
-        .toUserChannelDto(any(Long.class), any(String.class));
+        .toUserChannelDto(
+            getUserChannelList.get(0).getChannel().getId(),
+            getUserChannelList.get(0).getChannel().getChannelName());
+
     List<GetUserChannelDto> response = userQueryProcessor.getUserChannelWithUserId(userId);
 
     // then
-    assertThat(response.get(0)).isEqualTo(getUserChannelDto);
-  }
-
-  private User createUserEntity(CreateUserDto dto) {
-    String salt = passwordEncoder.getSalt();
-    String hashedPW = passwordEncoder.encode(dto.getPassword(), salt);
-    return userMapper.toUser(dto.getEmail(), dto.getUserName(), hashedPW, salt);
-  }
-
-  private Channel createChannelEntity(CreateChannelDto dto) {
-    return channelMapper.toChannel(dto);
+    assertThat(response.get(0).getChannelId()).isEqualTo(getUserChannelDto.getChannelId());
+    assertThat(response.get(0).getChannelName()).isEqualTo(getUserChannelDto.getChannelName());
   }
 }
