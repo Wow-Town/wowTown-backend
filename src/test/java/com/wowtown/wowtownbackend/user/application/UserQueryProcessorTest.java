@@ -53,7 +53,7 @@ class UserQueryProcessorTest {
     ReflectionTestUtils.setField(savedUser, "id", 1L);
 
     // create channel
-    Channel savedChannel = new Channel("channel1");
+    Channel savedChannel = new Channel("channel1", 100);
     ReflectionTestUtils.setField(savedChannel, "id", 1L);
 
     // create userChannel

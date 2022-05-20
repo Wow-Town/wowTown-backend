@@ -52,7 +52,7 @@ class UserCommandExecutorTest {
     ReflectionTestUtils.setField(savedUser, "id", 1L);
 
     // create channel
-    savedChannel = new Channel("channel1");
+    savedChannel = new Channel("channel1", 100);
     ReflectionTestUtils.setField(savedChannel, "id", 1L);
   }
 

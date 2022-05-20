@@ -29,7 +29,7 @@ class UserChannelRepositoryTest {
   @Transactional
   void init() {
     User user = new User("devconf@gamil.com", "홍길동", "1234", "abcd");
-    Channel channel = new Channel("channel1");
+    Channel channel = new Channel("channel1", 100);
     this.defaultUser = userRepository.save(user);
     this.defaultChannel = channelRepository.save(channel);
     this.defaultUser.addUserChannel(channel);
