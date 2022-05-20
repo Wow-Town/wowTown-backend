@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -18,24 +19,24 @@ public class Channel {
   // 언리얼 매치메이커에서 채널 이름만 있으면 세션에 연결 해준다.
   private String channelName;
 
-  private int joinNum;
+  private int maxJoinNum;
+
+  private int currentJoinNum;
+
+  private LocalDateTime createAt;
+
+  private LocalDateTime updateAt;
 
   // @OneToMany(mappedBy = "channel")
   // private List<StudyGroup> studyGroups = new ArrayList<>();
 
   protected Channel() {}
 
-  public Channel(String channelName) {
+  public Channel(String channelName, int maxJoinNum) {
     this.channelName = channelName;
-    this.joinNum = 0;
-  }
-
-  public void joinChannel() {
-    this.joinNum++;
-  }
-
-  public void leaveChannel() {
-    this.joinNum--;
+    this.maxJoinNum = maxJoinNum;
+    this.currentJoinNum = 0;
+    this.createAt = LocalDateTime.now();
   }
 
   @Override

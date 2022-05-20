@@ -1,6 +1,7 @@
 package com.wowtown.wowtownbackend.channel.application.common;
 
 import com.wowtown.wowtownbackend.channel.application.dto.request.CreateChannelDto;
+import com.wowtown.wowtownbackend.channel.application.dto.response.GetChannelDto;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import org.mapstruct.Mapper;
 
@@ -8,4 +9,6 @@ import org.mapstruct.Mapper;
 public interface ChannelMapper {
 
   Channel toChannel(CreateChannelDto dto);
+
+  GetChannelDto toGetChannelDto(Channel channel);
 }
