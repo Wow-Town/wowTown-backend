@@ -1,20 +1,24 @@
 package com.wowtown.wowtownbackend.user.application;
 
 import com.wowtown.wowtownbackend.channel.domain.Channel;
+import com.wowtown.wowtownbackend.common.redis.RedisService;
 import com.wowtown.wowtownbackend.user.application.common.UserMapper;
 import com.wowtown.wowtownbackend.user.application.dto.request.LoginUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.UserEmailCheckDto;
+import com.wowtown.wowtownbackend.user.application.dto.response.GetJwtTokenDto;
+import com.wowtown.wowtownbackend.user.application.dto.response.GetLoginUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.response.GetUserChannelDto;
-import com.wowtown.wowtownbackend.user.application.dto.response.GetUserDto;
 import com.wowtown.wowtownbackend.user.domain.User;
 import com.wowtown.wowtownbackend.user.domain.UserChannel;
 import com.wowtown.wowtownbackend.user.domain.UserChannelRepository;
 import com.wowtown.wowtownbackend.user.domain.UserRepository;
+import com.wowtown.wowtownbackend.user.infra.JwtTokenProviderImpl;
 import com.wowtown.wowtownbackend.user.infra.PasswordEncoderImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -26,6 +30,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,6 +44,10 @@ class UserQueryProcessorTest {
   @Spy private PasswordEncoderImpl passwordEncoder;
 
   @Spy private UserMapper userMapper;
+
+  @Mock private JwtTokenProviderImpl jwtTokenProvider;
+
+  @Mock private RedisService redisService;
 
   private User savedUser;
 
@@ -64,20 +73,24 @@ class UserQueryProcessorTest {
   }
 
   @Test
-  void loginUser() {
+  void login() {
     // given
     LoginUserDto loginUserDto = new LoginUserDto("devconf5296@gmail.com", "1234");
-    GetUserDto getUserDto = new GetUserDto(1L, "devconf5296@gmail.com", "홍길동");
+    GetJwtTokenDto getJwtTokenDto = new GetJwtTokenDto("accessToken", "refreshToken");
 
     // when
     doReturn(Optional.of(savedUser)).when(userRepository).findUserByEmail(any(String.class));
-    doReturn(getUserDto).when(userMapper).toGetUserDto(any(User.class));
-    GetUserDto responseDto = userQueryProcessor.loginUser(loginUserDto);
+    doReturn("accessToken").when(jwtTokenProvider).createAccessToken(any(String.class));
+    doReturn("refreshToken").when(jwtTokenProvider).createRefreshToken(any(String.class));
+    doNothing().when(redisService).setValues(any(String.class), any(String.class));
+    doReturn(getJwtTokenDto)
+        .when(userMapper)
+        .toGetJwtTokenDto(any(String.class), any(String.class));
+    GetJwtTokenDto responseDto = userQueryProcessor.login(loginUserDto);
 
     // then
-    assertThat(responseDto.getUserId()).isEqualTo(savedUser.getId());
-    assertThat(responseDto.getUserName()).isEqualTo(savedUser.getUserName());
-    assertThat(responseDto.getEmail()).isEqualTo(savedUser.getEmail());
+    assertThat(responseDto.getAccessToken()).isEqualTo("accessToken");
+    assertThat(responseDto.getRefreshToken()).isEqualTo("refreshToken");
   }
 
   @Test
@@ -96,6 +109,21 @@ class UserQueryProcessorTest {
 
     // then
     assertThat("해당 이메일이 이미 존재합니다.").isEqualTo(exception.getMessage());
+  }
+
+  @Test
+  void getLoginUser() {
+    // given
+    GetLoginUserDto getLoginUserDto = new GetLoginUserDto(1L, "devconf5296@gmail.com", "홍길동");
+
+    // when
+    doReturn(getLoginUserDto).when(userMapper).toGetLoginUserDto(any(User.class));
+    GetLoginUserDto responseDto = userQueryProcessor.getLoginUser(savedUser);
+
+    // then
+    assertThat(responseDto.getUserId()).isEqualTo(savedUser.getId());
+    assertThat(responseDto.getUserName()).isEqualTo(savedUser.getUserName());
+    assertThat(responseDto.getEmail()).isEqualTo(savedUser.getEmail());
   }
 
   @Test

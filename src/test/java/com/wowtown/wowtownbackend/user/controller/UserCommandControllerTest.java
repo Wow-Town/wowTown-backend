@@ -1,13 +1,16 @@
 package com.wowtown.wowtownbackend.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wowtown.wowtownbackend.common.redis.RedisService;
 import com.wowtown.wowtownbackend.user.application.UserCommandExecutor;
+import com.wowtown.wowtownbackend.user.application.common.JwtTokenProvider;
+import com.wowtown.wowtownbackend.user.application.common.PasswordEncoder;
 import com.wowtown.wowtownbackend.user.application.dto.request.ChangeUserPWDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.CreateUserChannelDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.CreateUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.UpdateUserDto;
+import com.wowtown.wowtownbackend.user.domain.UserRepository;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,24 +19,28 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserCommandController.class)
 public class UserCommandControllerTest {
-
-  @InjectMocks UserCommandController userCommandController;
 
   @Autowired MockMvc mvc;
 
   @Autowired ObjectMapper mapper;
 
   @MockBean UserCommandExecutor userCommandExecutor;
+
+  @MockBean PasswordEncoder passwordEncoder;
+
+  @MockBean UserRepository userRepository;
+
+  @MockBean JwtTokenProvider jwtTokenProvider;
+
+  @MockBean RedisService redisService;
 
   @Test
   public void signUp() throws Exception {
@@ -43,17 +50,14 @@ public class UserCommandControllerTest {
     doReturn(1L).when(userCommandExecutor).createUser(any(CreateUserDto.class));
 
     MockHttpServletRequestBuilder builder =
-        MockMvcRequestBuilders.post("/users/signUp")
+        MockMvcRequestBuilders.post("/signUp")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON)
             .characterEncoding("UTF-8")
             .content(this.mapper.writeValueAsBytes(createUserDto));
 
     // then
-    mvc.perform(builder)
-        .andDo(print())
-        .andExpect(MockMvcResultMatchers.status().isCreated())
-        .andExpect(content().string("1"));
+    mvc.perform(builder).andDo(print()).andExpect(status().isCreated());
   }
 
   @Test
@@ -74,10 +78,7 @@ public class UserCommandControllerTest {
             .content(this.mapper.writeValueAsBytes(updateUserDto));
 
     // then
-    mvc.perform(builder)
-        .andDo(print())
-        .andExpect(status().isOk())
-        .andExpect(content().string(String.valueOf(true)));
+    mvc.perform(builder).andDo(print()).andExpect(status().isOk());
   }
 
   @Test
@@ -100,10 +101,7 @@ public class UserCommandControllerTest {
             .content(this.mapper.writeValueAsBytes(changeUserPWDto));
 
     // then
-    mvc.perform(builder)
-        .andDo(print())
-        .andExpect(status().isOk())
-        .andExpect(content().string(String.valueOf(true)));
+    mvc.perform(builder).andDo(print()).andExpect(status().isOk());
   }
 
   @Test
@@ -121,10 +119,7 @@ public class UserCommandControllerTest {
             .characterEncoding("UTF-8");
 
     // then
-    mvc.perform(builder)
-        .andDo(print())
-        .andExpect(status().isOk())
-        .andExpect(content().string(String.valueOf(true)));
+    mvc.perform(builder).andDo(print()).andExpect(status().isOk());
   }
 
   @Test
@@ -140,16 +135,13 @@ public class UserCommandControllerTest {
         .addUserChannel(any(Long.class), any(CreateUserChannelDto.class));
 
     MockHttpServletRequestBuilder builder =
-        MockMvcRequestBuilders.post("/users//{userId}/channels", userId.toString())
+        MockMvcRequestBuilders.post("/users/{userId}/channels", userId.toString())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON)
             .characterEncoding("UTF-8")
             .content(this.mapper.writeValueAsBytes(createUserChannelDto));
 
     // then
-    mvc.perform(builder)
-        .andDo(print())
-        .andExpect(status().isOk())
-        .andExpect(content().string(String.valueOf(true)));
+    mvc.perform(builder).andDo(print()).andExpect(status().isOk());
   }
 }

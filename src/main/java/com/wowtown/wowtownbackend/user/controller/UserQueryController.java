@@ -1,38 +1,65 @@
 package com.wowtown.wowtownbackend.user.controller;
 
+import com.wowtown.wowtownbackend.common.argumentresolver.LoginUser;
 import com.wowtown.wowtownbackend.user.application.UserQueryProcessor;
 import com.wowtown.wowtownbackend.user.application.dto.request.LoginUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.UserEmailCheckDto;
-import com.wowtown.wowtownbackend.user.application.dto.response.GetUserDto;
+import com.wowtown.wowtownbackend.user.application.dto.response.GetAccessToken;
+import com.wowtown.wowtownbackend.user.application.dto.response.GetJwtTokenDto;
+import com.wowtown.wowtownbackend.user.application.dto.response.GetLoginUserDto;
+import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
-@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserQueryController {
 
   private final UserQueryProcessor userQueryProcessor;
 
   @PostMapping(value = "/login")
-  public ResponseEntity<GetUserDto> login(@RequestBody LoginUserDto dto) {
+  public ResponseEntity login(@RequestBody LoginUserDto dto, HttpServletResponse response) {
+
+    GetJwtTokenDto getJwtTokenDto = userQueryProcessor.login(dto);
+
+    Cookie cookie = new Cookie("api-key", getJwtTokenDto.getRefreshToken());
+    cookie.setMaxAge(60 * 60 * 24 * 30);
+    cookie.setPath("/");
+    cookie.setHttpOnly(true);
+
+    response.addCookie(cookie);
+
+    GetAccessToken getAccessToken = new GetAccessToken(getJwtTokenDto.getAccessToken());
+
     return ResponseEntity.status(HttpStatus.OK)
         .contentType(MediaType.APPLICATION_JSON)
-        .body(userQueryProcessor.loginUser(dto));
+        .body(getAccessToken);
   }
 
   @PostMapping(value = "/signUp/check")
   public ResponseEntity checkUserEmailOverlap(@RequestBody UserEmailCheckDto dto) {
-    return ResponseEntity.status(HttpStatus.OK)
-        .contentType(MediaType.APPLICATION_JSON)
-        .body(userQueryProcessor.checkUserEmailOverlap(dto));
+    userQueryProcessor.checkUserEmailOverlap(dto);
+    return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }
 
-  @GetMapping(value = "/{userId}/channels")
+  @GetMapping(value = "/users/self")
+  public ResponseEntity<GetLoginUserDto> getLoginUser(@LoginUser User user) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(userQueryProcessor.getLoginUser(user));
+  }
+
+  @GetMapping(value = "/users/{userId}/channels")
   public ResponseEntity getUserChannel(@PathVariable("userId") long userId) {
     return ResponseEntity.status(HttpStatus.OK)
         .contentType(MediaType.APPLICATION_JSON)
