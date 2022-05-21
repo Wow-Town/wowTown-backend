@@ -41,7 +41,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         return true;
       }
       // Todo refreshToken이 유효하지 않으면 exception 발생시키고 exception 처리하는 핸들러에서 다시 로그인 하라는 에러 메시지를 발행해준다.
-      return true;
+      return false;
     }
     return true;
   }

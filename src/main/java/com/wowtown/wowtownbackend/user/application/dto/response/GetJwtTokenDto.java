@@ -9,10 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetUserDto {
-  private Long userId;
+public class GetJwtTokenDto {
+  private String accessToken;
 
-  private String email;
-
-  private String userName;
+  private String refreshToken;
 }

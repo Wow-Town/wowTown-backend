@@ -1,7 +1,8 @@
 package com.wowtown.wowtownbackend.user.application.common;
 
+import com.wowtown.wowtownbackend.user.application.dto.response.GetJwtTokenDto;
+import com.wowtown.wowtownbackend.user.application.dto.response.GetLoginUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.response.GetUserChannelDto;
-import com.wowtown.wowtownbackend.user.application.dto.response.GetUserDto;
 import com.wowtown.wowtownbackend.user.domain.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -29,8 +30,10 @@ public interface UserMapper {
     return user;
   }
 
+  GetJwtTokenDto toGetJwtTokenDto(String accessToken, String refreshToken);
+
   @Mapping(source = "id", target = "userId")
-  GetUserDto toGetUserDto(User user);
+  GetLoginUserDto toGetLoginUserDto(User user);
 
   GetUserChannelDto toUserChannelDto(Long channelId, String channelName);
 }
