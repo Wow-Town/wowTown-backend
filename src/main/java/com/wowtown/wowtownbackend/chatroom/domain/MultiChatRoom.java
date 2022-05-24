@@ -17,9 +17,9 @@ public class MultiChatRoom {
 
     private int participantsNum;
 
-    @OneToOne(mappedBy = "multiChatRoom")
+    /*@OneToOne(mappedBy = "multiChatRoom")
     private StudyGroup studyGroup;
-
+*/
     protected MultiChatRoom(){}
 
     public MultiChatRoom(String roomName, int participantsNum){

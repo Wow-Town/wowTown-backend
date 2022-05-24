@@ -1,3 +1,4 @@
+/*
 package com.wowtown.wowtownbackend.character.domain;
 
 import lombok.Getter;
@@ -25,3 +26,4 @@ public class Friend {
 
     public Friend(){}
 }
+*/

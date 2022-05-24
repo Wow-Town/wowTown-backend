@@ -1,7 +1,7 @@
 package com.wowtown.wowtownbackend.character.domain;
 
 
-import com.wowtown.wowtownbackend.chatroom.domain.SingleChatRoom;
+/*import com.wowtown.wowtownbackend.chatroom.domain.SingleChatRoom;*/
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -18,9 +18,9 @@ public class CharacterChatRoom {
     @JoinColumn(name = "CHARACTER_ID")
     private Character character;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CHATROOM_ID")
-    private SingleChatRoom singleChatRoom;
+    private SingleChatRoom singleChatRoom;*/
 
     public CharacterChatRoom(){}
 }

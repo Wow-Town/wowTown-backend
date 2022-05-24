@@ -17,8 +17,8 @@ public class Channel {
 
     private String channelName;
 
-    @OneToMany(mappedBy = "channel")
-    private List<StudyGroup> studyGroups = new ArrayList<>();
+    /*@OneToMany(mappedBy = "channel")
+    private List<StudyGroup> studyGroups = new ArrayList<>();*/
 
 
     protected Channel(){}

@@ -13,8 +13,8 @@ public class PrivateSpace {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy= "privateSpace")
-    private StudyGroup studyGroup;
+   /* @OneToOne(mappedBy= "privateSpace")
+    private StudyGroup studyGroup;*/
 
     public PrivateSpace(){}
 }

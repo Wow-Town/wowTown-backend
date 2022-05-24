@@ -43,10 +43,10 @@ public class Character {
     private List<CharacterStudyGroup> characterStudyGroups = new ArrayList<>();
 
     //set or list 둘중 선택
-    @OneToMany(mappedBy = "character",cascade = CascadeType.ALL)
-    private Set<Character> following = new HashSet<>();
-    @OneToMany(mappedBy = "character",cascade = CascadeType.ALL)
-    private Set<Character> follower = new HashSet<>();
+//    @OneToMany(mappedBy = "character",cascade = CascadeType.ALL)
+//    private Set<Character> following = new HashSet<>();
+//    @OneToMany(mappedBy = "character",cascade = CascadeType.ALL)
+//    private Set<Character> follower = new HashSet<>();
 
 
     protected Character(){}
