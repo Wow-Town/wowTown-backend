@@ -2,9 +2,11 @@ package com.wowtown.wowtownbackend.studyGroup.application.common;
 
 import com.wowtown.wowtownbackend.studyGroup.application.dto.response.GetStudyGroupDtoRes;
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface StudyGroupMapper {
   default StudyGroup toStudyGroup(String studyGroupName, Integer personnel, String studyDetail) {
     if (studyGroupName == null) { // 제목이 없다면
