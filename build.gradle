@@ -22,7 +22,6 @@ dependencies {
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 
     runtimeOnly 'com.h2database:h2'
-
     implementation("io.jsonwebtoken:jjwt:0.9.1") // jwt 방식을 사용
 
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
