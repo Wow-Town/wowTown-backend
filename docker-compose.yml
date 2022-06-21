@@ -8,6 +8,7 @@ services:
     working_dir: /deploy/wowtown
     depends_on:
       - redis
+      - mysql
     restart: always
 
   redis:
