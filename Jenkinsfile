@@ -25,10 +25,12 @@ pipeline {
                 sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
 
                 sh 'docker push devconf5296/wowtown_backend:0.1'
+                sh 'docker rmi devconf5296/wowtown_backend:0.1'
 
             }
         }
         stage('SSH transfer') {
+            when{ branch "main"}
             steps([$class: 'BapSshPromotionPublisherPlugin']) {
                 sshPublisher(
                     continueOnError: false, failOnError: true,
