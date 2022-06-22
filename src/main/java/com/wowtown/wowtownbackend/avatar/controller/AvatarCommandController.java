@@ -1,7 +1,7 @@
-package com.wowtown.wowtownbackend.character.controller;
+package com.wowtown.wowtownbackend.avatar.controller;
 
-import com.wowtown.wowtownbackend.character.application.CharacterCommandExecutor;
-import com.wowtown.wowtownbackend.character.application.dto.request.CreateOrUpdateCharacterDto;
+import com.wowtown.wowtownbackend.avatar.application.AvatarCommandExecutor;
+import com.wowtown.wowtownbackend.avatar.application.dto.request.CreateOrUpdateAvatarDto;
 import com.wowtown.wowtownbackend.common.argumentresolver.LoginUser;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -13,33 +13,33 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-public class CharacterCommandController {
-  private final CharacterCommandExecutor characterCommandExecutor;
+public class AvatarCommandController {
+  private final AvatarCommandExecutor avatarCommandExecutor;
 
-  @PostMapping(value = "/characters")
-  public ResponseEntity createCharacter(
+  @PostMapping(value = "/avatars")
+  public ResponseEntity createAvatar(
       @RequestParam("channelId") Long channelId,
-      @RequestBody CreateOrUpdateCharacterDto dto,
+      @RequestBody CreateOrUpdateAvatarDto dto,
       @LoginUser User user) {
-    characterCommandExecutor.createCharacter(channelId, dto, user);
+    avatarCommandExecutor.createAvatar(channelId, dto, user);
     return ResponseEntity.status(HttpStatus.CREATED)
         .contentType(MediaType.APPLICATION_JSON)
         .build();
   }
 
-  @PutMapping(value = "/characters")
-  public ResponseEntity updateCharacter(
+  @PutMapping(value = "/avatars")
+  public ResponseEntity updateAvatar(
       @RequestParam("channelId") Long channelId,
-      @RequestBody CreateOrUpdateCharacterDto dto,
+      @RequestBody CreateOrUpdateAvatarDto dto,
       @LoginUser User user) {
-    characterCommandExecutor.updateCharacter(channelId, dto, user);
+    avatarCommandExecutor.updateAvatar(channelId, dto, user);
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }
 
-  @DeleteMapping(value = "/characters")
-  public ResponseEntity deleteCharacter(
+  @DeleteMapping(value = "/avatars")
+  public ResponseEntity deleteAvatar(
       @RequestParam("channelId") Long channelId, @LoginUser User user) {
-    characterCommandExecutor.deleteCharacter(channelId, user);
+    avatarCommandExecutor.deleteAvatar(channelId, user);
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }
 }

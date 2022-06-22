@@ -1,18 +1,18 @@
-package com.wowtown.wowtownbackend.character.application.dto.request;
+package com.wowtown.wowtownbackend.avatar.application.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
+import lombok.Setter;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOrUpdateCharacterDto {
+public class GetAvatarDto {
+  private Long characterId;
+
   private String nickName;
 
   private String description;
-
-  private List<String> interestList;
 }

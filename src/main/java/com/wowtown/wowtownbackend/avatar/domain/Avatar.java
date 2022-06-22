@@ -1,4 +1,4 @@
-package com.wowtown.wowtownbackend.character.domain;
+package com.wowtown.wowtownbackend.avatar.domain;
 
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.common.domain.Interest;
@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Getter
 @Entity
-public class Character {
+public class Avatar {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -27,7 +27,7 @@ public class Character {
 
   @Enumerated(EnumType.STRING)
   @ElementCollection
-  @CollectionTable(name = "character_interest")
+  @CollectionTable(name = "avatar_interest")
   private Set<Interest> interestList = new HashSet<>();
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -51,16 +51,16 @@ public class Character {
   //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
   //  private Set<Character> follower = new HashSet<>();
 
-  protected Character() {}
+  protected Avatar() {}
 
-  public Character(String nickName, String description) {
+  public Avatar(String nickName, String description) {
     this.nickName = nickName;
     this.description = description;
     this.createAt = LocalDateTime.now();
     this.updateAt = null;
   }
 
-  public Character(String nickName, String description, User user, Channel channel) {
+  public Avatar(String nickName, String description, User user, Channel channel) {
     this.nickName = nickName;
     this.description = description;
     this.user = user;
@@ -73,7 +73,7 @@ public class Character {
     this.interestList.add(payload);
   }
 
-  public void updateCharacter(Character updatePayload) {
+  public void updateCharacter(Avatar updatePayload) {
     this.nickName = updatePayload.getNickName();
     this.description = updatePayload.getDescription();
     this.interestList = updatePayload.getInterestList();

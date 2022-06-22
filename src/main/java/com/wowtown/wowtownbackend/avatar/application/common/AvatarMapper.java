@@ -1,9 +1,9 @@
-package com.wowtown.wowtownbackend.character.application.common;
+package com.wowtown.wowtownbackend.avatar.application.common;
 
+import com.wowtown.wowtownbackend.avatar.application.dto.request.CreateOrUpdateAvatarDto;
+import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarDto;
+import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
-import com.wowtown.wowtownbackend.character.application.dto.request.CreateOrUpdateCharacterDto;
-import com.wowtown.wowtownbackend.character.application.dto.response.GetCharacterDto;
-import com.wowtown.wowtownbackend.character.domain.Character;
 import com.wowtown.wowtownbackend.common.domain.Interest;
 import com.wowtown.wowtownbackend.common.domain.InterestType;
 import com.wowtown.wowtownbackend.user.domain.User;
@@ -11,39 +11,39 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface CharacterMapper {
-  default Character toCharacter(CreateOrUpdateCharacterDto dto, User user, Channel channel) {
+public interface AvatarMapper {
+  default Avatar toCharacter(CreateOrUpdateAvatarDto dto, User user, Channel channel) {
     if (dto.getNickName() == null
         && dto.getDescription() == null
         && dto.getInterestList() == null) {
       return null;
     }
 
-    Character character = new Character(dto.getNickName(), dto.getDescription(), user, channel);
+    Avatar avatar = new Avatar(dto.getNickName(), dto.getDescription(), user, channel);
     for (String getInterest : dto.getInterestList()) {
       Interest interest = new Interest(InterestType.valueOf(getInterest));
-      character.addInterest(interest);
+      avatar.addInterest(interest);
     }
 
-    return character;
+    return avatar;
   }
 
-  default Character toUpdateCharacter(CreateOrUpdateCharacterDto dto) {
+  default Avatar toUpdateCharacter(CreateOrUpdateAvatarDto dto) {
     if (dto.getNickName() == null
         && dto.getDescription() == null
         && dto.getInterestList() == null) {
       return null;
     }
 
-    Character character = new Character(dto.getNickName(), dto.getDescription());
+    Avatar avatar = new Avatar(dto.getNickName(), dto.getDescription());
     for (String getInterest : dto.getInterestList()) {
       Interest interest = new Interest(InterestType.valueOf(getInterest));
-      character.addInterest(interest);
+      avatar.addInterest(interest);
     }
 
-    return character;
+    return avatar;
   }
 
   @Mapping(source = "id", target = "characterId")
-  GetCharacterDto toGetCharacterDto(Character character);
+  GetAvatarDto toGetCharacterDto(Avatar avatar);
 }
