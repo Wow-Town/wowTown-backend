@@ -1,12 +1,11 @@
-/*
- package com.wowtown.wowtownbackend.common.domain;
+package com.wowtown.wowtownbackend.common.domain;
 
- import javax.persistence.Embeddable;
- import javax.persistence.EnumType;
- import javax.persistence.Enumerated;
+import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
- @Embeddable
- public class Interest {
+@Embeddable
+public class Interest {
   @Enumerated(EnumType.STRING)
   private InterestType type;
 
@@ -15,5 +14,4 @@
   public Interest(InterestType type) {
     this.type = type;
   }
- }
-*/
+}

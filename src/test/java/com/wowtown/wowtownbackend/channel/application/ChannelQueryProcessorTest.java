@@ -40,7 +40,7 @@ public class ChannelQueryProcessorTest {
     // given
     List<Channel> getChannelList = new ArrayList<>();
     getChannelList.add(savedChannel);
-    GetChannelDto getChannelDto = new GetChannelDto("channel1", 100, 0);
+    GetChannelDto getChannelDto = new GetChannelDto(1, "channel1", 100, 0);
 
     // when
     doReturn(getChannelList).when(channelRepository).findAll();

@@ -21,7 +21,7 @@ public class JwtTokenProviderImpl
     implements JwtTokenProvider { // Jwt Token을 생성, 인증, 권한 부여, 유효성 검사, PK 추출 등의 다양한 기능을 제공하는 클래스
 
   // 엑세스 토큰 유효시간 | 1m
-  private long accessTokenValidTime = 1000L * 60; // 30 * 60 * 1000L;
+  private long accessTokenValidTime = 1000L * 60 * 60; // 30 * 60 * 1000L;
   // 리프레시 토큰 유효시간 | 30d
   private long refreshTokenValidTime = 1000L * 60 * 60 * 24 * 30;
 

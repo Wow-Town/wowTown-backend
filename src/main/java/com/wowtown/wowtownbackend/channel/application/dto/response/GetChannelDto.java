@@ -10,6 +10,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetChannelDto {
+  private long channelId;
+
   private String channelName;
 
   private int maxJoinNum;
