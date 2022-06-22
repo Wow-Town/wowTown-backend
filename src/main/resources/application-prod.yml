@@ -3,17 +3,11 @@ spring:
     host: redis
     port: 6379
 
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-
   datasource:
-    hikari:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://localhost:3306/wow_town?serverTimezone=UTC&characterEncoding=UTF-8?enabledTLSProtocols=TLSv1.2
-      username: root
-      password: wowTown123
+    url: jdbc:mysql://mysql_db:3306/wow_town?useSSL=false&characterEncoding=UTF-8&serverTimeZone=UTC&&allowPublicKeyRetrieval=true
+    username: root
+    password: wowTown123
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect

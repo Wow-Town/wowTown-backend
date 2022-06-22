@@ -2,6 +2,6 @@
 
 docker-compose down
 
-docker rmi devconf5296/wowtown_backend:0.1
+docker rmi devconf5296/wowtown_backend:latest
 
 docker-compose up -d

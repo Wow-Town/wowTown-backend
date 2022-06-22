@@ -14,18 +14,18 @@ pipeline {
             when{ branch "main"}
             steps {
                 echo 'Build Start!!!'
-                sh 'docker build -t wowtown_backend:0.1 ./'
+                sh 'docker build -t wowtown_backend:latest ./'
             }
         }
         stage('Docker Hub Push') {
             when{ branch "main"}
             steps {
                 echo 'Image Push Start!!!'
-                sh 'docker image tag wowtown_backend:0.1 devconf5296/wowtown_backend:0.1'
+                sh 'docker image tag wowtown_backend:latest devconf5296/wowtown_backend:latest'
                 sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
 
-                sh 'docker push devconf5296/wowtown_backend:0.1'
-                sh 'docker rmi devconf5296/wowtown_backend:0.1'
+                sh 'docker push devconf5296/wowtown_backend:latest'
+                sh 'docker rmi -f devconf5296/wowtown_backend:latest'
 
             }
         }
