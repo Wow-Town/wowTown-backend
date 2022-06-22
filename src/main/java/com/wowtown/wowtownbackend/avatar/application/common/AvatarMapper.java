@@ -44,6 +44,6 @@ public interface AvatarMapper {
     return avatar;
   }
 
-  @Mapping(source = "id", target = "characterId")
+  @Mapping(source = "id", target = "avatarId")
   GetAvatarDto toGetCharacterDto(Avatar avatar);
 }
