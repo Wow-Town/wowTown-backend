@@ -34,6 +34,7 @@ services:
       - MYSQL_ROOT_HOST=%
       - MYSQL_DATABASE=wow_town
       - MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - TZ=UTC
     command:
       - --character-set-server=utf8mb4
