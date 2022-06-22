@@ -48,7 +48,7 @@ public class UserCommandController {
 
   @PostMapping(value = "/users/{userId}/channels")
   public ResponseEntity selectUserChannel(
-      @PathVariable("userId") long userId, CreateUserChannelDto dto) {
+      @PathVariable("userId") long userId, @RequestBody CreateUserChannelDto dto) {
     userCommandExecutor.addUserChannel(userId, dto);
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }
