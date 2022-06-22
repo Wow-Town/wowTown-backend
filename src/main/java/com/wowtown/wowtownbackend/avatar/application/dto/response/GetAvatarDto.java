@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetAvatarDto {
-  private Long characterId;
+  private Long avatarId;
 
   private String nickName;
 
