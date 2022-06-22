@@ -36,7 +36,7 @@ public class WebConfig implements WebMvcConfigurer {
         .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
         .maxAge(-1) // add maxAge
         .allowCredentials(true)
-        .allowedOriginPatterns("http://localhost:3000", "wowtown.co.kr");
+        .allowedOriginPatterns("http://localhost:3000", "http://wowtown.co.kr");
   }
 
   @Override
