@@ -17,7 +17,7 @@ public class RedisService {
   public void setValues(String token, String email) {
     ValueOperations<String, String> values = redisTemplate.opsForValue();
     //        values.set(name, age);
-    values.set(token, email, Duration.ofMinutes(3)); // 3분 뒤 메모리에서 삭제된다.
+    values.set(token, email, Duration.ofMinutes(60)); // 3분 뒤 메모리에서 삭제된다.
   }
 
   // 키값으로 벨류 가져오기
