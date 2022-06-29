@@ -1,4 +1,4 @@
-package com.wowtown.wowtownbackend.studyGroup.application.dto.request;
+package com.wowtown.wowtownbackend.studyGroup.application.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetStudyGroupByNameDto {
 
-    private String studyGroupNamePart;
+  private String studyGroupNamePart;
 }

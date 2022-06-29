@@ -8,6 +8,7 @@ import lombok.Getter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -75,5 +76,24 @@ public class Avatar {
     this.description = updatePayload.getDescription();
     this.interestList = updatePayload.getInterestList();
     this.updateAt = LocalDateTime.now();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (!(o instanceof Avatar)) {
+      return false;
+    }
+    Avatar avatar = (Avatar) o;
+    return this.id == avatar.id
+        && this.nickName == avatar.nickName
+        && this.description == avatar.description;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.id, this.nickName, this.description);
   }
 }
