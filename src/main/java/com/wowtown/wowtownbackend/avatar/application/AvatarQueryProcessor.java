@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +26,23 @@ public class AvatarQueryProcessor {
     return avatarMapper.toGetCharacterDto(findAvatar);
   }
 
-  public boolean checkAvatarNickNameOverlap(Long channelId, AvatarNickNameCheckDto dto) {
-    Optional<Avatar> findCharacter =
+  /*public boolean checkAvatarNickNameOverlap(Long channelId, AvatarNickNameCheckDto dto) {
+    Optional<Avatar> findAvatar =
         avatarRepository.findAvatarWithChannelIdAndNickName(channelId, dto.getNickName());
-    if (findCharacter.isPresent()) {
-      throw new IllegalArgumentException("해당 이메일이 이미 존재합니다.");
+    if (findAvatar.isPresent()) {
+      throw new IllegalArgumentException("해당 닉네임이 이미 존재합니다.");
     }
     return true;
   }
+
+  public boolean checkAvatarChannelOverlap( Long channelId,User user){
+    Set<Avatar> findAvatar =
+            avatarRepository.findAvatarWithUserId(user.getId());
+    for(Avatar avatar : findAvatar){
+      if(channelId == avatar.getChannel().getId()){
+        throw new IllegalStateException("해당 채널에 이미 아바타가 존재합니다");
+      }
+    }
+    return true;
+  }*/
 }

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface JpaAvatarRepository extends JpaRepository<Avatar, Long>, AvatarRepository {
@@ -18,4 +19,9 @@ public interface JpaAvatarRepository extends JpaRepository<Avatar, Long>, Avatar
   @Query("select av from Avatar as av where av.channel.id =:channelId and av.user.id =:userId")
   Optional<Avatar> findAvatarWithChannelIdAndUserId(
       @Param("channelId") Long channelId, @Param("userId") Long userId);
+
+  /*@Query("select av from Avatar as av where av.user.id =:userId")
+  Set<Avatar> findAvatarWithUserId(
+          @Param("userId") Long userId);*/
+
 }

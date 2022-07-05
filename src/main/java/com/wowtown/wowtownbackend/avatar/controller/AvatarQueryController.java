@@ -24,10 +24,16 @@ public class AvatarQueryController {
         .body(avatarQueryProcessor.getAvatar(channelId, user));
   }
 
-  @GetMapping(value = "/avatars/check")
+  /*@GetMapping(value = "/avatars/check")
   public ResponseEntity checkAvatarNickNameOverlap(
       @RequestParam("channelId") Long channelId, AvatarNickNameCheckDto dto) {
     avatarQueryProcessor.checkAvatarNickNameOverlap(channelId, dto);
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }
+
+  @GetMapping(value = "/avatars/check")
+  public ResponseEntity checkAvatarChannelOverlap(@RequestParam("channelId") Long channelId, @LoginUser User user){
+    avatarQueryProcessor.checkAvatarChannelOverlap(channelId , user);
+    return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
+  }*/
 }
