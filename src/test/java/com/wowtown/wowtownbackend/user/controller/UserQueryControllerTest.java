@@ -36,6 +36,8 @@ class UserQueryControllerTest {
   @MockBean UserQueryProcessor userQueryProcessor;
 
   @MockBean JwtTokenProvider jwtTokenProvider;
+  
+  @MockBean AvatarProvider avatarProvider;
 
   @MockBean RedisService redisService;
 
