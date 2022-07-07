@@ -75,7 +75,7 @@ public class JwtTokenProviderImpl
   public boolean validateToken(String accessToken) {
     try {
       Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken);
-      return !claims.getBody().getExpiration().before(new Date());
+      return claims.getBody().getExpiration().after(new Date());
     } catch (Exception e) {
       return false;
     }

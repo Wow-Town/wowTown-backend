@@ -41,7 +41,7 @@ public class AvatarCommandExecutor {
         throw new IllegalArgumentException("해당 닉네임이 이미 존재합니다.");
       }
     }
-    Avatar avatar = avatarRepository.save(avatarMapper.toCharacter(dto, user, findChannel));
+    Avatar avatar = avatarRepository.save(avatarMapper.toAvatar(dto, user, findChannel));
     return avatar.getId();
   }
   // 채널 아이디, 유저 가지고 디비 조회 있을 경우 아바타존재 아니면 새로만들기
@@ -52,8 +52,8 @@ public class AvatarCommandExecutor {
         avatarRepository
             .findAvatarWithChannelIdAndUserId(channelId, user.getId())
             .orElseThrow(() -> new IllegalArgumentException("아바타가 존재하지 않습니다."));
-    Avatar updatePayload = avatarMapper.toUpdateCharacter(dto);
-    findAvatar.updateCharacter(updatePayload);
+    Avatar updatePayload = avatarMapper.toUpdateAvatar(dto);
+    findAvatar.updateAvatar(updatePayload);
     return true;
   }
 
