@@ -39,6 +39,8 @@ public class UserCommandControllerTest {
   @MockBean UserRepository userRepository;
 
   @MockBean JwtTokenProvider jwtTokenProvider;
+  
+  @MockBean AvatarProvider avatarProvider;
 
   @MockBean RedisService redisService;
 
