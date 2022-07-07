@@ -5,6 +5,7 @@ import com.wowtown.wowtownbackend.common.argumentresolver.LoginUserArgumentResol
 import com.wowtown.wowtownbackend.common.redis.RedisService;
 import com.wowtown.wowtownbackend.user.application.UserQueryProcessor;
 import com.wowtown.wowtownbackend.user.application.common.JwtTokenProvider;
+import com.wowtown.wowtownbackend.avatar.application.common.AvatarProvider;
 import com.wowtown.wowtownbackend.user.application.common.PasswordEncoder;
 import com.wowtown.wowtownbackend.user.application.dto.request.LoginUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.UserEmailCheckDto;
