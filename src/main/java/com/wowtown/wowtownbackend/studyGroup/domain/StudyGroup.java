@@ -1,62 +1,90 @@
- package com.wowtown.wowtownbackend.studyGroup.domain;
+package com.wowtown.wowtownbackend.studyGroup.domain;
 
- import com.wowtown.wowtownbackend.channel.domain.Channel;
- /*import com.wowtown.wowtownbackend.chatroom.domain.MultiChatRoom;
- import com.wowtown.wowtownbackend.privateSpace.domain.PrivateSpace;*/
- import com.wowtown.wowtownbackend.common.domain.InterestType;
- import lombok.Getter;
- import lombok.Setter;
+import com.wowtown.wowtownbackend.avatar.domain.Avatar;
+import com.wowtown.wowtownbackend.common.domain.InterestType;
+import lombok.Getter;
 
- import javax.persistence.*;
- import javax.print.DocFlavor;
- import java.util.ArrayList;
- import java.util.List;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
- @Getter
- @Setter
- @Entity
- public class StudyGroup {
+@Getter
+@Entity
+public class StudyGroup {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String studyGroupName; // 제목
+  private String subject; // 이름보다 주제라는 용어가 괜찮은거 같다.
   private int personnel; // 구하는 인원수
-  private String studyDetail;
-  private int isOpen;
+  private String description; // 스터디 그룹 설명
 
-  @ElementCollection
   @Enumerated(EnumType.STRING)
-  List<InterestType> interestTypes = new ArrayList<>();
+  private StudyGroupStatus status;
+
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(
+      name = "study_group_interest",
+      joinColumns = @JoinColumn(name = "study_group_id"))
+  List<InterestType> interestTypeList = new ArrayList<>();
 
   /*@OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL)
   private List<StudyGroupInterestTypes> studyGroupInterestTypes = new ArrayList<>();*/
 
-//  @OneToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "PRIVATE_SPACE_ID")
-//  private PrivateSpace privateSpace;
-//
-//  @OneToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "MULTI_CHAT_ROOM_ID")
-//  private MultiChatRoom openChatRoom;
-//
-//  @OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL)
-//  private List<CharacterStudyGroup> characterStudyGroups = new ArrayList<>();
+  //  @OneToOne(fetch = FetchType.LAZY)
+  //  @JoinColumn(name = "PRIVATE_SPACE_ID")
+  //  private PrivateSpace privateSpace;
+  //
+  //  @OneToOne(fetch = FetchType.LAZY)
+  //  @JoinColumn(name = "MULTI_CHAT_ROOM_ID")
+  //  private MultiChatRoom openChatRoom;
+  //
+  @OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<AvatarStudyGroup> avatarStudyGroupList = new ArrayList<>();
 
   protected StudyGroup() {}
 
-  public StudyGroup(String studyGroupName, Integer personnel, String studyDetail, int isOpen)
- {
-    this.studyGroupName = studyGroupName;
+  public StudyGroup(
+      String subject,
+      Integer personnel,
+      String description,
+      List<InterestType> interestTypeList,
+      StudyGroupStatus status) {
+    this.subject = subject;
     this.personnel = personnel;
-    this.studyDetail = studyDetail;
-    this.isOpen = isOpen;
+    this.description = description;
+    this.interestTypeList = interestTypeList;
+    this.status = status;
   }
-  public void updateStudyGroup(StudyGroup studyGroup){
-      this.studyGroupName = studyGroup.studyGroupName;
-      this.personnel = studyGroup.personnel;
-      this.studyDetail = studyGroup.studyDetail;
-      this.isOpen = studyGroup.isOpen;
+
+  public void updateStudyGroup(StudyGroup studyGroup) {
+    this.subject = studyGroup.subject;
+    this.personnel = studyGroup.personnel;
+    this.description = studyGroup.description;
+    this.status = studyGroup.status;
   }
- }
+
+  public boolean checkAvatarStudyGroupRoleIsHost(Avatar avatar) {
+    for (AvatarStudyGroup avatarStudyGroup : this.avatarStudyGroupList) { // 뭔가 이 로직이 최선인가?
+      if (avatarStudyGroup.getAvatar().equals(avatar)) {
+        if (avatarStudyGroup.getRole() == StudyGroupRole.HOST) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public void avatarJoinStudyGroup(Avatar avatar, StudyGroupRole role) {
+    AvatarStudyGroup avatarStudyGroup = new AvatarStudyGroup(role);
+    avatarStudyGroup.setAvatar(avatar);
+    avatarStudyGroup.setStudyGroup(this);
+    this.avatarStudyGroupList.add(avatarStudyGroup);
+  }
+
+  public void avatarLeaveStudyGroup(Avatar avatar) {
+    this.avatarStudyGroupList.removeIf(
+        avatarStudyGroup -> avatarStudyGroup.getAvatar().equals(avatar));
+  }
+}

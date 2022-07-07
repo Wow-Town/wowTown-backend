@@ -1,5 +1,6 @@
 package com.wowtown.wowtownbackend.studyGroup.domain;
 
-public enum StudyGroupType {
-    CLOSED,OPEN
+public enum StudyGroupStatus {
+  CLOSED,
+  OPEN
 }

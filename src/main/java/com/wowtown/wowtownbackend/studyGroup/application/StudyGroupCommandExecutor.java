@@ -1,63 +1,74 @@
 package com.wowtown.wowtownbackend.studyGroup.application;
 
-
+import com.wowtown.wowtownbackend.avatar.application.AvatarCommandExecutor;
+import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.studyGroup.application.common.StudyGroupMapper;
-import com.wowtown.wowtownbackend.studyGroup.application.dto.request.CreateStudyGroupDto;
-import com.wowtown.wowtownbackend.studyGroup.application.dto.request.GetStudyGroupDtoReq;
-import com.wowtown.wowtownbackend.studyGroup.application.dto.response.GetStudyGroupDtoRes;
+import com.wowtown.wowtownbackend.studyGroup.application.dto.request.CreateOrUpdateStudyGroupDto;
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroupRepository;
-import com.wowtown.wowtownbackend.user.application.dto.response.GetUserChannelDto;
+import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroupRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class StudyGroupCommandExecutor {
-    private final StudyGroupRepository studyGroupRepository;
-    private final StudyGroupMapper studyGroupMapper;
+  private final AvatarCommandExecutor avatarQueryProcessor;
+  private final StudyGroupRepository studyGroupRepository;
+  private final StudyGroupMapper studyGroupMapper;
 
-    @Transactional
-    public long createStudyGroup(CreateStudyGroupDto dto){ //공고등록
-        /*studyGroupRepository.findByName(studyGroup.getStudyGroupName()) //같은 제목 검증 (같은 제목도 허용할지?)
-                .ifPresent(m ->{
-            throw new IllegalStateException("이미 존재하는 스터디 그룹 제목입니다");
-        });*/
-        StudyGroup studyGroup =
-                studyGroupRepository.save(studyGroupMapper.toStudyGroup(dto.getStudyGroupName(),dto.getPersonnel(), dto.getStudyDetail()));
-        return studyGroup.getId();
+  @Transactional
+  public long createStudyGroup(CreateOrUpdateStudyGroupDto dto, Avatar avatar) { // 공고등록
+    // 같은 공고 제목은 체크하지 않습니다. 제목은 unique한 것이 아니기 때문입니다.
+    StudyGroup studyGroup =
+        studyGroupMapper.toStudyGroup(
+            dto.getSubject(),
+            dto.getPersonnel(),
+            dto.getDescription(),
+            dto.getInterests(),
+            dto.getStatus());
+
+    // 공고를 생성한 아바타를 host로 설정하여 아바타-공고를 추가한다.
+    studyGroup.avatarJoinStudyGroup(avatar, StudyGroupRole.HOST);
+
+    studyGroupRepository.save(studyGroup);
+
+    return studyGroup.getId();
+  }
+
+  @Transactional
+  public boolean updateStudyGroup(
+      long studyGroupId, CreateOrUpdateStudyGroupDto dto, Avatar avatar) {
+    StudyGroup findStudyGroup =
+        studyGroupRepository
+            .findById(studyGroupId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 그룹입니다"));
+
+    if (findStudyGroup.checkAvatarStudyGroupRoleIsHost(avatar)) {
+      findStudyGroup.updateStudyGroup(
+          studyGroupMapper.toStudyGroup(
+              dto.getSubject(),
+              dto.getPersonnel(),
+              dto.getDescription(),
+              dto.getInterests(),
+              dto.getStatus()));
+      return true;
     }
+    throw new IllegalArgumentException("참여중인 스터디 그룹이 아니거나 방장이 아닙니다.");
+  }
 
-    //현재 완전히 구현하지 못 함(방장만이 삭제,수정 가능)
-    public boolean updateStudyGroup(long studyGroupId, GetStudyGroupDtoReq dto){
-        StudyGroup findStudyGroup =
-                studyGroupRepository
-                        .findById(studyGroupId)
-                        .orElseThrow(() ->new IllegalArgumentException("존재하지 않는 스터디 그룹입니다"));
-        findStudyGroup.updateStudyGroup(studyGroupMapper.toStudyGroup(dto.getStudyGroupName(),dto.getPersonnel(),dto.getStudyDetail(),dto.getIsOpen()));
-        return true;
+  @Transactional
+  public boolean deleteStudyGroup(long studyGroupId, Avatar avatar) {
+    StudyGroup findStudyGroup =
+        studyGroupRepository
+            .findById(studyGroupId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 그룹입니다"));
+
+    if (findStudyGroup.checkAvatarStudyGroupRoleIsHost(avatar)) {
+      studyGroupRepository.delete(findStudyGroup);
+      return true;
     }
-    @Transactional
-    public boolean deleteStudyGroup(long studyGroupId){
-        StudyGroup findStudyGroup =
-                studyGroupRepository
-                .findById(studyGroupId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 그룹입니다"));
-
-        studyGroupRepository.delete(findStudyGroup);
-        return true;
-    }
-
-
-
-
-
-
+    throw new IllegalArgumentException("참여중인 스터디 그룹이 아니거나 방장이 아닙니다.");
+  }
 }
