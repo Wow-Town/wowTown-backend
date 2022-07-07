@@ -12,7 +12,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AvatarMapper {
-  default Avatar toCharacter(CreateOrUpdateAvatarDto dto, User user, Channel channel) {
+  default Avatar toAvatar(CreateOrUpdateAvatarDto dto, User user, Channel channel) {
     if (dto.getNickName() == null
         && dto.getDescription() == null
         && dto.getInterestList() == null) {
@@ -28,7 +28,7 @@ public interface AvatarMapper {
     return avatar;
   }
 
-  default Avatar toUpdateCharacter(CreateOrUpdateAvatarDto dto) {
+  default Avatar toUpdateAvatar(CreateOrUpdateAvatarDto dto) {
     if (dto.getNickName() == null
         && dto.getDescription() == null
         && dto.getInterestList() == null) {
@@ -45,5 +45,5 @@ public interface AvatarMapper {
   }
 
   @Mapping(source = "id", target = "avatarId")
-  GetAvatarDto toGetCharacterDto(Avatar avatar);
+  GetAvatarDto toGetAvatarDto(Avatar avatar);
 }

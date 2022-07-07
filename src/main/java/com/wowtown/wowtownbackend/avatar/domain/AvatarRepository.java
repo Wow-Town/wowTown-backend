@@ -7,6 +7,8 @@ public interface AvatarRepository {
 
   void delete(Avatar toDelete);
 
+  Optional<Avatar> findById(Long avatarId);
+
   Optional<Avatar> findAvatarWithChannelIdAndUserId(Long channelId, Long userId);
 
   Optional<Avatar> findAvatarWithChannelIdAndUserIdAndNickName(

@@ -41,9 +41,6 @@ public class Avatar {
   //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
   //  private List<CharacterChatRoom> characterChatRooms = new ArrayList<>();
 
-  //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
-  //  private List<CharacterStudyGroup> characterStudyGroups = new ArrayList<>();
-
   //  // set or list 둘중 선택
   //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
   //  private Set<Character> following = new HashSet<>();
@@ -73,7 +70,7 @@ public class Avatar {
     this.interestList.add(payload);
   }
 
-  public void updateCharacter(Avatar updatePayload) {
+  public void updateAvatar(Avatar updatePayload) {
     this.nickName = updatePayload.getNickName();
     this.description = updatePayload.getDescription();
     this.interestList = updatePayload.getInterestList();
