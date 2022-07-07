@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wowtown.wowtownbackend.common.redis.RedisService;
 import com.wowtown.wowtownbackend.user.application.UserCommandExecutor;
 import com.wowtown.wowtownbackend.user.application.common.JwtTokenProvider;
+import com.wowtown.wowtownbackend.avatar.application.common.AvatarProvider;
 import com.wowtown.wowtownbackend.user.application.common.PasswordEncoder;
 import com.wowtown.wowtownbackend.user.application.dto.request.ChangeUserPWDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.CreateUserChannelDto;
