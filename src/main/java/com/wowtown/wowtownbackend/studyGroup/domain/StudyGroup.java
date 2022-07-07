@@ -23,9 +23,11 @@ public class StudyGroup {
   @Enumerated(EnumType.STRING)
   private StudyGroupStatus status;
 
-  @ElementCollection
-  @Enumerated(EnumType.STRING)
-  List<InterestType> interestTypes = new ArrayList<>();
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(
+      name = "study_group_interest",
+      joinColumns = @JoinColumn(name = "study_group_id"))
+  List<InterestType> interestTypeList = new ArrayList<>();
 
   /*@OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL)
   private List<StudyGroupInterestTypes> studyGroupInterestTypes = new ArrayList<>();*/
@@ -38,16 +40,21 @@ public class StudyGroup {
   //  @JoinColumn(name = "MULTI_CHAT_ROOM_ID")
   //  private MultiChatRoom openChatRoom;
   //
-  @OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<AvatarStudyGroup> avatarStudyGroupList = new ArrayList<>();
 
   protected StudyGroup() {}
 
   public StudyGroup(
-      String subject, Integer personnel, String description, StudyGroupStatus status) {
+      String subject,
+      Integer personnel,
+      String description,
+      List<InterestType> interestTypeList,
+      StudyGroupStatus status) {
     this.subject = subject;
     this.personnel = personnel;
     this.description = description;
+    this.interestTypeList = interestTypeList;
     this.status = status;
   }
 
@@ -56,13 +63,6 @@ public class StudyGroup {
     this.personnel = studyGroup.personnel;
     this.description = studyGroup.description;
     this.status = studyGroup.status;
-  }
-
-  public void addAvatarStudyGroup(Avatar avatar, StudyGroupRole isHost) {
-    AvatarStudyGroup avatarStudyGroup = new AvatarStudyGroup(isHost);
-    avatarStudyGroup.setAvatar(avatar);
-    avatarStudyGroup.setStudyGroup(this);
-    this.avatarStudyGroupList.add(avatarStudyGroup);
   }
 
   public boolean checkAvatarStudyGroupRoleIsHost(Avatar avatar) {
@@ -74,5 +74,17 @@ public class StudyGroup {
       }
     }
     return false;
+  }
+
+  public void avatarJoinStudyGroup(Avatar avatar, StudyGroupRole role) {
+    AvatarStudyGroup avatarStudyGroup = new AvatarStudyGroup(role);
+    avatarStudyGroup.setAvatar(avatar);
+    avatarStudyGroup.setStudyGroup(this);
+    this.avatarStudyGroupList.add(avatarStudyGroup);
+  }
+
+  public void avatarLeaveStudyGroup(Avatar avatar) {
+    this.avatarStudyGroupList.removeIf(
+        avatarStudyGroup -> avatarStudyGroup.getAvatar().equals(avatar));
   }
 }

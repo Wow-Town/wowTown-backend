@@ -18,8 +18,8 @@ public class ChannelQueryProcessor {
 
   public List<GetChannelDto> getAllChannelList() {
     // 언리얼 매치메이커에서 채널을 생성,수정,삭제를 해야하는데 아직 구현 안되서 임시로 채널 만듬. 나중에 삭제 예정
-    //Channel channel = new Channel("홍문관", 100);
-    //channelRepository.save(channel);
+    // Channel channel = new Channel("홍문관", 100);
+    // channelRepository.save(channel);
 
     return channelRepository.findAll().stream()
         .map(channelMapper::toGetChannelDto)

@@ -1,8 +1,5 @@
 package com.wowtown.wowtownbackend.studyGroup.infra;
 
-// import com.wowtown.wowtownbackend.common.domain.Interest;
-/*import com.wowtown.wowtownbackend.common.domain.InterestType;*/
-
 import com.wowtown.wowtownbackend.common.domain.InterestType;
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroupRepository;
@@ -12,29 +9,25 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public interface JpaStudyGroupRepository
     extends JpaRepository<StudyGroup, Long>, StudyGroupRepository {
-  List<StudyGroup> findBySubjectContaining(String subject);
+  @Query(
+      "select distinct s from StudyGroup as s join AvatarStudyGroup as asg on asg.avatar.id =:avatarId")
+  List<StudyGroup> findByAvatarId(@Param("avatarId") Long avatarId);
 
-  @Query("select s from StudyGroup s join s.interestTypes i where i =:interest")
-  Set<StudyGroup> findByInterestTypes(@Param("interest") InterestType interestType);
-
-  @Query("select s from StudyGroup  s join s.interestTypes i where i in (:interestList)")
-  Set<StudyGroup> findByManyInterestTypes(@Param("interestList") List<InterestType> interestType);
-  // 관심사 1대 다로 해야할 수도?
-  // 관심사를 1대 다로 해도...인자로 받는 걸 어떻게 다 확인? ALL로는 실패중
-  // 한개만 포함되는 거까지 다 나오는중
+  @Query("select s from StudyGroup as s where s.subject like %:subject%")
+  List<StudyGroup> findBySubjectContaining(@Param("subject") String subject);
 
   @Query(
-      "select distinct s from StudyGroup  s join s.interestTypes i where i not in (:interestList)")
-  Set<StudyGroup> findByManyInterestTypes2(@Param("interestList") List<InterestType> interestType);
-  // create table study_group_interest_types (
-  //       study_group_id bigint not null,
-  //        interest_types varchar(255)*/
+      "select distinct s from StudyGroup s join s.interestTypeList i where i in :interestTypeList")
+  List<StudyGroup> findByInterestList(
+      @Param("interestTypeList") List<InterestType> interestTypeList);
 
-  // 이것도 아니면 enum들을 정렬해서 하나의 스트링으로 비교?
-
+  @Query(
+      "select distinct s from StudyGroup  s join s.interestTypeList i where s.subject like %:subject% and i in :interestTypeList")
+  List<StudyGroup> findBySubjectContainingAndInterestList(
+      @Param("subject") String subject,
+      @Param("interestTypeList") List<InterestType> interestTypeList);
 }

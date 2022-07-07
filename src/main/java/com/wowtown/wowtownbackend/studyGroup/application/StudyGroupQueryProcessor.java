@@ -1,5 +1,7 @@
 package com.wowtown.wowtownbackend.studyGroup.application;
 
+import com.wowtown.wowtownbackend.avatar.domain.Avatar;
+import com.wowtown.wowtownbackend.common.domain.InterestType;
 import com.wowtown.wowtownbackend.studyGroup.application.common.StudyGroupMapper;
 import com.wowtown.wowtownbackend.studyGroup.application.dto.response.GetStudyGroupDto;
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroupRepository;
@@ -24,7 +26,13 @@ public class StudyGroupQueryProcessor {
     return studyGroupDtoList;
   }
 
-  public List<GetStudyGroupDto> getStudyGroupBySubject(String subject) {
+  public List<GetStudyGroupDto> getStudyGroupWithAvatar(Avatar avatar) {
+    return studyGroupRepository.findByAvatarId(avatar.getId()).stream()
+        .map(studyGroup -> studyGroupMapper.toGetStudyGroupDto(studyGroup))
+        .collect(Collectors.toList());
+  }
+
+  public List<GetStudyGroupDto> getStudyGroupWithSubject(String subject) {
     List<GetStudyGroupDto> studyGroupDtoList =
         studyGroupRepository.findBySubjectContaining(subject).stream()
             .filter(studyGroup -> studyGroup.getStatus() == StudyGroupStatus.OPEN)
@@ -33,14 +41,16 @@ public class StudyGroupQueryProcessor {
     return studyGroupDtoList;
   }
 
-  //    public List<GetStudyGroupDtoRes> getStudyGroupByInterest(){
-  //        List<GetStudyGroupDtoRes> studyGroupDtoList = studyGroupRepository
-  //                .findByInterestTypes()
-  //                .stream()
-  //                .filter(studyGroup->studyGroup.getIsOpen() ==1)
-  //                .map(studyGroup -> studyGroupMapper.toGetStudyGroupDtoRes(studyGroup))
-  //                .collect(Collectors.toList());
-  //        return studyGroupDtoList;
-  //
-  //    }
+  public List<GetStudyGroupDto> getStudyGroupWithInterest(List<InterestType> interests) {
+    return studyGroupRepository.findByInterestList(interests).stream()
+        .map(studyGroup -> studyGroupMapper.toGetStudyGroupDto(studyGroup))
+        .collect(Collectors.toList());
+  }
+
+  public List<GetStudyGroupDto> getStudyGroupWithSubjectAndInterest(
+      String subject, List<InterestType> interests) {
+    return studyGroupRepository.findBySubjectContainingAndInterestList(subject, interests).stream()
+        .map(studyGroup -> studyGroupMapper.toGetStudyGroupDto(studyGroup))
+        .collect(Collectors.toList());
+  }
 }

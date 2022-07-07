@@ -9,7 +9,7 @@ public enum InterestType {
   ALGORITHM,
   JAVA,
   PYTHON,
-  CPP,
+  CPP,  
   SPRING,
   REACT
 }
