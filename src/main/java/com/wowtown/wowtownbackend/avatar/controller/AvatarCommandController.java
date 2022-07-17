@@ -30,6 +30,7 @@ public class AvatarCommandController {
     Cookie cookie = new Cookie("avatarId", String.valueOf(avatarId));
     cookie.setPath("/");
     cookie.setHttpOnly(true);
+    cookie.setDomain("wowtown.co.kr");
     response.addCookie(cookie);
 
     return ResponseEntity.status(HttpStatus.CREATED)

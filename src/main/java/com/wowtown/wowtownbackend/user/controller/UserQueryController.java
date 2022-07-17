@@ -35,6 +35,7 @@ public class UserQueryController {
     Cookie cookie = new Cookie("api-key", getJwtTokenDto.getRefreshToken());
     cookie.setMaxAge(60 * 60 * 24 * 30);
     cookie.setPath("/");
+    cookie.setDomain("wowtown.co.kr");
     cookie.setHttpOnly(true);
 
     response.addCookie(cookie);
