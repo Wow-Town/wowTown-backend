@@ -31,6 +31,7 @@ public class AvatarQueryController {
     Cookie cookie = new Cookie("avatarId", String.valueOf(getAvatarDto.getAvatarId()));
     cookie.setPath("/");
     cookie.setHttpOnly(true);
+    cookie.setDomain("wowtown.co.kr");
     response.addCookie(cookie);
 
     return ResponseEntity.status(HttpStatus.OK)
