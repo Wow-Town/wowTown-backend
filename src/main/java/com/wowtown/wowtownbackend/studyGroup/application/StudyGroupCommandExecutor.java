@@ -1,6 +1,10 @@
 package com.wowtown.wowtownbackend.studyGroup.application;
 
 
+import com.wowtown.wowtownbackend.chatroom.application.MultiChatRoomCommandExecutor;
+import com.wowtown.wowtownbackend.chatroom.application.dto.request.CreateMultiChatRoomDto;
+import com.wowtown.wowtownbackend.chatroom.domain.MultiChatRoom;
+import com.wowtown.wowtownbackend.chatroom.domain.MultiChatRoomRepository;
 import com.wowtown.wowtownbackend.studyGroup.application.common.StudyGroupMapper;
 import com.wowtown.wowtownbackend.studyGroup.application.dto.request.CreateStudyGroupDto;
 import com.wowtown.wowtownbackend.studyGroup.application.dto.request.GetStudyGroupDtoReq;
@@ -23,6 +27,8 @@ import java.util.stream.Collectors;
 public class StudyGroupCommandExecutor {
     private final StudyGroupRepository studyGroupRepository;
     private final StudyGroupMapper studyGroupMapper;
+    private final MultiChatRoomCommandExecutor multiChatRoomCommandExecutor;
+
 
     @Transactional
     public long createStudyGroup(CreateStudyGroupDto dto){ //공고등록
@@ -30,8 +36,12 @@ public class StudyGroupCommandExecutor {
                 .ifPresent(m ->{
             throw new IllegalStateException("이미 존재하는 스터디 그룹 제목입니다");
         });*/
+        CreateMultiChatRoomDto multiChatRoomDto = new CreateMultiChatRoomDto(dto.getStudyGroupName(), dto.getPersonnel());
         StudyGroup studyGroup =
                 studyGroupRepository.save(studyGroupMapper.toStudyGroup(dto.getStudyGroupName(),dto.getPersonnel(), dto.getStudyDetail()));
+
+        multiChatRoomCommandExecutor.createMultiChatRoom(studyGroup.getId(),multiChatRoomDto);
+
         return studyGroup.getId();
     }
 
@@ -50,6 +60,7 @@ public class StudyGroupCommandExecutor {
                 studyGroupRepository
                 .findById(studyGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 그룹입니다"));
+
 
         studyGroupRepository.delete(findStudyGroup);
         return true;

@@ -3,6 +3,7 @@
  import com.wowtown.wowtownbackend.channel.domain.Channel;
  /*import com.wowtown.wowtownbackend.chatroom.domain.MultiChatRoom;
  import com.wowtown.wowtownbackend.privateSpace.domain.PrivateSpace;*/
+ import com.wowtown.wowtownbackend.chatroom.domain.MultiChatRoom;
  import com.wowtown.wowtownbackend.common.domain.InterestType;
  import lombok.Getter;
  import lombok.Setter;
@@ -37,12 +38,12 @@
 //  @JoinColumn(name = "PRIVATE_SPACE_ID")
 //  private PrivateSpace privateSpace;
 //
-//  @OneToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "MULTI_CHAT_ROOM_ID")
-//  private MultiChatRoom openChatRoom;
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "MULTI_CHAT_ROOM_ID")
+  private MultiChatRoom multiChatRoom;
 //
-//  @OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL)
-//  private List<CharacterStudyGroup> characterStudyGroups = new ArrayList<>();
+  @OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL)
+  private List<AvatarStudyGroup> characterStudyGroups = new ArrayList<>();
 
   protected StudyGroup() {}
 

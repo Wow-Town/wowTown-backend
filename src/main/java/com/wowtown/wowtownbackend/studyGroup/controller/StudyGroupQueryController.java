@@ -1,6 +1,7 @@
 package com.wowtown.wowtownbackend.studyGroup.controller;
 
-import com.wowtown.wowtownbackend.studyGroup.application.StudyGroupQueryProcesseor;
+
+import com.wowtown.wowtownbackend.studyGroup.application.StudyGroupQueryProcessor;
 import com.wowtown.wowtownbackend.studyGroup.application.dto.request.GetStudyGroupByNameDto;
 import com.wowtown.wowtownbackend.studyGroup.application.dto.response.GetStudyGroupDtoRes;
 import lombok.RequiredArgsConstructor;
@@ -18,19 +19,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class StudyGroupQueryController {
 
-  private final StudyGroupQueryProcesseor studyGroupQueryProcesseor;
+  private final StudyGroupQueryProcessor studyGroupQueryProcessor;
 
   @GetMapping
   public ResponseEntity getAllStudyGroup() {
     log.info("testing");
-    return ResponseEntity.status(HttpStatus.OK).body(studyGroupQueryProcesseor.getAllStudyGroup());
+    return ResponseEntity.status(HttpStatus.OK).body(studyGroupQueryProcessor.getAllStudyGroup());
   }
   @GetMapping(value ="/name")
   public ResponseEntity getStudyGroupByName(@RequestBody GetStudyGroupByNameDto dto){
      log.info("name ={}",dto.getStudyGroupNamePart());
     return ResponseEntity
             .status(HttpStatus.OK)
-            .body(studyGroupQueryProcesseor.getStudyGroupByName(dto));
+            .body(studyGroupQueryProcessor.getStudyGroupByName(dto));
   }
 //  @GetMapping(value ="/InterestType")
 //  public ResponseEntity getStudyGroupByInterestType(){

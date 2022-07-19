@@ -16,13 +16,14 @@ public class StudyGroupCommandController {
     private final StudyGroupCommandExecutor studyGroupCommandExecutor;
 
     @PostMapping(value ="/newStudyGroup")
-    public ResponseEntity createStudyGroup(@RequestBody  CreateStudyGroupDto dto){
+    public ResponseEntity createStudyGroup(
+            @RequestBody  CreateStudyGroupDto dto){
         studyGroupCommandExecutor.createStudyGroup(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-//    @PatchMapping(value ="/{studyGroupId}")
+//    @PostMapping(value ="/{studyGroupId}")
 //    public ResponseEntity updateStudyGroup(){
 //
 //    }

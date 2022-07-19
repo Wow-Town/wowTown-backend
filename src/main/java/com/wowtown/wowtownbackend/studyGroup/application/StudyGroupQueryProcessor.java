@@ -3,6 +3,7 @@ package com.wowtown.wowtownbackend.studyGroup.application;
 import com.wowtown.wowtownbackend.studyGroup.application.common.StudyGroupMapper;
 import com.wowtown.wowtownbackend.studyGroup.application.dto.request.GetStudyGroupByNameDto;
 import com.wowtown.wowtownbackend.studyGroup.application.dto.response.GetStudyGroupDtoRes;
+import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class StudyGroupQueryProcesseor {
+public class StudyGroupQueryProcessor {
     private final StudyGroupRepository studyGroupRepository;
     private final StudyGroupMapper studyGroupMapper;
 
@@ -35,6 +36,12 @@ public class StudyGroupQueryProcesseor {
                 .map(studyGroup -> studyGroupMapper.toGetStudyGroupDtoRes(studyGroup))
                 .collect(Collectors.toList());
         return studyGroupDtoList;
+    }
+    public StudyGroup getStudyGroupById(Long studyGroupId){
+        StudyGroup findStudyGroup = studyGroupRepository
+                .findById(studyGroupId)
+                .orElseThrow(() ->  new IllegalStateException("존재하는 공고가 없습니다."));
+        return findStudyGroup;
     }
 
 //    public List<GetStudyGroupDtoRes> getStudyGroupByInterest(){
