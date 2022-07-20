@@ -3,6 +3,7 @@ package com.wowtown.wowtownbackend.studyGroup.application;
 import com.wowtown.wowtownbackend.avatar.application.AvatarCommandExecutor;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
+import com.wowtown.wowtownbackend.chatroom.application.MultiChatRoomCommandExecutor;
 import com.wowtown.wowtownbackend.studyGroup.application.common.StudyGroupMapper;
 import com.wowtown.wowtownbackend.studyGroup.application.dto.request.CreateOrUpdateStudyGroupDto;
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
@@ -18,6 +19,7 @@ public class StudyGroupCommandExecutor {
   private final AvatarCommandExecutor avatarQueryProcessor;
   private final StudyGroupRepository studyGroupRepository;
   private final StudyGroupMapper studyGroupMapper;
+  private final MultiChatRoomCommandExecutor multiChatRoomCommandExecutor;
 
   @Transactional
   public long createStudyGroup(CreateOrUpdateStudyGroupDto dto, Avatar avatar) { // 공고등록
@@ -32,7 +34,7 @@ public class StudyGroupCommandExecutor {
 
     // 공고를 생성한 아바타를 host로 설정하여 아바타-공고를 추가한다.
     studyGroup.avatarJoinStudyGroup(avatar, StudyGroupRole.HOST);
-
+    multiChatRoomCommandExecutor.createMultiChatRoom(studyGroup.getId(),dto.getSubject(),dto.getPersonnel());
     studyGroupRepository.save(studyGroup);
 
     return studyGroup.getId();
@@ -54,6 +56,7 @@ public class StudyGroupCommandExecutor {
               dto.getDescription(),
               dto.getInterests(),
               dto.getStatus()));
+      multiChatRoomCommandExecutor.updateMultiChatRoomWithStudyGroupUpdate(findStudyGroup.getId(),dto.getSubject(),dto.getPersonnel());
       return true;
     }
     throw new InstanceNotFoundException("참여중인 스터디 그룹이 아니거나 방장이 아닙니다.");
