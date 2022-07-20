@@ -1,12 +1,14 @@
 package com.wowtown.wowtownbackend.studyGroup.domain;
 
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
-import com.wowtown.wowtownbackend.common.domain.InterestType;
+import com.wowtown.wowtownbackend.common.domain.Interest;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -23,11 +25,9 @@ public class StudyGroup {
   @Enumerated(EnumType.STRING)
   private StudyGroupStatus status;
 
-  @ElementCollection(fetch = FetchType.EAGER)
-  @CollectionTable(
-      name = "study_group_interest",
-      joinColumns = @JoinColumn(name = "study_group_id"))
-  List<InterestType> interestTypeList = new ArrayList<>();
+  @ElementCollection
+  @CollectionTable(name = "study_group_interest")
+  private Set<Interest> interestSet = new HashSet<>();
 
   /*@OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL)
   private List<StudyGroupInterestTypes> studyGroupInterestTypes = new ArrayList<>();*/
@@ -49,12 +49,12 @@ public class StudyGroup {
       String subject,
       Integer personnel,
       String description,
-      List<InterestType> interestTypeList,
+      Set<Interest> interestSet,
       StudyGroupStatus status) {
     this.subject = subject;
     this.personnel = personnel;
     this.description = description;
-    this.interestTypeList = interestTypeList;
+    this.interestSet = interestSet;
     this.status = status;
   }
 

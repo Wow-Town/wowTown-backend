@@ -6,6 +6,7 @@ import com.wowtown.wowtownbackend.common.domain.InterestType;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface StudyGroupRepository {
   StudyGroup save(StudyGroup studyGroup);
@@ -22,8 +23,8 @@ public interface StudyGroupRepository {
 
   List<StudyGroup> findBySubjectContaining(String subject);
 
-  List<StudyGroup> findByInterestList(List<InterestType> interestTypeList);
+  List<StudyGroup> findByInterestList(Set<InterestType> interestList);
 
   List<StudyGroup> findBySubjectContainingAndInterestList(
-      String subject, List<InterestType> interestTypeList);
+      String subject, Set<InterestType> interestList);
 }

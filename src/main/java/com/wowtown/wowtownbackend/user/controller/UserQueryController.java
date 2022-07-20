@@ -1,6 +1,6 @@
 package com.wowtown.wowtownbackend.user.controller;
 
-import com.wowtown.wowtownbackend.common.argumentresolver.LoginUser;
+import com.wowtown.wowtownbackend.common.annotation.LoginUser;
 import com.wowtown.wowtownbackend.user.application.UserQueryProcessor;
 import com.wowtown.wowtownbackend.user.application.dto.request.LoginUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.UserEmailCheckDto;
@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
+@Validated
 @Controller
 @RequiredArgsConstructor
 public class UserQueryController {
@@ -28,7 +32,7 @@ public class UserQueryController {
   private final UserQueryProcessor userQueryProcessor;
 
   @PostMapping(value = "/login")
-  public ResponseEntity login(@RequestBody LoginUserDto dto, HttpServletResponse response) {
+  public ResponseEntity login(@Valid @RequestBody LoginUserDto dto, HttpServletResponse response) {
 
     GetJwtTokenDto getJwtTokenDto = userQueryProcessor.login(dto);
 
@@ -48,7 +52,7 @@ public class UserQueryController {
   }
 
   @PostMapping(value = "/signUp/check")
-  public ResponseEntity checkUserEmailOverlap(@RequestBody UserEmailCheckDto dto) {
+  public ResponseEntity checkUserEmailOverlap(@Valid @RequestBody UserEmailCheckDto dto) {
     userQueryProcessor.checkUserEmailOverlap(dto);
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }
@@ -61,7 +65,7 @@ public class UserQueryController {
   }
 
   @GetMapping(value = "/users/{userId}/channels")
-  public ResponseEntity getUserChannel(@PathVariable("userId") long userId) {
+  public ResponseEntity getUserChannel(@Min(1) @PathVariable("userId") long userId) {
     return ResponseEntity.status(HttpStatus.OK)
         .contentType(MediaType.APPLICATION_JSON)
         .body(userQueryProcessor.getUserChannelWithUserId(userId));

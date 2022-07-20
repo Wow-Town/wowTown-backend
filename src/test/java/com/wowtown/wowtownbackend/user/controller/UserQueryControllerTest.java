@@ -49,7 +49,7 @@ class UserQueryControllerTest {
   @Test
   void login() throws Exception {
     // given
-    LoginUserDto loginUserDto = new LoginUserDto("devconf5296@gmail.com", "1234");
+    LoginUserDto loginUserDto = new LoginUserDto("devconf5296@gmail.com", "132600qa@");
     GetJwtTokenDto getJwtTokenDto = new GetJwtTokenDto("accessToken", "refreshToken");
 
     // when

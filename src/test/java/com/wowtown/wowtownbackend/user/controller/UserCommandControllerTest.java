@@ -48,7 +48,7 @@ public class UserCommandControllerTest {
   @Test
   public void signUp() throws Exception {
     // given
-    CreateUserDto createUserDto = new CreateUserDto("devconf5296@gmail.com", "홍길동", "1234");
+    CreateUserDto createUserDto = new CreateUserDto("devconf5296@gmail.com", "홍길동", "132600qa@");
     // when
     doReturn(1L).when(userCommandExecutor).createUser(any(CreateUserDto.class));
 

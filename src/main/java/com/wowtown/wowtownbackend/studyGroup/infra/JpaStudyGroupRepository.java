@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface JpaStudyGroupRepository
@@ -21,13 +22,11 @@ public interface JpaStudyGroupRepository
   List<StudyGroup> findBySubjectContaining(@Param("subject") String subject);
 
   @Query(
-      "select distinct s from StudyGroup s join s.interestTypeList i where i in :interestTypeList")
-  List<StudyGroup> findByInterestList(
-      @Param("interestTypeList") List<InterestType> interestTypeList);
+      "select distinct s from StudyGroup as s join s.interestSet as i where i.type in :interestSet")
+  List<StudyGroup> findByInterestList(@Param("interestSet") Set<InterestType> interestSet);
 
   @Query(
-      "select distinct s from StudyGroup  s join s.interestTypeList i where s.subject like %:subject% and i in :interestTypeList")
+      "select distinct s from StudyGroup as s join s.interestSet as i where s.subject like %:subject% and i.type in :interestSet")
   List<StudyGroup> findBySubjectContainingAndInterestList(
-      @Param("subject") String subject,
-      @Param("interestTypeList") List<InterestType> interestTypeList);
+      @Param("subject") String subject, @Param("interestSet") Set<InterestType> interestSet);
 }

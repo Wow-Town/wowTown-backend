@@ -1,5 +1,6 @@
 package com.wowtown.wowtownbackend.common.argumentresolver;
 
+import com.wowtown.wowtownbackend.common.annotation.LoginUser;
 import com.wowtown.wowtownbackend.user.application.common.JwtTokenProvider;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.wowtown.wowtownbackend.common.argumentresolver;
+package com.wowtown.wowtownbackend.common.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,4 +7,4 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UserAvatar {}
+public @interface LoginUser {}

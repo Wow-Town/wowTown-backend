@@ -1,6 +1,5 @@
 package com.wowtown.wowtownbackend.studyGroup.application.dto.response;
 
-import com.wowtown.wowtownbackend.common.domain.InterestType;
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroupStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +17,6 @@ public class GetStudyGroupDto {
   private String subject;
   private int personnel;
   private String description;
-  private List<InterestType> interests;
+  private List<String> interests;
   private StudyGroupStatus status;
 }

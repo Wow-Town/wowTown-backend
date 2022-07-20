@@ -6,6 +6,7 @@ import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.avatar.domain.AvatarRepository;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.channel.domain.ChannelRepository;
+import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class AvatarCommandExecutor {
     Channel findChannel =
         channelRepository
             .findChannelById(channelId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채널입니다."));
+            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 채널입니다."));
 
     // 아바타에 닉네임이 있는지 존재 확인 ->
     Optional<Avatar> findAvatar =
@@ -35,10 +36,10 @@ public class AvatarCommandExecutor {
     if (findAvatar.isPresent()) {
       Avatar avatar = findAvatar.get();
       if (avatar.getUser().equals(user)) {
-        throw new IllegalArgumentException("해당 채널에 아바타가 이미 존재합니다.");
+        throw new InstanceNotFoundException("해당 채널에 아바타가 이미 존재합니다.");
       }
       if (avatar.getNickName().equals(dto.getNickName())) {
-        throw new IllegalArgumentException("해당 닉네임이 이미 존재합니다.");
+        throw new InstanceNotFoundException("해당 닉네임이 이미 존재합니다.");
       }
     }
     Avatar avatar = avatarRepository.save(avatarMapper.toAvatar(dto, user, findChannel));
@@ -51,7 +52,7 @@ public class AvatarCommandExecutor {
     Avatar findAvatar =
         avatarRepository
             .findAvatarWithChannelIdAndUserId(channelId, user.getId())
-            .orElseThrow(() -> new IllegalArgumentException("아바타가 존재하지 않습니다."));
+            .orElseThrow(() -> new InstanceNotFoundException("아바타가 존재하지 않습니다."));
     Avatar updatePayload = avatarMapper.toUpdateAvatar(dto);
     findAvatar.updateAvatar(updatePayload);
     return true;
@@ -62,7 +63,7 @@ public class AvatarCommandExecutor {
     Avatar findAvatar =
         avatarRepository
             .findAvatarWithChannelIdAndUserId(channelId, user.getId())
-            .orElseThrow(() -> new IllegalArgumentException("아바타가 존재하지 않습니다."));
+            .orElseThrow(() -> new InstanceNotFoundException("아바타가 존재하지 않습니다."));
     avatarRepository.delete(findAvatar);
     return true;
   }
