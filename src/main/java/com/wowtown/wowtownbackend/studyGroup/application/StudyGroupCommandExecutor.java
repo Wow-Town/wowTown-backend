@@ -2,6 +2,7 @@ package com.wowtown.wowtownbackend.studyGroup.application;
 
 import com.wowtown.wowtownbackend.avatar.application.AvatarCommandExecutor;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
+import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import com.wowtown.wowtownbackend.studyGroup.application.common.StudyGroupMapper;
 import com.wowtown.wowtownbackend.studyGroup.application.dto.request.CreateOrUpdateStudyGroupDto;
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
@@ -43,7 +44,7 @@ public class StudyGroupCommandExecutor {
     StudyGroup findStudyGroup =
         studyGroupRepository
             .findById(studyGroupId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 그룹입니다"));
+            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 스터디 그룹입니다"));
 
     if (findStudyGroup.checkAvatarStudyGroupRoleIsHost(avatar)) {
       findStudyGroup.updateStudyGroup(
@@ -55,7 +56,7 @@ public class StudyGroupCommandExecutor {
               dto.getStatus()));
       return true;
     }
-    throw new IllegalArgumentException("참여중인 스터디 그룹이 아니거나 방장이 아닙니다.");
+    throw new InstanceNotFoundException("참여중인 스터디 그룹이 아니거나 방장이 아닙니다.");
   }
 
   @Transactional
@@ -63,12 +64,12 @@ public class StudyGroupCommandExecutor {
     StudyGroup findStudyGroup =
         studyGroupRepository
             .findById(studyGroupId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 그룹입니다"));
+            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 스터디 그룹입니다"));
 
     if (findStudyGroup.checkAvatarStudyGroupRoleIsHost(avatar)) {
       studyGroupRepository.delete(findStudyGroup);
       return true;
     }
-    throw new IllegalArgumentException("참여중인 스터디 그룹이 아니거나 방장이 아닙니다.");
+    throw new InstanceNotFoundException("참여중인 스터디 그룹이 아니거나 방장이 아닙니다.");
   }
 }

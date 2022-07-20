@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,15 +42,27 @@ public class StudyGroupQueryProcessor {
     return studyGroupDtoList;
   }
 
-  public List<GetStudyGroupDto> getStudyGroupWithInterest(List<InterestType> interests) {
-    return studyGroupRepository.findByInterestList(interests).stream()
+  public List<GetStudyGroupDto> getStudyGroupWithInterest(List<String> interests) {
+    Set<InterestType> interestSet =
+        interests.stream()
+            .map(interest -> InterestType.valueOf(interest))
+            .collect(Collectors.toSet());
+
+    return studyGroupRepository.findByInterestList(interestSet).stream()
         .map(studyGroup -> studyGroupMapper.toGetStudyGroupDto(studyGroup))
         .collect(Collectors.toList());
   }
 
   public List<GetStudyGroupDto> getStudyGroupWithSubjectAndInterest(
-      String subject, List<InterestType> interests) {
-    return studyGroupRepository.findBySubjectContainingAndInterestList(subject, interests).stream()
+      String subject, List<String> interests) {
+    Set<InterestType> interestSet =
+        interests.stream()
+            .map(interest -> InterestType.valueOf(interest))
+            .collect(Collectors.toSet());
+
+    return studyGroupRepository
+        .findBySubjectContainingAndInterestList(subject, interestSet)
+        .stream()
         .map(studyGroup -> studyGroupMapper.toGetStudyGroupDto(studyGroup))
         .collect(Collectors.toList());
   }

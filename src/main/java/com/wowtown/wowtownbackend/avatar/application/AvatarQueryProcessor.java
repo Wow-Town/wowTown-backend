@@ -4,6 +4,7 @@ import com.wowtown.wowtownbackend.avatar.application.common.AvatarMapper;
 import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarDto;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.avatar.domain.AvatarRepository;
+import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class AvatarQueryProcessor {
     Avatar findAvatar =
         avatarRepository
             .findAvatarWithChannelIdAndUserId(channelId, user.getId())
-            .orElseThrow(() -> new IllegalArgumentException("아바타가 존재하지 않습니다."));
+            .orElseThrow(() -> new InstanceNotFoundException("아바타가 존재하지 않습니다."));
     return avatarMapper.toGetAvatarDto(findAvatar);
   }
 

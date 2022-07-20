@@ -1,7 +1,7 @@
 package com.wowtown.wowtownbackend.studyGroup.controller;
 
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
-import com.wowtown.wowtownbackend.common.argumentresolver.UserAvatar;
+import com.wowtown.wowtownbackend.common.annotation.UserAvatar;
 import com.wowtown.wowtownbackend.studyGroup.application.StudyGroupCommandExecutor;
 import com.wowtown.wowtownbackend.studyGroup.application.dto.request.CreateOrUpdateStudyGroupDto;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
 @Controller
 @RequestMapping("/studyGroups")
@@ -21,7 +22,7 @@ public class StudyGroupCommandController {
 
   @PostMapping
   public ResponseEntity createStudyGroup(
-      @RequestBody CreateOrUpdateStudyGroupDto dto, @UserAvatar Avatar avatar) {
+      @Valid @RequestBody CreateOrUpdateStudyGroupDto dto, @UserAvatar Avatar avatar) {
     studyGroupCommandExecutor.createStudyGroup(dto, avatar);
 
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -31,8 +32,8 @@ public class StudyGroupCommandController {
 
   @PutMapping(value = "/{studyGroupId}")
   public ResponseEntity updateStudyGroup(
-      @PathVariable("studyGroupId") long studyGroupId,
-      @RequestBody CreateOrUpdateStudyGroupDto dto,
+      @PathVariable("studyGroupId") @Min(1) long studyGroupId,
+      @Valid @RequestBody CreateOrUpdateStudyGroupDto dto,
       @UserAvatar Avatar avatar) {
     studyGroupCommandExecutor.updateStudyGroup(studyGroupId, dto, avatar);
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
@@ -40,7 +41,7 @@ public class StudyGroupCommandController {
 
   @DeleteMapping(value = "/{studyGroupId}")
   public ResponseEntity deleteStudyGroup(
-      @PathVariable("studyGroupId") long studyGroupId, @NotEmpty @UserAvatar Avatar avatar) {
+      @PathVariable("studyGroupId") @Min(1) long studyGroupId, @UserAvatar Avatar avatar) {
     studyGroupCommandExecutor.deleteStudyGroup(studyGroupId, avatar);
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }

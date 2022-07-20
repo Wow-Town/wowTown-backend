@@ -1,5 +1,6 @@
 package com.wowtown.wowtownbackend.studyGroup.application.common;
 
+import com.wowtown.wowtownbackend.common.domain.Interest;
 import com.wowtown.wowtownbackend.common.domain.InterestType;
 import com.wowtown.wowtownbackend.studyGroup.application.dto.response.GetStudyGroupDto;
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
@@ -7,47 +8,37 @@ import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroupStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface StudyGroupMapper {
   default StudyGroup toStudyGroup(
       String subject,
-      int personnel,
+      Integer personnel,
       String description,
-      List<InterestType> interests,
-      StudyGroupStatus status) {
-    List<InterestType> interestTypeList = new ArrayList<>();
+      List<String> interestList,
+      String status) {
+    Set<Interest> interestSet = new HashSet<>();
 
-    if (subject == null && description == null && status == null) {
+    if (subject == null
+        && personnel == null
+        && description == null
+        && interestList == null
+        && status == null) {
       return null;
     }
 
-    String subject1 = null;
-    if (subject != null) {
-      subject1 = subject;
+    for (String getInterest : interestList) {
+      Interest interest = new Interest(InterestType.valueOf(getInterest));
+      interestSet.add(interest);
     }
-    String description1 = null;
-    if (description != null) {
-      description1 = description;
-    }
-    List<InterestType> interests1 = null;
-    if (interests != null) {
-      interests1 = interests;
-      for (InterestType interestType : interests1) {
-        interestTypeList.add(interestType);
-      }
-    }
-    StudyGroupStatus status1 = null;
-    if (status != null) {
-      status1 = status;
-    }
-    Integer personnel1 = null;
-    personnel1 = personnel;
 
     StudyGroup studyGroup =
-        new StudyGroup(subject1, personnel1, description1, interestTypeList, status1);
+        new StudyGroup(
+            subject, personnel, description, interestSet, StudyGroupStatus.valueOf(status));
 
     return studyGroup;
   }
@@ -64,7 +55,12 @@ public interface StudyGroupMapper {
     getStudyGroupDto.setSubject(studyGroup.getSubject());
     getStudyGroupDto.setPersonnel(studyGroup.getPersonnel());
     getStudyGroupDto.setDescription(studyGroup.getDescription());
-    getStudyGroupDto.setInterests(studyGroup.getInterestTypeList());
+    List<String> interestList =
+        studyGroup.getInterestSet().stream()
+            .map(interest -> interest.getType().toString())
+            .collect(Collectors.toList());
+
+    getStudyGroupDto.setInterests(interestList);
     getStudyGroupDto.setStatus(studyGroup.getStatus());
 
     return getStudyGroupDto;

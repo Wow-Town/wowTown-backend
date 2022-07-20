@@ -2,18 +2,22 @@ package com.wowtown.wowtownbackend.avatar.controller;
 
 import com.wowtown.wowtownbackend.avatar.application.AvatarCommandExecutor;
 import com.wowtown.wowtownbackend.avatar.application.dto.request.CreateOrUpdateAvatarDto;
-import com.wowtown.wowtownbackend.common.argumentresolver.LoginUser;
+import com.wowtown.wowtownbackend.common.annotation.LoginUser;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
+@Validated
 @Controller
 @RequiredArgsConstructor
 public class AvatarCommandController {
@@ -21,8 +25,8 @@ public class AvatarCommandController {
 
   @PostMapping(value = "/avatars")
   public ResponseEntity createAvatar(
-      @RequestParam("channelId") Long channelId,
-      @RequestBody CreateOrUpdateAvatarDto dto,
+      @RequestParam("channelId") @Min(1) long channelId,
+      @Valid @RequestBody CreateOrUpdateAvatarDto dto,
       @LoginUser User user,
       HttpServletResponse response) {
     long avatarId = avatarCommandExecutor.createAvatar(channelId, dto, user);
@@ -40,8 +44,8 @@ public class AvatarCommandController {
 
   @PutMapping(value = "/avatars")
   public ResponseEntity updateAvatar(
-      @RequestParam("channelId") Long channelId,
-      @RequestBody CreateOrUpdateAvatarDto dto,
+      @RequestParam("channelId") @Min(1) long channelId,
+      @Valid @RequestBody CreateOrUpdateAvatarDto dto,
       @LoginUser User user) {
     avatarCommandExecutor.updateAvatar(channelId, dto, user);
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
@@ -49,7 +53,7 @@ public class AvatarCommandController {
 
   @DeleteMapping(value = "/avatars")
   public ResponseEntity deleteAvatar(
-      @RequestParam("channelId") Long channelId,
+      @RequestParam("channelId") @Min(1) long channelId,
       @LoginUser User user,
       HttpServletResponse response) {
     avatarCommandExecutor.deleteAvatar(channelId, user);

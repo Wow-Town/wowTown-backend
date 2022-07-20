@@ -2,6 +2,7 @@ package com.wowtown.wowtownbackend.common.argumentresolver;
 
 import com.wowtown.wowtownbackend.avatar.application.common.AvatarProvider;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
+import com.wowtown.wowtownbackend.common.annotation.UserAvatar;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

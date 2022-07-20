@@ -2,6 +2,7 @@ package com.wowtown.wowtownbackend.user.application;
 
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.common.redis.RedisService;
+import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import com.wowtown.wowtownbackend.user.application.common.UserMapper;
 import com.wowtown.wowtownbackend.user.application.dto.request.LoginUserDto;
 import com.wowtown.wowtownbackend.user.application.dto.request.UserEmailCheckDto;
@@ -102,7 +103,7 @@ class UserQueryProcessorTest {
     doReturn(Optional.of(savedUser)).when(userRepository).findUserByEmail(any(String.class));
     Throwable exception =
         assertThrows(
-            IllegalArgumentException.class,
+            InstanceNotFoundException.class,
             () -> {
               userQueryProcessor.checkUserEmailOverlap(userEmailCheckDto);
             });

@@ -1,6 +1,7 @@
 package com.wowtown.wowtownbackend.user.application;
 
 import com.wowtown.wowtownbackend.common.redis.RedisService;
+import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import com.wowtown.wowtownbackend.user.application.common.JwtTokenProvider;
 import com.wowtown.wowtownbackend.user.application.common.PasswordEncoder;
 import com.wowtown.wowtownbackend.user.application.common.UserMapper;
@@ -33,7 +34,7 @@ public class UserQueryProcessor {
     User findUser =
         userRepository
             .findUserByEmail(dto.getEmail())
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일 입니다."));
+            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 이메일 입니다."));
 
     String getSalt = findUser.getSalt();
     String loginPassword = passwordEncoder.encode(dto.getPassword(), getSalt);
@@ -47,13 +48,13 @@ public class UserQueryProcessor {
 
       return userMapper.toGetJwtTokenDto(accessToken, refreshToken);
     }
-    throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+    throw new InstanceNotFoundException("비밀번호가 일치하지 않습니다.");
   }
 
   public boolean checkUserEmailOverlap(UserEmailCheckDto dto) {
     Optional<User> findUser = userRepository.findUserByEmail(dto.getEmail());
     if (findUser.isPresent()) {
-      throw new IllegalArgumentException("해당 이메일이 이미 존재합니다.");
+      throw new InstanceNotFoundException("해당 이메일이 이미 존재합니다.");
     }
     return true;
   }

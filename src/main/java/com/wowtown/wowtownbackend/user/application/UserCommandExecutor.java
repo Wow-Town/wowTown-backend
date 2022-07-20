@@ -2,6 +2,7 @@ package com.wowtown.wowtownbackend.user.application;
 
 import com.wowtown.wowtownbackend.channel.application.ChannelQueryProcessor;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
+import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import com.wowtown.wowtownbackend.user.application.common.PasswordEncoder;
 import com.wowtown.wowtownbackend.user.application.common.UserMapper;
 import com.wowtown.wowtownbackend.user.application.dto.request.ChangeUserPWDto;
@@ -37,7 +38,7 @@ public class UserCommandExecutor {
     User findUser =
         userRepository
             .findUserById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 유저입니다."));
     findUser.updateUser(userMapper.toUser(dto.getEmail(), dto.getUserName()));
     return true;
   }
@@ -47,7 +48,7 @@ public class UserCommandExecutor {
     User findUser =
         userRepository
             .findUserById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 유저입니다."));
 
     String salt = findUser.getSalt();
     if (passwordEncoder.encode(dto.getCurrentPW(), salt).equals(findUser.getHashedPW())) {
@@ -56,7 +57,7 @@ public class UserCommandExecutor {
 
       findUser.updateUserPW(newHashedPW, newSalt);
     } else {
-      throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+      throw new InstanceNotFoundException("현재 비밀번호가 일치하지 않습니다.");
     }
     return true;
   }
@@ -66,7 +67,7 @@ public class UserCommandExecutor {
     User findUser =
         userRepository
             .findUserById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 유저입니다."));
 
     userRepository.delete(findUser);
     return true;
@@ -77,7 +78,7 @@ public class UserCommandExecutor {
     User findUser =
         userRepository
             .findUserById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 유저입니다."));
 
     Channel findChannel = channelQueryProcessor.getChannelWithId(dto.getChannelId());
     findUser.addUserChannel(findChannel);
