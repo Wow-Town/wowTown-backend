@@ -2,6 +2,7 @@ package com.wowtown.wowtownbackend.channel.controller;
 
 import com.wowtown.wowtownbackend.channel.application.ChannelQueryProcessor;
 import com.wowtown.wowtownbackend.channel.application.dto.response.GetChannelDto;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +19,7 @@ import java.util.List;
 public class ChannelQueryController {
   private final ChannelQueryProcessor channelQueryProcessor;
 
+  @ApiOperation(value = "모든 채널 가져오기", notes = "")
   @GetMapping
   public ResponseEntity<List<GetChannelDto>> getAllChannel() {
     return ResponseEntity.status(HttpStatus.OK)

@@ -30,7 +30,8 @@ public class WebConfig implements WebMvcConfigurer {
         .addInterceptor(new LoginInterceptor(jwtTokenProvider, redisService))
         .order(1)
         .addPathPatterns("/**")
-        .excludePathPatterns("/signUp/**", "/login", "/h2-console/**", "/favicon.ico");
+        .excludePathPatterns("/signUp/**", "/login", "/h2-console/**", "/favicon.ico"
+        ,"/swagger-ui.html", "/v2/api-docs", "/swagger-resources/**", "/webjars/**");
     registry
         .addInterceptor(new AvatarInterceptor(jwtTokenProvider, avatarProvider))
         .order(2)

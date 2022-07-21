@@ -7,6 +7,8 @@ import com.wowtown.wowtownbackend.user.domain.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
@@ -34,6 +36,7 @@ public interface UserMapper {
 
   @Mapping(source = "id", target = "userId")
   GetLoginUserDto toGetLoginUserDto(User user);
+
 
   GetUserChannelDto toUserChannelDto(Long channelId, String channelName);
 }

@@ -30,6 +30,7 @@ public class UserCommandExecutor {
     String hashedPW = passwordEncoder.encode(dto.getPassword(), salt);
     User user =
         userRepository.save(userMapper.toUser(dto.getEmail(), dto.getUserName(), hashedPW, salt));
+    System.out.println("userId=" +user.getId());
     return user.getId();
   }
 
