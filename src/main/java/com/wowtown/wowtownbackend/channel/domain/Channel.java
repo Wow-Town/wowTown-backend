@@ -1,12 +1,12 @@
 package com.wowtown.wowtownbackend.channel.domain;
 
+import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -27,8 +27,8 @@ public class Channel {
 
   private LocalDateTime updateAt;
 
-  // @OneToMany(mappedBy = "channel")
-  // private List<StudyGroup> studyGroups = new ArrayList<>();
+   @OneToMany(mappedBy = "channel",cascade = CascadeType.REMOVE)
+   private List<StudyGroup> studyGroups = new ArrayList<>();
 
   protected Channel() {}
 

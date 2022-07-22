@@ -1,4 +1,4 @@
-// package com.wowtown.wowtownbackend.chatroom.domain;
+package com.wowtown.wowtownbackend.chatroom.domain;// package com.wowtown.wowtownbackend.chatroom.domain;
 //
 // import com.wowtown.wowtownbackend.character.domain.CharacterChatRoom;
 // import lombok.Getter;

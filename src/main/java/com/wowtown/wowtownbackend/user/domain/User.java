@@ -2,6 +2,7 @@ package com.wowtown.wowtownbackend.user.domain;
 
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import lombok.Getter;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

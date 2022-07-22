@@ -2,6 +2,8 @@ package com.wowtown.wowtownbackend.studyGroup.domain;
 
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.common.domain.Interest;
+import com.wowtown.wowtownbackend.channel.domain.Channel;
+import com.wowtown.wowtownbackend.chatroom.domain.MultiChatRoom;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -29,6 +31,9 @@ public class StudyGroup {
   @CollectionTable(name = "study_group_interest")
   private Set<Interest> interestSet = new HashSet<>();
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "Channel_ID")
+  private Channel channel;
   /*@OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL)
   private List<StudyGroupInterestTypes> studyGroupInterestTypes = new ArrayList<>();*/
 
@@ -36,10 +41,10 @@ public class StudyGroup {
   //  @JoinColumn(name = "PRIVATE_SPACE_ID")
   //  private PrivateSpace privateSpace;
   //
-  //  @OneToOne(fetch = FetchType.LAZY)
-  //  @JoinColumn(name = "MULTI_CHAT_ROOM_ID")
-  //  private MultiChatRoom openChatRoom;
-  //
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "MULTI_CHAT_ROOM_ID")
+    private MultiChatRoom multiChatRoom;
+
   @OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<AvatarStudyGroup> avatarStudyGroupList = new ArrayList<>();
 
