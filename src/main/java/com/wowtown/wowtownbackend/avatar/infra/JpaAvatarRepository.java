@@ -16,7 +16,7 @@ public interface JpaAvatarRepository extends JpaRepository<Avatar, Long>, Avatar
       @Param("channelId") Long channelId, @Param("userId") Long userId);
 
   @Query(
-      "select av from Avatar as av where av.channel.id =:channelId and av.user.id =:userId and av.nickName =:nickName")
+      "select av from Avatar as av where av.channel.id =:channelId and av.user.id =:userId or av.nickName =:nickName")
   Optional<Avatar> findAvatarWithChannelIdAndUserIdAndNickName(
       @Param("channelId") Long channelId,
       @Param("userId") Long userId,

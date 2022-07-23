@@ -1,9 +1,12 @@
 package com.wowtown.wowtownbackend.common.config;
 
 import com.wowtown.wowtownbackend.avatar.application.common.AvatarProvider;
+import com.wowtown.wowtownbackend.channel.application.common.ChannelProvider;
 import com.wowtown.wowtownbackend.common.argumentresolver.LoginUserArgumentResolver;
 import com.wowtown.wowtownbackend.common.argumentresolver.UserAvatarArgumentResolver;
+import com.wowtown.wowtownbackend.common.argumentresolver.UserChannelArgumentResolver;
 import com.wowtown.wowtownbackend.common.interceptor.AvatarInterceptor;
+import com.wowtown.wowtownbackend.common.interceptor.ChannelInterceptor;
 import com.wowtown.wowtownbackend.common.interceptor.LoginInterceptor;
 import com.wowtown.wowtownbackend.common.redis.RedisService;
 import com.wowtown.wowtownbackend.user.application.common.JwtTokenProvider;
@@ -23,6 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
   private final JwtTokenProvider jwtTokenProvider;
   private final RedisService redisService;
   private final AvatarProvider avatarProvider;
+  private final ChannelProvider channelProvider;
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
@@ -30,11 +34,22 @@ public class WebConfig implements WebMvcConfigurer {
         .addInterceptor(new LoginInterceptor(jwtTokenProvider, redisService))
         .order(1)
         .addPathPatterns("/**")
-        .excludePathPatterns("/signUp/**", "/login", "/h2-console/**", "/favicon.ico"
-        ,"/swagger-ui.html", "/v2/api-docs", "/swagger-resources/**", "/webjars/**");
+        .excludePathPatterns(
+            "/signUp/**",
+            "/login",
+            "/h2-console/**",
+            "/favicon.ico",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/swagger-resources/**",
+            "/webjars/**");
+    registry
+        .addInterceptor(new ChannelInterceptor(channelProvider))
+        .order(2)
+        .addPathPatterns("/avatars/**");
     registry
         .addInterceptor(new AvatarInterceptor(jwtTokenProvider, avatarProvider))
-        .order(2)
+        .order(3)
         .addPathPatterns("/studyGroups/**");
   }
 
@@ -52,5 +67,6 @@ public class WebConfig implements WebMvcConfigurer {
   public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
     resolvers.add(new LoginUserArgumentResolver(jwtTokenProvider));
     resolvers.add(new UserAvatarArgumentResolver(avatarProvider));
+    resolvers.add(new UserChannelArgumentResolver(channelProvider));
   }
 }

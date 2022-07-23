@@ -2,6 +2,7 @@ package com.wowtown.wowtownbackend.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wowtown.wowtownbackend.avatar.application.common.AvatarProvider;
+import com.wowtown.wowtownbackend.channel.application.common.ChannelProvider;
 import com.wowtown.wowtownbackend.common.argumentresolver.LoginUserArgumentResolver;
 import com.wowtown.wowtownbackend.common.redis.RedisService;
 import com.wowtown.wowtownbackend.user.application.UserQueryProcessor;
@@ -39,6 +40,8 @@ class UserQueryControllerTest {
   @MockBean JwtTokenProvider jwtTokenProvider;
 
   @MockBean AvatarProvider avatarProvider;
+
+  @MockBean ChannelProvider channelProvider;
 
   @MockBean RedisService redisService;
 
