@@ -2,7 +2,9 @@ package com.wowtown.wowtownbackend.avatar.controller;
 
 import com.wowtown.wowtownbackend.avatar.application.AvatarCommandExecutor;
 import com.wowtown.wowtownbackend.avatar.application.dto.request.CreateOrUpdateAvatarDto;
+import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.common.annotation.LoginUser;
+import com.wowtown.wowtownbackend.common.annotation.UserChannel;
 import com.wowtown.wowtownbackend.user.domain.User;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -11,14 +13,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 
 @Validated
 @Controller
@@ -26,15 +29,14 @@ import javax.validation.constraints.Min;
 public class AvatarCommandController {
   private final AvatarCommandExecutor avatarCommandExecutor;
 
-
   @ApiOperation(value = "아바타 생성하기", notes = "유저,채널ID,dto 사용")
   @PostMapping(value = "/avatars")
   public ResponseEntity createAvatar(
-      @RequestParam("channelId") @Min(1) long channelId,
       @Valid @RequestBody CreateOrUpdateAvatarDto dto,
+      @ApiIgnore @UserChannel Channel channel,
       @ApiIgnore @LoginUser User user,
       HttpServletResponse response) {
-    long avatarId = avatarCommandExecutor.createAvatar(channelId, dto, user);
+    long avatarId = avatarCommandExecutor.createAvatar(dto, channel, user);
 
     Cookie cookie = new Cookie("avatarId", String.valueOf(avatarId));
     cookie.setPath("/");
@@ -50,24 +52,29 @@ public class AvatarCommandController {
   @ApiOperation(value = "아바타 수정하기", notes = "유저,채널ID 사용")
   @PutMapping(value = "/avatars")
   public ResponseEntity updateAvatar(
-      @RequestParam("channelId") @Min(1) long channelId,
       @Valid @RequestBody CreateOrUpdateAvatarDto dto,
+      @ApiIgnore @UserChannel Channel channel,
       @ApiIgnore @LoginUser User user) {
-    avatarCommandExecutor.updateAvatar(channelId, dto, user);
+    avatarCommandExecutor.updateAvatar(dto, channel, user);
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }
 
   @ApiOperation(value = "아바타 삭제하기", notes = "유저,채널ID 사용")
   @DeleteMapping(value = "/avatars")
   public ResponseEntity deleteAvatar(
-      @RequestParam("channelId") @Min(1) long channelId,
-      @ApiIgnore  @LoginUser User user,
+      @ApiIgnore @UserChannel Channel channel,
+      @ApiIgnore @LoginUser User user,
       HttpServletResponse response) {
-    avatarCommandExecutor.deleteAvatar(channelId, user);
+    avatarCommandExecutor.deleteAvatar(channel, user);
 
-    Cookie cookie = new Cookie("avatarId", null);
-    cookie.setMaxAge(0);
-    response.addCookie(cookie);
+    // 아바타를 삭제하면 채널에서도 나가야한다.
+    Cookie channelCookie = new Cookie("channelId", null);
+    channelCookie.setMaxAge(0);
+    response.addCookie(channelCookie);
+
+    Cookie avatarCookie = new Cookie("avatarId", null);
+    avatarCookie.setMaxAge(0);
+    response.addCookie(avatarCookie);
 
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }
