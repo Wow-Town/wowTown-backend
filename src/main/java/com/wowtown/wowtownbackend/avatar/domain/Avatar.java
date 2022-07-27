@@ -9,7 +9,10 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -39,11 +42,11 @@ public class Avatar {
   @JoinColumn(name = "Channel_ID")
   private Channel channel;
 
-  @OneToMany(mappedBy = "avatar")
-  private Set<StudyGroup> avatarScrapStudyGroupSet = new HashSet<>();
+  @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Friend> friendList;
 
-  @OneToMany(mappedBy = "avatar", cascade = CascadeType.ALL)
-  private List<AvatarChatRoom> avatarChatRoomList = new ArrayList<>();
+  //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
+  //  private List<CharacterChatRoom> characterChatRooms = new ArrayList<>();
 
   //  // set or list 둘중 선택
   //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)

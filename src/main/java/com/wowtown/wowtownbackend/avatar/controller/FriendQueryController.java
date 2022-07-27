@@ -50,7 +50,6 @@ public class FriendQueryController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(friendQueryProcessor.getFollower(avatar));
     }
-
     @GetMapping(value = "/friends/following")
     public ResponseEntity getFollowing
             (

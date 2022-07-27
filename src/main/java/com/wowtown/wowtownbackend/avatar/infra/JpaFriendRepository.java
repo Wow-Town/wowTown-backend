@@ -13,12 +13,19 @@ import java.util.Optional;
 @Repository
 public interface JpaFriendRepository extends JpaRepository<Friend,Long>, FriendRepository {
 
-    @Query("select f from Friend f where f.following.id =: followingId and f.follower.id =: followerId")
-     Optional<Friend> findFriendWithFollowingIdAndFollowerId(
-             @Param("followingId")Long followingId,
-             @Param("followerId")Long followerId );
+//    @Query("select f from Friend f where f.friendStatus =: APPROVED " +
+//            "and " +)
+//    Optional<Friend> checkFriendWithFollowingIdAndFollowerId( //이미
+//             @Param("followingId")Long followingId,
+//             @Param("followerId")Long followerId );
+//
 
-    List<Friend> findWithFollowingId(Long AvatarId );
+    @Query("select f from Friend f where (f.follower.id =: followingId or f.following.id =:followingId) and f.friendStatus =: APPROVED")
+    List<Friend> findFriendWithId(@Param("followingId") Long AvatarId); //친구목록 불러오
 
-    List<Friend> findWithFollowerId(Long AvatarId );
+    @Query("select f from Friend f where f.following.id = :followingId and f.friendStatus =: YET")
+    List<Friend> findWithFollowingId(@Param("followingId") Long AvatarId );//신청한 목록
+
+    @Query("select f from Friend f where f.following.id = :followerId and f.friendStatus =: YET")
+    List<Friend> findWithFollowerId(@Param("followerId") Long AvatarId );//신청받은 목록
 }

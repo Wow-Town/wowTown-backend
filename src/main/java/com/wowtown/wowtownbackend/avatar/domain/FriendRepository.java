@@ -8,11 +8,13 @@ import java.util.Optional;
 
 public interface FriendRepository {
 
-    List<Friend> findFriend(Long AvatarId);
+    List<Friend> findFriendWithId(Long AvatarId);
     List<Friend> findWithFollowingId(Long AvatarId );
     List<Friend> findWithFollowerId(Long AvatarId );
     Friend save(Friend toSave);
-    Optional<Friend> findFriendWithFollowingIdAndFollowerId(Long followingId,Long followerId );
+    Optional <Friend> findById(long friendId);
+    Optional<Friend> checkFriendWithFollowingIdAndFollowerId(Long followingId,Long followerId );
+    void delete(Friend toDelete);
 
 
     //친구를 끊은 상태라면? following follower 둘 다 삭제하는 걸로
