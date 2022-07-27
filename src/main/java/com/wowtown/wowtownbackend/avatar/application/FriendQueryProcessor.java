@@ -1,16 +1,22 @@
 package com.wowtown.wowtownbackend.avatar.application;
 
+import com.wowtown.wowtownbackend.avatar.application.common.AvatarMapper;
 import com.wowtown.wowtownbackend.avatar.application.common.FriendMapper;
+import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarDto;
 import com.wowtown.wowtownbackend.avatar.application.dto.response.GetFriendDto;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
+import com.wowtown.wowtownbackend.avatar.domain.AvatarRepository;
 import com.wowtown.wowtownbackend.avatar.domain.Friend;
 import com.wowtown.wowtownbackend.avatar.domain.FriendRepository;
 import com.wowtown.wowtownbackend.common.annotation.UserAvatar;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
+import com.wowtown.wowtownbackend.studyGroup.application.dto.response.GetStudyGroupDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,22 +26,34 @@ public class FriendQueryProcessor {
 
     private final FriendRepository friendRepository;
     private final FriendMapper friendMapper;
+    private final AvatarRepository avatarRepository;
+    private final AvatarMapper avatarMapper;
 
-    public List<GetFriendDto> getFriend(Avatar avatar) {
+    public List<GetAvatarDto> getFriend(Avatar avatar) {
         List<Friend> findFriendList =
                 friendRepository
-                        .findFriend(avatar.getId())
+                        .findFriendWithId(avatar.getId())
                         .stream()
                         .filter(f -> f.checkFriendStatusIsApproved())
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList()); //여기서 필터로 바로 친구 Avatar로 변경하는 법은 없나?
         if(findFriendList.isEmpty()){
             throw new InstanceNotFoundException("친구가 없습니다.");
         }
+        List<Avatar> findFriendAvatarList = new ArrayList<>();
+        for(Friend friend :findFriendList){
+            Optional<Avatar> friendAvatar = avatarRepository.findById(friend.reFriendId(avatar.getId()));
+            findFriendAvatarList.add(friendAvatar.get());
+        }
 
-        return friendMapper.toGetFriendDto(findFriendList);
+        List<GetAvatarDto> AvatarDtoList =
+                findFriendAvatarList
+                        .stream()
+                        .map(avatar1 -> avatarMapper.toGetAvatarDto(avatar1))
+                        .collect(Collectors.toList());
+        return AvatarDtoList;
     }
 
-    public List<GetFriendDto> getFollowing( Avatar avatar){
+    public List<GetAvatarDto> getFollowing( Avatar avatar){
         List<Friend> findFollowingList =
                 friendRepository
                         .findWithFollowingId(avatar.getId())
@@ -45,20 +63,39 @@ public class FriendQueryProcessor {
         if(findFollowingList.isEmpty()){
             throw new InstanceNotFoundException("팔로잉하고 있는 상대가 없습니다.");
         }
-
-        return friendMapper.toGetFriendDto(findFollowingList);
+        List<Avatar> findFollowingAvatarList = new ArrayList<>();
+        for(Friend friend :findFollowingList){
+            Optional<Avatar> followingAvatar = avatarRepository.findById(friend.reFriendId(avatar.getId()));
+            findFollowingAvatarList.add(followingAvatar.get());
+        }
+        List<GetAvatarDto> AvatarDtoList =
+                findFollowingAvatarList
+                        .stream()
+                        .map(avatar1 -> avatarMapper.toGetAvatarDto(avatar1))
+                        .collect(Collectors.toList());
+        return AvatarDtoList;
     }
-    public List<GetFriendDto> getFollower( Avatar avatar){
-        List<Friend> findFriendList =
+    public List<GetAvatarDto> getFollower( Avatar avatar){
+        List<Friend> findFollowerList =
                 friendRepository
                         .findWithFollowerId(avatar.getId())
                         .stream()
                         .filter(f -> f.checkFriendStatusIsApproved())
                         .collect(Collectors.toList());
-        if(findFriendList.isEmpty()){
-            throw new InstanceNotFoundException("친구가 없습니다.");
+        if(findFollowerList.isEmpty()){
+            throw new InstanceNotFoundException("친구 신청한 상대가없습니다.");
         }
+        List<Avatar> findFollowerAvatarList = new ArrayList<>();
+        for(Friend friend :findFollowerList){
+            Optional<Avatar> followingAvatar = avatarRepository.findById(friend.reFriendId(avatar.getId()));
+            findFollowerAvatarList.add(followingAvatar.get());
+        }
+        List<GetAvatarDto> AvatarDtoList =
+                findFollowerAvatarList
+                        .stream()
+                        .map(avatar1 -> avatarMapper.toGetAvatarDto(avatar1))
+                        .collect(Collectors.toList());
 
-        return friendMapper.toGetFriendDto(findFriendList);
+        return AvatarDtoList;
     }
 }

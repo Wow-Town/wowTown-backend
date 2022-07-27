@@ -13,16 +13,12 @@
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
-
-
   @Enumerated(EnumType.STRING)
   private FriendStatus friendStatus;
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "AVATAR_ID")
   private Avatar following;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "AVATAR_ID")
   private Avatar follower;
 
   private LocalDateTime createTime;
@@ -44,5 +40,13 @@
   }
   public void friendRequestApprove(){
    this.friendStatus = FriendStatus.APPROVED;
+  }
+  public long reFriendId(Long myId){ //프랜드 객체를 받아서 친구 Id만 리턴
+   if(myId == this.following.getId()){
+    return this.follower.getId();
+   }
+   else{
+    return this.following.getId();
+   }
   }
  }

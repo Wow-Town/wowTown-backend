@@ -17,7 +17,7 @@ public interface FriendMapper {
     }
 
     @Mapping(source ="id" , target ="FriendId")
-     List<GetFriendDto> toGetFriendDto(List<Friend> findFriendList);
+    List<GetFriendDto> toGetFriendDto(List<Friend> findFriendList);
 
 
 }

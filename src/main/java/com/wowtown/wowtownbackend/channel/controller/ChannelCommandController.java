@@ -27,9 +27,7 @@ public class ChannelCommandController {
   @PostMapping
   public ResponseEntity<List<GetChannelDto>> enterChannel(
       @RequestBody EnterChannelDto dto, HttpServletResponse response) {
-
     long channelId = channelCommandExecutor.enterChannel(dto);
-
     Cookie cookie = new Cookie("channelId", String.valueOf(channelId));
     cookie.setPath("/");
     cookie.setHttpOnly(true);

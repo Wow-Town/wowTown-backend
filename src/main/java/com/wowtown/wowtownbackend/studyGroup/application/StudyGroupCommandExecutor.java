@@ -32,6 +32,7 @@ public class StudyGroupCommandExecutor {
             dto.getInterests(),
             dto.getStatus());
 
+
     // 공고를 생성한 아바타를 host로 설정하여 아바타-공고를 추가한다.
     studyGroup.avatarJoinStudyGroup(avatar, StudyGroupRole.HOST);
     multiChatRoomCommandExecutor.createMultiChatRoom(studyGroup.getId(),dto.getSubject(),dto.getPersonnel());
@@ -73,6 +74,7 @@ public class StudyGroupCommandExecutor {
       studyGroupRepository.delete(findStudyGroup);
       return true;
     }
+
     throw new InstanceNotFoundException("참여중인 스터디 그룹이 아니거나 방장이 아닙니다.");
   }
 }

@@ -8,6 +8,7 @@ import lombok.Getter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -38,6 +39,9 @@ public class Avatar {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "Channel_ID")
   private Channel channel;
+
+  @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Friend> friendList;
 
   //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
   //  private List<CharacterChatRoom> characterChatRooms = new ArrayList<>();
