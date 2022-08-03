@@ -37,6 +37,7 @@
    this.follower = follower;
    this.following = following;
    this.friendStatus = FriendStatus.YET;
+
   }
   public void friendRequestApprove(){
    this.friendStatus = FriendStatus.APPROVED;

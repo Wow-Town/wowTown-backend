@@ -4,10 +4,7 @@ import com.wowtown.wowtownbackend.avatar.application.common.AvatarMapper;
 import com.wowtown.wowtownbackend.avatar.application.common.FriendMapper;
 import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarDto;
 import com.wowtown.wowtownbackend.avatar.application.dto.response.GetFriendDto;
-import com.wowtown.wowtownbackend.avatar.domain.Avatar;
-import com.wowtown.wowtownbackend.avatar.domain.AvatarRepository;
-import com.wowtown.wowtownbackend.avatar.domain.Friend;
-import com.wowtown.wowtownbackend.avatar.domain.FriendRepository;
+import com.wowtown.wowtownbackend.avatar.domain.*;
 import com.wowtown.wowtownbackend.common.annotation.UserAvatar;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import com.wowtown.wowtownbackend.studyGroup.application.dto.response.GetStudyGroupDto;
@@ -36,7 +33,7 @@ public class FriendQueryProcessor {
                         .stream()
                         .filter(f -> f.checkFriendStatusIsApproved())
                         .collect(Collectors.toList()); //여기서 필터로 바로 친구 Avatar로 변경하는 법은 없나?
-        if(findFriendList.isEmpty()){
+        if(findFriendList ==null){
             throw new InstanceNotFoundException("친구가 없습니다.");
         }
         List<Avatar> findFriendAvatarList = new ArrayList<>();
@@ -60,7 +57,7 @@ public class FriendQueryProcessor {
                         .stream()
                         .filter(f -> !f.checkFriendStatusIsApproved())
                         .collect(Collectors.toList());
-        if(findFollowingList.isEmpty()){
+        if(findFollowingList==null){
             throw new InstanceNotFoundException("팔로잉하고 있는 상대가 없습니다.");
         }
         List<Avatar> findFollowingAvatarList = new ArrayList<>();
@@ -82,7 +79,7 @@ public class FriendQueryProcessor {
                         .stream()
                         .filter(f -> f.checkFriendStatusIsApproved())
                         .collect(Collectors.toList());
-        if(findFollowerList.isEmpty()){
+        if(findFollowerList==null){
             throw new InstanceNotFoundException("친구 신청한 상대가없습니다.");
         }
         List<Avatar> findFollowerAvatarList = new ArrayList<>();

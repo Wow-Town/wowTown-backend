@@ -31,7 +31,7 @@ public class ChannelCommandController {
     Cookie cookie = new Cookie("channelId", String.valueOf(channelId));
     cookie.setPath("/");
     cookie.setHttpOnly(true);
-    cookie.setDomain("wowtown.co.kr");
+    //cookie.setDomain("wowtown.co.kr");
     response.addCookie(cookie);
 
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
