@@ -1,16 +1,13 @@
-package com.wowtown.wowtownbackend.avatar.application;
+package com.wowtown.wowtownbackend.friend.application;
 
 import com.wowtown.wowtownbackend.avatar.application.common.AvatarMapper;
-import com.wowtown.wowtownbackend.avatar.application.common.FriendMapper;
+import com.wowtown.wowtownbackend.friend.application.common.FriendMapper;
 import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarDto;
-import com.wowtown.wowtownbackend.avatar.application.dto.response.GetFriendDto;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.avatar.domain.AvatarRepository;
-import com.wowtown.wowtownbackend.avatar.domain.Friend;
-import com.wowtown.wowtownbackend.avatar.domain.FriendRepository;
-import com.wowtown.wowtownbackend.common.annotation.UserAvatar;
+import com.wowtown.wowtownbackend.friend.domain.Friend;
+import com.wowtown.wowtownbackend.friend.domain.FriendRepository;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
-import com.wowtown.wowtownbackend.studyGroup.application.dto.response.GetStudyGroupDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

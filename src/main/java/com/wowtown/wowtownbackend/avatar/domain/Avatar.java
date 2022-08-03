@@ -2,6 +2,7 @@ package com.wowtown.wowtownbackend.avatar.domain;
 
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.common.domain.Interest;
+import com.wowtown.wowtownbackend.friend.domain.Friend;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.Getter;
 

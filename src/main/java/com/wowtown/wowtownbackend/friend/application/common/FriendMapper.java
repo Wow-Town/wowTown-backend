@@ -1,9 +1,9 @@
-package com.wowtown.wowtownbackend.avatar.application.common;
+package com.wowtown.wowtownbackend.friend.application.common;
 
 
-import com.wowtown.wowtownbackend.avatar.application.dto.response.GetFriendDto;
+import com.wowtown.wowtownbackend.friend.application.dto.GetFriendDto;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
-import com.wowtown.wowtownbackend.avatar.domain.Friend;
+import com.wowtown.wowtownbackend.friend.domain.Friend;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

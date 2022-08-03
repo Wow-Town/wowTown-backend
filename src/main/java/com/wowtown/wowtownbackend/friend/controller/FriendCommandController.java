@@ -1,6 +1,6 @@
-package com.wowtown.wowtownbackend.avatar.controller;
+package com.wowtown.wowtownbackend.friend.controller;
 
-import com.wowtown.wowtownbackend.avatar.application.FriendCommandExecutor;
+import com.wowtown.wowtownbackend.friend.application.FriendCommandExecutor;
 import com.wowtown.wowtownbackend.avatar.application.dto.request.FollowAvatarDto;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.common.annotation.UserAvatar;

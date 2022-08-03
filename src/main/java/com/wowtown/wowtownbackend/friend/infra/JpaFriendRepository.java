@@ -1,14 +1,13 @@
-package com.wowtown.wowtownbackend.avatar.infra;
+package com.wowtown.wowtownbackend.friend.infra;
 
-import com.wowtown.wowtownbackend.avatar.domain.Friend;
-import com.wowtown.wowtownbackend.avatar.domain.FriendRepository;
+import com.wowtown.wowtownbackend.friend.domain.Friend;
+import com.wowtown.wowtownbackend.friend.domain.FriendRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface JpaFriendRepository extends JpaRepository<Friend,Long>, FriendRepository {

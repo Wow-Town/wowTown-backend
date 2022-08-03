@@ -1,7 +1,6 @@
-package com.wowtown.wowtownbackend.avatar.domain;
+package com.wowtown.wowtownbackend.friend.domain;
 
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import com.wowtown.wowtownbackend.friend.domain.Friend;
 
 import java.util.List;
 import java.util.Optional;

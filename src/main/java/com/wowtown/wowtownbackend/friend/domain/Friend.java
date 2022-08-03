@@ -1,6 +1,7 @@
- package com.wowtown.wowtownbackend.avatar.domain;
+ package com.wowtown.wowtownbackend.friend.domain;
 
  import com.wowtown.wowtownbackend.avatar.domain.Avatar;
+ import com.wowtown.wowtownbackend.avatar.domain.FriendStatus;
  import lombok.Getter;
 
  import javax.persistence.*;
