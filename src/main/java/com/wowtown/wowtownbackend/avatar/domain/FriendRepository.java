@@ -9,11 +9,10 @@ import java.util.Optional;
 public interface FriendRepository {
 
     List<Friend> findFriendWithId(Long AvatarId);
-    List<Friend> findWithFollowingId(Long AvatarId );
-    List<Friend> findWithFollowerId(Long AvatarId );
+    List<Friend> findWithFollowingId(Long AvatarId);
+    List<Friend> findWithFollowerId(Long AvatarId);
     Friend save(Friend toSave);
     Optional <Friend> findById(long friendId);
-    Optional<Friend> checkFriendWithFollowingIdAndFollowerId(Long followingId,Long followerId );
     void delete(Friend toDelete);
 
 
