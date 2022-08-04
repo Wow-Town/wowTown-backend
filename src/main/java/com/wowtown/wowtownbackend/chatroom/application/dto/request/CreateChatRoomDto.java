@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EnterOrExitMultiChatRoomDto {
-    private long studyGroupId;
+public class CreateChatRoomDto {
+  private String roomName;
 }
