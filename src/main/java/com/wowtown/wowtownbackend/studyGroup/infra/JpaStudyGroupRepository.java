@@ -15,18 +15,19 @@ import java.util.Set;
 public interface JpaStudyGroupRepository
     extends JpaRepository<StudyGroup, Long>, StudyGroupRepository {
   @Query(
-      "select distinct s from StudyGroup as s join AvatarStudyGroup as asg on asg.avatar.id =:avatarId")
-  List<StudyGroup> findByAvatarId(@Param("avatarId") Long avatarId);
-
-  @Query("select s from StudyGroup as s where s.subject like %:subject%")
-  List<StudyGroup> findBySubjectContaining(@Param("subject") String subject);
+      "select s from StudyGroup as s where s.channel.id =:channelId and s.subject like %:subject%")
+  List<StudyGroup> findByChannelIdAndSubjectContaining(
+      @Param("channelId") Long channelId, @Param("subject") String subject);
 
   @Query(
-      "select distinct s from StudyGroup as s join s.interestSet as i where i.type in :interestSet")
-  List<StudyGroup> findByInterestList(@Param("interestSet") Set<InterestType> interestSet);
+      "select distinct s from StudyGroup as s join s.interestSet as i where s.channel.id =:channelId and i.type in :interestSet")
+  List<StudyGroup> findByChannelIdAndInterestList(
+      @Param("channelId") Long channelId, @Param("interestSet") Set<InterestType> interestSet);
 
   @Query(
-      "select distinct s from StudyGroup as s join s.interestSet as i where s.subject like %:subject% and i.type in :interestSet")
-  List<StudyGroup> findBySubjectContainingAndInterestList(
-      @Param("subject") String subject, @Param("interestSet") Set<InterestType> interestSet);
+      "select distinct s from StudyGroup as s join s.interestSet as i where s.channel.id =:channelId and s.subject like %:subject% and i.type in :interestSet")
+  List<StudyGroup> findByChannelIdAndSubjectContainingAndInterestList(
+      @Param("channelId") Long channelId,
+      @Param("subject") String subject,
+      @Param("interestSet") Set<InterestType> interestSet);
 }

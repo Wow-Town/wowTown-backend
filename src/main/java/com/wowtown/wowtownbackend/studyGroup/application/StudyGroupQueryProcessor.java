@@ -1,6 +1,6 @@
 package com.wowtown.wowtownbackend.studyGroup.application;
 
-import com.wowtown.wowtownbackend.avatar.domain.Avatar;
+import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.common.domain.InterestType;
 import com.wowtown.wowtownbackend.studyGroup.application.common.StudyGroupMapper;
 import com.wowtown.wowtownbackend.studyGroup.application.dto.response.GetStudyGroupDto;
@@ -19,50 +19,50 @@ public class StudyGroupQueryProcessor {
   private final StudyGroupRepository studyGroupRepository;
   private final StudyGroupMapper studyGroupMapper;
 
-  public List<GetStudyGroupDto> getAllStudyGroup() {
+  public List<GetStudyGroupDto> getAllStudyGroupInChannel(Channel channel) {
     List<GetStudyGroupDto> studyGroupDtoList =
-        studyGroupRepository.findAll().stream()
+        studyGroupRepository.findByChannelId(channel.getId()).stream()
+            .filter(studyGroup -> studyGroup.getStudyGroupStatus() == StudyGroupStatus.OPEN)
             .map(studyGroup -> studyGroupMapper.toGetStudyGroupDto(studyGroup))
             .collect(Collectors.toList());
     return studyGroupDtoList;
   }
 
-  public List<GetStudyGroupDto> getStudyGroupWithAvatar(Avatar avatar) {
-    return studyGroupRepository.findByAvatarId(avatar.getId()).stream()
-        .map(studyGroup -> studyGroupMapper.toGetStudyGroupDto(studyGroup))
-        .collect(Collectors.toList());
-  }
-
-  public List<GetStudyGroupDto> getStudyGroupWithSubject(String subject) {
+  public List<GetStudyGroupDto> getStudyGroupWithSubjectInChannel(Channel channel, String subject) {
     List<GetStudyGroupDto> studyGroupDtoList =
-        studyGroupRepository.findBySubjectContaining(subject).stream()
-            .filter(studyGroup -> studyGroup.getStatus() == StudyGroupStatus.OPEN)
+        studyGroupRepository.findByChannelIdAndSubjectContaining(channel.getId(), subject).stream()
+            .filter(studyGroup -> studyGroup.getStudyGroupStatus() == StudyGroupStatus.OPEN)
             .map(studyGroup -> studyGroupMapper.toGetStudyGroupDto(studyGroup))
             .collect(Collectors.toList());
     return studyGroupDtoList;
   }
 
-  public List<GetStudyGroupDto> getStudyGroupWithInterest(List<String> interests) {
-    Set<InterestType> interestSet =
-        interests.stream()
-            .map(interest -> InterestType.valueOf(interest))
-            .collect(Collectors.toSet());
-
-    return studyGroupRepository.findByInterestList(interestSet).stream()
-        .map(studyGroup -> studyGroupMapper.toGetStudyGroupDto(studyGroup))
-        .collect(Collectors.toList());
-  }
-
-  public List<GetStudyGroupDto> getStudyGroupWithSubjectAndInterest(
-      String subject, List<String> interests) {
+  public List<GetStudyGroupDto> getStudyGroupWithInterestInChannel(
+      Channel channel, List<String> interests) {
     Set<InterestType> interestSet =
         interests.stream()
             .map(interest -> InterestType.valueOf(interest))
             .collect(Collectors.toSet());
 
     return studyGroupRepository
-        .findBySubjectContainingAndInterestList(subject, interestSet)
+        .findByChannelIdAndInterestList(channel.getId(), interestSet)
         .stream()
+        .filter(studyGroup -> studyGroup.getStudyGroupStatus() == StudyGroupStatus.OPEN)
+        .map(studyGroup -> studyGroupMapper.toGetStudyGroupDto(studyGroup))
+        .collect(Collectors.toList());
+  }
+
+  public List<GetStudyGroupDto> getStudyGroupWithSubjectAndInterestInChannel(
+      Channel channel, String subject, List<String> interests) {
+    Set<InterestType> interestSet =
+        interests.stream()
+            .map(interest -> InterestType.valueOf(interest))
+            .collect(Collectors.toSet());
+
+    return studyGroupRepository
+        .findByChannelIdAndSubjectContainingAndInterestList(channel.getId(), subject, interestSet)
+        .stream()
+        .filter(studyGroup -> studyGroup.getStudyGroupStatus() == StudyGroupStatus.OPEN)
         .map(studyGroup -> studyGroupMapper.toGetStudyGroupDto(studyGroup))
         .collect(Collectors.toList());
   }

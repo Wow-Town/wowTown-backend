@@ -8,7 +8,9 @@ import com.wowtown.wowtownbackend.common.domain.Interest;
 import com.wowtown.wowtownbackend.common.domain.InterestType;
 import com.wowtown.wowtownbackend.user.domain.User;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface AvatarMapper {
@@ -44,6 +46,23 @@ public interface AvatarMapper {
     return avatar;
   }
 
-  @Mapping(source = "id", target = "avatarId")
-  GetAvatarDto toGetAvatarDto(Avatar avatar);
+  default GetAvatarDto toGetAvatarDto(Avatar avatar) {
+    if (avatar == null) {
+      return null;
+    }
+
+    GetAvatarDto getAvatarDto = new GetAvatarDto();
+
+    getAvatarDto.setAvatarId(avatar.getId());
+    getAvatarDto.setNickName(avatar.getNickName());
+    getAvatarDto.setDescription(avatar.getDescription());
+    List<String> interestList =
+        avatar.getInterestSet().stream()
+            .map(interest -> interest.getType().toString())
+            .collect(Collectors.toList());
+
+    getAvatarDto.setInterests(interestList);
+
+    return getAvatarDto;
+  }
 }

@@ -1,15 +1,15 @@
 package com.wowtown.wowtownbackend.avatar.domain;
 
 import com.wowtown.wowtownbackend.channel.domain.Channel;
+import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
 import com.wowtown.wowtownbackend.common.domain.Interest;
+import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Entity
@@ -29,7 +29,7 @@ public class Avatar {
   @Enumerated(EnumType.STRING)
   @ElementCollection
   @CollectionTable(name = "avatar_interest")
-  private Set<Interest> interestList = new HashSet<>();
+  private Set<Interest> interestSet = new HashSet<>();
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "USER_ID")
@@ -39,8 +39,11 @@ public class Avatar {
   @JoinColumn(name = "Channel_ID")
   private Channel channel;
 
-  //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
-  //  private List<CharacterChatRoom> characterChatRooms = new ArrayList<>();
+  @OneToMany(mappedBy = "avatar")
+  private Set<StudyGroup> avatarScrapStudyGroupSet = new HashSet<>();
+
+  @OneToMany(mappedBy = "avatar", cascade = CascadeType.ALL)
+  private List<AvatarChatRoom> avatarChatRoomList = new ArrayList<>();
 
   //  // set or list 둘중 선택
   //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
@@ -68,15 +71,35 @@ public class Avatar {
   }
 
   public void addInterest(Interest payload) {
-    this.interestList.add(payload);
+    this.interestSet.add(payload);
   }
 
   public void updateAvatar(Avatar updatePayload) {
     this.nickName = updatePayload.getNickName();
     this.description = updatePayload.getDescription();
-    this.interestList = updatePayload.getInterestList();
+    this.interestSet = updatePayload.getInterestSet();
     this.updateAt = LocalDateTime.now();
   }
+
+  public void addAvatarChatRoom(ChatRoom payload) {
+    AvatarChatRoom avatarChatRoom = new AvatarChatRoom(payload.getRoomName());
+    avatarChatRoom.setAvatar(this);
+    avatarChatRoom.setChatRoom(payload);
+    this.avatarChatRoomList.add(avatarChatRoom);
+  }
+
+  public void removeAvatarChatRoom(ChatRoom payload) {
+    this.avatarChatRoomList.removeIf(
+        avatarChatRoom -> avatarChatRoom.getChatRoom().equals(payload));
+  }
+
+  //  public void addAvatarScrapStudyGroup(StudyGroup payload) {
+  //    this.avatarScrapStudyGroupSet.add(payload);
+  //  }
+  //
+  //  public void removeAvatarScrapStudyGroup(StudyGroup payload) {
+  //    this.avatarScrapStudyGroupSet.remove(payload);
+  //  }
 
   @Override
   public boolean equals(Object o) {
