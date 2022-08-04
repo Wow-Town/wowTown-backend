@@ -1,16 +1,15 @@
 package com.wowtown.wowtownbackend.studyGroup.domain;
 
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
-import com.wowtown.wowtownbackend.common.domain.Interest;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
-import com.wowtown.wowtownbackend.chatroom.domain.MultiChatRoom;
+import com.wowtown.wowtownbackend.common.domain.Interest;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Entity
@@ -23,9 +22,11 @@ public class StudyGroup {
   private String subject; // 이름보다 주제라는 용어가 괜찮은거 같다.
   private int personnel; // 구하는 인원수
   private String description; // 스터디 그룹 설명
+  private String randomPW;
+  private UUID chatRoomUUID;
 
   @Enumerated(EnumType.STRING)
-  private StudyGroupStatus status;
+  private StudyGroupStatus studyGroupStatus;
 
   @ElementCollection
   @CollectionTable(name = "study_group_interest")
@@ -34,19 +35,15 @@ public class StudyGroup {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "Channel_ID")
   private Channel channel;
-  /*@OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL)
-  private List<StudyGroupInterestTypes> studyGroupInterestTypes = new ArrayList<>();*/
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "Avatar_ID")
+  private Avatar avatar;
 
   //  @OneToOne(fetch = FetchType.LAZY)
   //  @JoinColumn(name = "PRIVATE_SPACE_ID")
   //  private PrivateSpace privateSpace;
   //
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "MULTI_CHAT_ROOM_ID")
-    private MultiChatRoom multiChatRoom;
-
-  @OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<AvatarStudyGroup> avatarStudyGroupList = new ArrayList<>();
 
   protected StudyGroup() {}
 
@@ -55,41 +52,62 @@ public class StudyGroup {
       Integer personnel,
       String description,
       Set<Interest> interestSet,
-      StudyGroupStatus status) {
+      StudyGroupStatus studyGroupStatus) {
     this.subject = subject;
     this.personnel = personnel;
     this.description = description;
     this.interestSet = interestSet;
-    this.status = status;
+    this.studyGroupStatus = studyGroupStatus;
+  }
+
+  public void setDefaultPW(String randomPW) {
+    this.randomPW = randomPW;
+  }
+
+  public void addOwner(Avatar avatar) {
+    this.avatar = avatar;
+    this.channel = avatar.getChannel();
+  }
+
+  public void addChatRoomUUID(UUID chatRoomUUID) {
+    this.chatRoomUUID = chatRoomUUID;
+  }
+
+  public boolean isSameOwner(Avatar avatar) {
+    if (this.avatar.equals(avatar)) {
+      return true;
+    }
+    return false;
   }
 
   public void updateStudyGroup(StudyGroup studyGroup) {
     this.subject = studyGroup.subject;
     this.personnel = studyGroup.personnel;
     this.description = studyGroup.description;
-    this.status = studyGroup.status;
+    this.studyGroupStatus = studyGroup.studyGroupStatus;
   }
 
-  public boolean checkAvatarStudyGroupRoleIsHost(Avatar avatar) {
-    for (AvatarStudyGroup avatarStudyGroup : this.avatarStudyGroupList) { // 뭔가 이 로직이 최선인가?
-      if (avatarStudyGroup.getAvatar().equals(avatar)) {
-        if (avatarStudyGroup.getRole() == StudyGroupRole.HOST) {
-          return true;
-        }
-      }
+  public void addChatRoomInfo(UUID chatRoomUUID) {
+    this.chatRoomUUID = chatRoomUUID;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
     }
-    return false;
+    if (!(o instanceof StudyGroup)) {
+      return false;
+    }
+    StudyGroup studyGroup = (StudyGroup) o;
+    return this.id == studyGroup.id
+        && this.subject == studyGroup.subject
+        && this.personnel == studyGroup.personnel
+        && this.description == studyGroup.description;
   }
 
-  public void avatarJoinStudyGroup(Avatar avatar, StudyGroupRole role) {
-    AvatarStudyGroup avatarStudyGroup = new AvatarStudyGroup(role);
-    avatarStudyGroup.setAvatar(avatar);
-    avatarStudyGroup.setStudyGroup(this);
-    this.avatarStudyGroupList.add(avatarStudyGroup);
-  }
-
-  public void avatarLeaveStudyGroup(Avatar avatar) {
-    this.avatarStudyGroupList.removeIf(
-        avatarStudyGroup -> avatarStudyGroup.getAvatar().equals(avatar));
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.id, this.subject, this.personnel, this.description);
   }
 }

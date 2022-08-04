@@ -6,7 +6,6 @@ import com.wowtown.wowtownbackend.studyGroup.application.dto.response.GetStudyGr
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroupStatus;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.HashSet;
 import java.util.List;
@@ -20,14 +19,14 @@ public interface StudyGroupMapper {
       Integer personnel,
       String description,
       List<String> interestList,
-      String status) {
+      String studyGroupStatus) {
     Set<Interest> interestSet = new HashSet<>();
 
     if (subject == null
         && personnel == null
         && description == null
         && interestList == null
-        && status == null) {
+        && studyGroupStatus == null) {
       return null;
     }
 
@@ -38,12 +37,15 @@ public interface StudyGroupMapper {
 
     StudyGroup studyGroup =
         new StudyGroup(
-            subject, personnel, description, interestSet, StudyGroupStatus.valueOf(status));
+            subject,
+            personnel,
+            description,
+            interestSet,
+            StudyGroupStatus.valueOf(studyGroupStatus));
 
     return studyGroup;
   }
 
-  @Mapping(source = "id", target = "studyGroupId")
   default GetStudyGroupDto toGetStudyGroupDto(StudyGroup studyGroup) {
     if (studyGroup == null) {
       return null;
@@ -61,7 +63,7 @@ public interface StudyGroupMapper {
             .collect(Collectors.toList());
 
     getStudyGroupDto.setInterests(interestList);
-    getStudyGroupDto.setStatus(studyGroup.getStatus());
+    getStudyGroupDto.setStatus(studyGroup.getStudyGroupStatus());
 
     return getStudyGroupDto;
   }

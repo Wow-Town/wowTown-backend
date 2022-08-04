@@ -48,7 +48,9 @@ public class UserQueryController {
     String origin = request.getHeader("Origin");
 
     String domain =
-        (origin == null || origin.equals("http://localhost:3000"))
+        (origin == null
+                || origin.equals("http://localhost:3000")
+                || origin.equals("http://localhost:8080"))
             ? "localhost"
             : origin.substring(7);
 

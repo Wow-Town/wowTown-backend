@@ -5,18 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetAvatarDto {
-  private Long avatarId;
-
-  private String nickName;
-
-  private String description;
-
-  private List<String> interests;
+public class GetAvatarCreatedChatRoomDto {
+  private UUID chatRoomUUID;
 }

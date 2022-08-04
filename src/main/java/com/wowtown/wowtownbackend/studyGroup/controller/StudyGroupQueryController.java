@@ -1,12 +1,11 @@
 package com.wowtown.wowtownbackend.studyGroup.controller;
 
 import com.wowtown.wowtownbackend.avatar.application.AvatarQueryProcessor;
-import com.wowtown.wowtownbackend.avatar.domain.Avatar;
-import com.wowtown.wowtownbackend.common.annotation.UserAvatar;
+import com.wowtown.wowtownbackend.channel.domain.Channel;
+import com.wowtown.wowtownbackend.common.annotation.UserChannel;
 import com.wowtown.wowtownbackend.common.annotation.ValidInterestType;
 import com.wowtown.wowtownbackend.common.domain.InterestType;
 import com.wowtown.wowtownbackend.studyGroup.application.StudyGroupQueryProcessor;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,23 +32,16 @@ public class StudyGroupQueryController {
 
   @ApiOperation(value = "모든 공고 조회", notes = ".")
   @GetMapping
-  public ResponseEntity getAllStudyGroup() {
+  public ResponseEntity getAllStudyGroup(@ApiIgnore @UserChannel Channel channel) {
     return ResponseEntity.status(HttpStatus.OK)
         .contentType(MediaType.APPLICATION_JSON)
-        .body(studyGroupQueryProcessor.getAllStudyGroup());
-  }
-  @ApiOperation(value = "아바타가 참여하고 있는 공고 조회", notes = "=.")
-  @GetMapping(value = "/avatar")
-  public ResponseEntity getStudyGroupWithQuery(@ApiIgnore @UserAvatar Avatar avatar) {
-
-    return ResponseEntity.status(HttpStatus.OK)
-        .contentType(MediaType.APPLICATION_JSON)
-        .body(studyGroupQueryProcessor.getStudyGroupWithAvatar(avatar));
+        .body(studyGroupQueryProcessor.getAllStudyGroupInChannel(channel));
   }
 
   @ApiOperation(value = "제목,관심사를 통해 공고 조회", notes = "")
   @GetMapping(value = "/search")
   public ResponseEntity getStudyGroupWithQuery(
+      @ApiIgnore @UserChannel Channel channel,
       @RequestParam(required = false, value = "subject") @NotEmpty String subject,
       @RequestParam(required = false, value = "interests")
           @ValidInterestType(message = "존재하지 않는 관심사 입니다.", enumClass = InterestType.class)
@@ -57,16 +49,18 @@ public class StudyGroupQueryController {
     if (subject != null && interests != null) {
       return ResponseEntity.status(HttpStatus.OK)
           .contentType(MediaType.APPLICATION_JSON)
-          .body(studyGroupQueryProcessor.getStudyGroupWithSubjectAndInterest(subject, interests));
+          .body(
+              studyGroupQueryProcessor.getStudyGroupWithSubjectAndInterestInChannel(
+                  channel, subject, interests));
     }
     if (subject != null) {
       return ResponseEntity.status(HttpStatus.OK)
           .contentType(MediaType.APPLICATION_JSON)
-          .body(studyGroupQueryProcessor.getStudyGroupWithSubject(subject));
+          .body(studyGroupQueryProcessor.getStudyGroupWithSubjectInChannel(channel, subject));
     } else {
       return ResponseEntity.status(HttpStatus.OK)
           .contentType(MediaType.APPLICATION_JSON)
-          .body(studyGroupQueryProcessor.getStudyGroupWithInterest(interests));
+          .body(studyGroupQueryProcessor.getStudyGroupWithInterestInChannel(channel, interests));
     }
   }
 }

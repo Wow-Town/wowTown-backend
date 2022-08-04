@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -46,11 +45,36 @@ public class StudyGroupCommandController {
   }
 
   @ApiOperation(value = "공고 삭제", notes = "")
-  @ApiImplicitParam(name ="studyGroupId",value="공고 id",required = true, dataType = "string",paramType = "path",defaultValue = "None")
+  @ApiImplicitParam(
+      name = "studyGroupId",
+      value = "공고 id",
+      required = true,
+      dataType = "string",
+      paramType = "path",
+      defaultValue = "None")
   @DeleteMapping(value = "/{studyGroupId}")
   public ResponseEntity deleteStudyGroup(
-      @PathVariable("studyGroupId") @Min(1) long studyGroupId,@ApiIgnore  @UserAvatar Avatar avatar) {
+      @PathVariable("studyGroupId") @Min(1) long studyGroupId,
+      @ApiIgnore @UserAvatar Avatar avatar) {
     studyGroupCommandExecutor.deleteStudyGroup(studyGroupId, avatar);
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }
+
+  // todo 공고 스크랩 기능 나중에 추가
+
+  //  @ApiOperation(value = "공고 스크랩", notes = "")
+  //  @ApiImplicitParam(
+  //      name = "studyGroupId",
+  //      value = "공고 id",
+  //      required = true,
+  //      dataType = "string",
+  //      paramType = "path",
+  //      defaultValue = "None")
+  //  @DeleteMapping(value = "/{studyGroupId}/scrap")
+  //  public ResponseEntity scrapStudyGroup(
+  //      @PathVariable("studyGroupId") @Min(1) long studyGroupId,
+  //      @ApiIgnore @UserAvatar Avatar avatar) {
+  //    studyGroupCommandExecutor.scrapStudyGroup(studyGroupId, avatar);
+  //    return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
+  //  }
 }

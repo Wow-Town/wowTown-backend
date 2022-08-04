@@ -3,6 +3,8 @@ package com.wowtown.wowtownbackend.avatar.application;
 import com.wowtown.wowtownbackend.avatar.application.common.AvatarMapper;
 import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarDto;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
+import com.wowtown.wowtownbackend.avatar.domain.AvatarChatRoom;
+import com.wowtown.wowtownbackend.avatar.domain.AvatarChatRoomRepository;
 import com.wowtown.wowtownbackend.avatar.domain.AvatarRepository;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
@@ -10,12 +12,15 @@ import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class AvatarQueryProcessor {
 
-  // private final StudyGroupQueryProcessor studyGroupQueryProcessor;
   private final AvatarRepository avatarRepository;
+  private final AvatarChatRoomRepository avatarChatRoomRepository;
   private final AvatarMapper avatarMapper;
 
   public GetAvatarDto getAvatar(Channel channel, User user) {
@@ -26,9 +31,11 @@ public class AvatarQueryProcessor {
     return avatarMapper.toGetAvatarDto(findAvatar);
   }
 
-  //  public List<GetAvatarDto> getAvatarWithStudyGroupId(Long studyGroupId) {
-  //    return studyGroupQueryProcessor.getAvatarWithStudyGroup(studyGroupId).stream()
-  //        .map(avatarStudyGroup -> avatarMapper.toGetAvatarDto(avatarStudyGroup.getAvatar()))
-  //        .collect(Collectors.toList());
-  //  }
+  public List<Avatar> getAvatarWithChatRoomUUID(UUID chatRoomUUID) {
+    return avatarRepository.findAvatarByChatRoomUuid(chatRoomUUID);
+  }
+
+  public List<AvatarChatRoom> getAvatarChatRoomWithAvatar(Avatar avatar) {
+    return avatarChatRoomRepository.findChatRoomAvatarByAvatarId(avatar.getId());
+  }
 }
