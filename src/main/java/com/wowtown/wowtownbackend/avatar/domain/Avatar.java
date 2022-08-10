@@ -31,6 +31,12 @@ public class Avatar {
   @CollectionTable(name = "avatar_interest")
   private Set<Interest> interestSet = new HashSet<>();
 
+  @OneToMany(mappedBy = "avatar")
+  private Set<StudyGroup> avatarScrapStudyGroupSet = new HashSet<>();
+
+  @OneToMany(mappedBy = "avatar", cascade = CascadeType.ALL)
+  private List<AvatarChatRoom> avatarChatRoomList = new ArrayList<>();
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "USER_ID")
   private User user;
