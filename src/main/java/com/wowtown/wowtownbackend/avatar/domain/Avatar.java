@@ -1,7 +1,9 @@
 package com.wowtown.wowtownbackend.avatar.domain;
 
 import com.wowtown.wowtownbackend.channel.domain.Channel;
+import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
 import com.wowtown.wowtownbackend.common.domain.Interest;
+import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
 import com.wowtown.wowtownbackend.friend.domain.Friend;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.Getter;
@@ -28,7 +30,13 @@ public class Avatar {
   @Enumerated(EnumType.STRING)
   @ElementCollection
   @CollectionTable(name = "avatar_interest")
-  private Set<Interest> interestList = new HashSet<>();
+  private Set<Interest> interestSet = new HashSet<>();
+
+  @OneToMany(mappedBy = "avatar")
+  private Set<StudyGroup> avatarScrapStudyGroupSet = new HashSet<>();
+
+  @OneToMany(mappedBy = "avatar", cascade = CascadeType.ALL)
+  private List<AvatarChatRoom> avatarChatRoomList = new ArrayList<>();
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "USER_ID")
@@ -72,15 +80,35 @@ public class Avatar {
   }
 
   public void addInterest(Interest payload) {
-    this.interestList.add(payload);
+    this.interestSet.add(payload);
   }
 
   public void updateAvatar(Avatar updatePayload) {
     this.nickName = updatePayload.getNickName();
     this.description = updatePayload.getDescription();
-    this.interestList = updatePayload.getInterestList();
+    this.interestSet = updatePayload.getInterestSet();
     this.updateAt = LocalDateTime.now();
   }
+
+  public void addAvatarChatRoom(ChatRoom payload) {
+    AvatarChatRoom avatarChatRoom = new AvatarChatRoom(payload.getRoomName());
+    avatarChatRoom.setAvatar(this);
+    avatarChatRoom.setChatRoom(payload);
+    this.avatarChatRoomList.add(avatarChatRoom);
+  }
+
+  public void removeAvatarChatRoom(ChatRoom payload) {
+    this.avatarChatRoomList.removeIf(
+        avatarChatRoom -> avatarChatRoom.getChatRoom().equals(payload));
+  }
+
+  //  public void addAvatarScrapStudyGroup(StudyGroup payload) {
+  //    this.avatarScrapStudyGroupSet.add(payload);
+  //  }
+  //
+  //  public void removeAvatarScrapStudyGroup(StudyGroup payload) {
+  //    this.avatarScrapStudyGroupSet.remove(payload);
+  //  }
 
   @Override
   public boolean equals(Object o) {

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Validated
@@ -30,14 +31,24 @@ public class AvatarQueryController {
   public ResponseEntity getAvatar(
       @ApiIgnore @UserChannel Channel channel,
       @ApiIgnore @LoginUser User user,
+      HttpServletRequest request,
       HttpServletResponse response) {
 
     GetAvatarDto getAvatarDto = avatarQueryProcessor.getAvatar(channel, user);
 
+    String origin = request.getHeader("Origin");
+
+    String domain =
+        (origin == null
+                || origin.equals("http://localhost:3000")
+                || origin.equals("http://localhost:8080"))
+            ? "localhost"
+            : origin.substring(7);
+
     Cookie cookie = new Cookie("avatarId", String.valueOf(getAvatarDto.getAvatarId()));
     cookie.setPath("/");
     cookie.setHttpOnly(true);
-    cookie.setDomain("wowtown.co.kr");
+    cookie.setDomain(domain);
     response.addCookie(cookie);
 
     return ResponseEntity.status(HttpStatus.OK)

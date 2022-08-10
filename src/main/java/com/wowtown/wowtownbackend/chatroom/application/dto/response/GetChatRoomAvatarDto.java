@@ -7,11 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class GetMultiChatRoomDto {
-    private Long multiChatRoomId;
-    private String name;
-    private Integer personnel;
-    private Integer participantsNum;
+@AllArgsConstructor
+public class GetChatRoomAvatarDto {
+  private long avatarId;
+
+  private String avatarName;
 }

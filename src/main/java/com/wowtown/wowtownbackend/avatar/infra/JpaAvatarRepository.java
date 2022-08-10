@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface JpaAvatarRepository extends JpaRepository<Avatar, Long>, AvatarRepository {
@@ -21,4 +23,8 @@ public interface JpaAvatarRepository extends JpaRepository<Avatar, Long>, Avatar
       @Param("channelId") Long channelId,
       @Param("userId") Long userId,
       @Param("nickName") String nickName);
+
+  @Query(
+      "select av from Avatar as av join AvatarChatRoom as ca where ca.chatRoom.uuid =:chatRoomUUID")
+  List<Avatar> findAvatarByChatRoomUuid(@Param("chatRoomUUID") UUID chatRoomUUID);
 }

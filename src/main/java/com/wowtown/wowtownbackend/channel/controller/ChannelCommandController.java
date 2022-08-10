@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -26,12 +27,23 @@ public class ChannelCommandController {
   @ApiOperation(value = "채널 입장하기", notes = "")
   @PostMapping
   public ResponseEntity<List<GetChannelDto>> enterChannel(
-      @RequestBody EnterChannelDto dto, HttpServletResponse response) {
+      @RequestBody EnterChannelDto dto, HttpServletRequest request, HttpServletResponse response) {
+
     long channelId = channelCommandExecutor.enterChannel(dto);
+
+    String origin = request.getHeader("Origin");
+
+    String domain =
+        (origin == null
+                || origin.equals("http://localhost:3000")
+                || origin.equals("http://localhost:8080"))
+            ? "localhost"
+            : origin.substring(7);
+
     Cookie cookie = new Cookie("channelId", String.valueOf(channelId));
     cookie.setPath("/");
     cookie.setHttpOnly(true);
-    //cookie.setDomain("wowtown.co.kr");
+    cookie.setDomain(domain);
     response.addCookie(cookie);
 
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();

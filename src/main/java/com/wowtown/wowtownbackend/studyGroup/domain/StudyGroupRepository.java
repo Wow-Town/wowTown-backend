@@ -15,16 +15,14 @@ public interface StudyGroupRepository {
 
   void deleteAll();
 
-  List<StudyGroup> findAll();
+  List<StudyGroup> findByChannelId(Long channelId);
 
   Optional<StudyGroup> findById(Long studyGroupId);
 
-  List<StudyGroup> findByAvatarId(Long avatarId);
+  List<StudyGroup> findByChannelIdAndSubjectContaining(Long channelId, String subject);
 
-  List<StudyGroup> findBySubjectContaining(String subject);
+  List<StudyGroup> findByChannelIdAndInterestList(Long channelId, Set<InterestType> interestList);
 
-  List<StudyGroup> findByInterestList(Set<InterestType> interestList);
-
-  List<StudyGroup> findBySubjectContainingAndInterestList(
-      String subject, Set<InterestType> interestList);
+  List<StudyGroup> findByChannelIdAndSubjectContainingAndInterestList(
+      Long channelId, String subject, Set<InterestType> interestList);
 }

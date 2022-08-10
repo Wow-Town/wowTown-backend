@@ -14,9 +14,14 @@ import java.util.List;
 @NoArgsConstructor
 public class GetStudyGroupDto {
   private Long studyGroupId;
+
   private String subject;
+
   private int personnel;
+
   private String description;
+
   private List<String> interests;
+
   private StudyGroupStatus status;
 }
