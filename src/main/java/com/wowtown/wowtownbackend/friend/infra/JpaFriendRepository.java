@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface JpaFriendRepository extends JpaRepository<Friend,Long>, FriendRepository {
@@ -19,12 +20,12 @@ public interface JpaFriendRepository extends JpaRepository<Friend,Long>, FriendR
 //             @Param("followerId")Long followerId );
 //
 
-    @Query("select f from Friend f where (f.follower.id =: followingId or f.following.id =:followingId) and f.friendStatus =: APPROVED")
+    @Query("select f from Friend f where f.follower.id =: followingId or f.following.id =:followingId")
     List<Friend> findFriendWithId(@Param("followingId") Long AvatarId); //친구목록 불러오
 
-    @Query("select f from Friend f where f.following.id = :followingId and f.friendStatus =: YET")
-    List<Friend> findWithFollowingId(@Param("followingId") Long AvatarId );//신청한 목록
+    @Query("select f from Friend f where f.following.id = :followingId ")
+    List<Friend> findWithFollowingId(@Param("followingId") Long AvatarId);//신청한 목록
 
-    @Query("select f from Friend f where f.following.id = :followerId and f.friendStatus =: YET")
+    @Query("select f from Friend f where f.follower.id = :followerId ")
     List<Friend> findWithFollowerId(@Param("followerId") Long AvatarId );//신청받은 목록
 }

@@ -60,4 +60,5 @@ public class AvatarCommandExecutor {
     avatarRepository.delete(findAvatar);
     return true;
   }
+
 }

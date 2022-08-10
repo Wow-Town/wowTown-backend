@@ -1,7 +1,6 @@
  package com.wowtown.wowtownbackend.friend.domain;
 
  import com.wowtown.wowtownbackend.avatar.domain.Avatar;
- import com.wowtown.wowtownbackend.avatar.domain.FriendStatus;
  import lombok.Getter;
 
  import javax.persistence.*;
@@ -38,6 +37,7 @@
    this.follower = follower;
    this.following = following;
    this.friendStatus = FriendStatus.YET;
+
   }
   public void friendRequestApprove(){
    this.friendStatus = FriendStatus.APPROVED;

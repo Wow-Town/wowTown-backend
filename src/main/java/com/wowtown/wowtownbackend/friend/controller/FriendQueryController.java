@@ -13,18 +13,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import springfox.documentation.annotations.ApiIgnore;
 
 
 @Validated
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/avatars")
 public class FriendQueryController {
     private final FriendRepository friendRepository;
     private final FriendMapper friendMapper;
-
     private final FriendQueryProcessor friendQueryProcessor;
-
     @GetMapping(value = "/friends/friend")
     public ResponseEntity getFriend
             (
@@ -53,7 +53,6 @@ public class FriendQueryController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(friendQueryProcessor.getFollowing(avatar));
     }
-
 
 
 }

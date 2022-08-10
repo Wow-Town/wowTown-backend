@@ -1,4 +1,4 @@
-package com.wowtown.wowtownbackend.avatar.domain;
+package com.wowtown.wowtownbackend.friend.domain;
 
 public enum FriendStatus {
     APPROVED,

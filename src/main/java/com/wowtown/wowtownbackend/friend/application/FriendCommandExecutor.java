@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +26,21 @@ public class FriendCommandExecutor {
     @Transactional
     public long friendRequest(FollowAvatarDto dto, Avatar followingAvatar){
         Optional<Avatar> followerAvatar = avatarRepository.findById(dto.getFollowerAvatarId());
+        List<Friend> friendList =
+                friendRepository
+                        .findFriendWithId(followingAvatar.getId())
+                        .stream()
+                        .collect(Collectors.toList());
+        if(friendList == null){
+            Friend friend = friendRepository.save(friendMapper.toFriend(followingAvatar, followerAvatar.get()));
+            return friend.getId();
+        }
         List<Friend> findFriendList =
-                friendRepository.findFriendWithId(followingAvatar.getId());
+                friendRepository
+                        .findFriendWithId(followingAvatar.getId())
+                        .stream()
+                        .filter(f->f.checkFriendStatusIsApproved())
+                        .collect(Collectors.toList());
         for(Friend friend : findFriendList){
             Optional<Avatar> friendAvatar = avatarRepository.findById(friend.reFriendId(followingAvatar.getId())); // 친구의 Id를 가져옴
             if(followerAvatar.get().equals(friendAvatar)){
@@ -34,7 +48,11 @@ public class FriendCommandExecutor {
             }
         }
         List<Friend> findFollowingList =
-                friendRepository.findWithFollowingId(followingAvatar.getId());
+                friendRepository
+                        .findWithFollowingId(followingAvatar.getId())
+                        .stream()
+                        .filter(f->!f.checkFriendStatusIsApproved())
+                        .collect(Collectors.toList());;
         for(Friend friend : findFollowingList){
             Optional<Avatar> friendAvatar = avatarRepository.findById(friend.reFriendId(followingAvatar.getId())); // 친구의 Id를 가져옴
             if(followerAvatar.get().equals(friendAvatar)){
@@ -42,18 +60,21 @@ public class FriendCommandExecutor {
             }
         }
         List<Friend> findFollowerList =
-                friendRepository.findWithFollowerId(followingAvatar.getId());
+                friendRepository
+                        .findWithFollowerId(followingAvatar.getId())
+                        .stream()
+                        .filter(f->!f.checkFriendStatusIsApproved())
+                        .collect(Collectors.toList());;
         for(Friend friend : findFriendList) {
             Optional<Avatar> friendAvatar = avatarRepository.findById(friend.reFriendId(followingAvatar.getId())); // 친구의 Id를 가져옴
             if (followerAvatar.get().equals(friendAvatar)) {
                 throw new IllegalStateException("상대가 이미 친구 신청을 하였습니다");
             }
         }
-        Friend friend = friendRepository.save(friendMapper.toFriend(followingAvatar, followerAvatar.get()));
-        return friend.getId();
+        return followerAvatar.get().getId(); //임시방편
     }
     @Transactional
-    public boolean followApprove(long friendId){  // 친구 신청,삭제 목록은 해당 아바타만 볼 수 있긴 하지만 검증로직 추가?
+    public boolean approveFollow(long friendId){  // 친구 신청,삭제 목록은 해당 아바타만 볼 수 있긴 하지만 검증로직 추가?
         Optional<Friend> friend = friendRepository.findById(friendId);
         friend.get().friendRequestApprove();
         return true;

@@ -8,10 +8,7 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Entity
@@ -42,7 +39,9 @@ public class Avatar {
   private Channel channel;
 
   @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Friend> friendList;
+  private List<Friend> followerFriendList = new ArrayList<>();
+  @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Friend> followingFriendList =new ArrayList<>();
 
   //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
   //  private List<CharacterChatRoom> characterChatRooms = new ArrayList<>();
