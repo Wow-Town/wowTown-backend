@@ -70,6 +70,11 @@ public class SwaggerConfig {
                 PathSelectors.regex("/studyGroups.*")));
     }
     @Bean
+    public Docket FriendApi() {
+        return getDocket("FRIEND", Predicates.or(
+                PathSelectors.regex("/firends.*")));
+    }
+    @Bean
     public Docket AllApi() {
         return getDocket("ALL", Predicates.or(
                 PathSelectors.regex("/*.*")));
