@@ -28,7 +28,6 @@ public class FriendCommandExecutor {
         if(requesterAvatar.getId().equals(dto.getFollowAvatarId())){
             throw new IllegalStateException("자신한텐 친구 신청을 할 수 없습니다");
         }
-
         Optional<Friend> findFriend =
                 friendRepository
                         .checkFriendWithFollowingAndFollowerId(dto.getFollowAvatarId(), requesterAvatar.getId());
@@ -55,7 +54,7 @@ public class FriendCommandExecutor {
 
     }
     @Transactional
-    public boolean approveFollowRequest(long friendId){  // 친구 신청,삭제 목록은 해당 아바타만 볼 수 있긴 하지만 검증로직 추가?
+    public boolean approveFollowRequest(long friendId){ 
         Friend friend = friendRepository
                 .findById(friendId)
                 .orElseThrow(()-> new InstanceNotFoundException("해당 친구(신청) 목록이 없습니다"));
@@ -63,25 +62,18 @@ public class FriendCommandExecutor {
     }
     @Transactional
     public boolean deleteFriend(long friendId){ //한번 삭제한 친구에게 다시 친구 신청 가능?
-        Optional<Friend> friend =
-                friendRepository
-                        .findById(friendId);
-        if(friend.isPresent()) {
-            friendRepository.delete(friend.get());
-            return true;
-        }
-        throw new InstanceNotFoundException("존재하지 않는 친구입니다. ");
+        Friend friend = friendRepository
+                .findById(friendId)
+                .orElseThrow(() -> new InstanceNotFoundException("해당 친구가 없습니다"));
+        friendRepository.delete(friend);
+        return true;
     }
-
     @Transactional
     public boolean followCancel(long friendId){
-
         return true;
-
     }
     @Transactional
     public boolean followReject(long friendId){
         return true;
-
     }
 }

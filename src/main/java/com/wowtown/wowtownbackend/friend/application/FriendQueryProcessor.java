@@ -26,7 +26,7 @@ public class FriendQueryProcessor {
                         .stream()
                         .filter(f -> f.checkFriendStatusIsApproved())
                         .map(f->f.reFriendId(avatar.getId()))
-                        .collect(Collectors.toList()); //여기서 필터로 바로 친구 Avatar로 변경하는 법은 없나?
+                        .collect(Collectors.toList());
         if(findFriendList.isEmpty()){
             throw new InstanceNotFoundException("친구가 없습니다.");
         }
