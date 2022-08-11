@@ -29,7 +29,7 @@ public class FriendCommandController {
     public ResponseEntity follow(
             @Valid @RequestBody FollowAvatarDto dto,
             @ApiIgnore  @UserAvatar Avatar following){
-        System.out.println("follow받는 아바타의 아이디는"+dto.getFollowerAvatarId());
+
         friendCommandExecutor.friendRequest(dto,following);
 
 
@@ -38,23 +38,22 @@ public class FriendCommandController {
                 .build();
     }
     //친구 받아주기
+    @ApiOperation(value = "친구 신청 승락", notes = "")
     @PostMapping(value ="/friends/{friendId}")
-    public ResponseEntity approveFollow(
+    public ResponseEntity approveFollowRequest(
             @PathVariable("friendId") long friendId){
-        friendCommandExecutor.approveFollow(friendId);
+        friendCommandExecutor.approveFollowRequest(friendId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }
-
     //친구 삭제하기
+    @ApiOperation(value = "친구 삭제", notes = "")
     @DeleteMapping(value ="/friends/{friendId}")
     public ResponseEntity deleteFriend(
             @PathVariable("friendId") long friendId){
-
         friendCommandExecutor.deleteFriend(friendId);
-
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();

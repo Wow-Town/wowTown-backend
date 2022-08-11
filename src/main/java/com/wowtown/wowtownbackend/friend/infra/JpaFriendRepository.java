@@ -28,4 +28,10 @@ public interface JpaFriendRepository extends JpaRepository<Friend,Long>, FriendR
 
     @Query("select f from Friend f where f.follower.id = :followerId ")
     List<Friend> findWithFollowerId(@Param("followerId") Long AvatarId );//신청받은 목록
+
+    @Query("select f from Friend f where (f.follower.id =:followerId and f.following.id =:followingId)" +
+            "or (f.follower.id =: followingId and f.following.id =:followerId)")
+    Optional <Friend> checkFriendWithFollowingAndFollowerId(
+            @Param("followerId") Long accepterId,@Param("followingId") Long requesterId
+    );
 }

@@ -13,5 +13,5 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class FollowAvatarDto {
     @NotNull(message = "friendId 필드는 비어있을 수 없습니다.")
-    private long followerAvatarId;
+    private long followAvatarId;
 }

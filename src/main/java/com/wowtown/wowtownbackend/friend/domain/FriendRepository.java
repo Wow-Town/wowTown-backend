@@ -13,6 +13,7 @@ public interface FriendRepository {
     Friend save(Friend toSave);
     Optional <Friend> findById(long friendId);
     void delete(Friend toDelete);
+    Optional <Friend> checkFriendWithFollowingAndFollowerId(Long accepterId,Long requesterId);
 
 
     //친구를 끊은 상태라면? following follower 둘 다 삭제하는 걸로

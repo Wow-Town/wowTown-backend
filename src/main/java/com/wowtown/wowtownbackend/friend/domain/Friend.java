@@ -33,6 +33,21 @@
     return false;
    }
   }
+  public boolean checkIfFollowing(Long avatarId){
+   if(this.following.getId().equals(avatarId)){
+    return true;
+   }
+   return false;
+
+  }
+  public boolean checkIfFollower(Long avatarId){
+   if(this.follower.getId().equals(avatarId)){
+    return true;
+   }
+   return false;
+
+
+  }
   public Friend(Avatar following,Avatar follower){
    this.follower = follower;
    this.following = following;

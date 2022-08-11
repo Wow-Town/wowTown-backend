@@ -10,6 +10,7 @@ import com.wowtown.wowtownbackend.user.domain.User;
 import org.mapstruct.Mapper;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -52,14 +53,13 @@ public interface AvatarMapper {
     }
 
     GetAvatarDto getAvatarDto = new GetAvatarDto();
-
     getAvatarDto.setAvatarId(avatar.getId());
     getAvatarDto.setNickName(avatar.getNickName());
     getAvatarDto.setDescription(avatar.getDescription());
-    List<String> interestList =
+    Set<String> interestList =
         avatar.getInterestSet().stream()
             .map(interest -> interest.getType().toString())
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
 
     getAvatarDto.setInterests(interestList);
 
