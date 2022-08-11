@@ -33,36 +33,22 @@
     return false;
    }
   }
-  public boolean checkIfFollowing(Long avatarId){
-   if(this.following.getId().equals(avatarId)){
-    return true;
-   }
-   return false;
-
-  }
-  public boolean checkIfFollower(Long avatarId){
-   if(this.follower.getId().equals(avatarId)){
-    return true;
-   }
-   return false;
-
-
-  }
   public Friend(Avatar following,Avatar follower){
    this.follower = follower;
    this.following = following;
    this.friendStatus = FriendStatus.YET;
 
   }
-  public void friendRequestApprove(){
+  public boolean friendRequestApprove(){
    this.friendStatus = FriendStatus.APPROVED;
+   return true;
   }
-  public long reFriendId(Long myId){ //프랜드 객체를 받아서 친구 Id만 리턴
+  public Avatar reFriendId(Long myId){ //프랜드 객체를 받아서 친구 Id만 리턴
    if(myId == this.following.getId()){
-    return this.follower.getId();
+    return this.follower;
    }
    else{
-    return this.following.getId();
+    return this.following;
    }
   }
  }

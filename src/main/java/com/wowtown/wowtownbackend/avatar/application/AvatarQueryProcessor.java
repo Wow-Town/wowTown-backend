@@ -41,23 +41,12 @@ public class AvatarQueryProcessor {
     return avatarChatRoomRepository.findChatRoomAvatarByAvatarId(avatar.getId());
   }
   ///친구 관련
-  public Avatar getAvatarWithAvatarId(long avatarId){
-    Avatar findAvatar = avatarRepository
-            .findById(avatarId)
-            .orElseThrow(()->new InstanceNotFoundException("없는 아바타입니다"));
-    return findAvatar;
-  }
-  public List<GetAvatarDto> getFriendAvatarDto(List<Long> avatarIdList){
-    List<Avatar> avatarList = new ArrayList<>();
+  public List<GetAvatarDto> getFriendAvatarDto(List<Avatar> avatarList){
     List<GetAvatarDto> avatarDtoList = new ArrayList<>();
-    for(Long avatarId : avatarIdList){
-      Optional <Avatar> findAvatar = avatarRepository.findById(avatarId);
-      if(findAvatar.isPresent()) {
-        avatarList.add(findAvatar.get());
-      }
-    }
-    for(Avatar avatar : avatarList){
-      avatarDtoList.add(avatarMapper.toGetAvatarDto(avatar));
+    for(Avatar findAvatar : avatarList){
+
+      avatarDtoList.add(avatarMapper.toGetAvatarDto(findAvatar));
+
     }
     return avatarDtoList;
   }

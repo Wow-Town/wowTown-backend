@@ -2,9 +2,7 @@ package com.wowtown.wowtownbackend.friend.controller;
 
 
 import com.wowtown.wowtownbackend.friend.application.FriendQueryProcessor;
-import com.wowtown.wowtownbackend.friend.application.common.FriendMapper;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
-import com.wowtown.wowtownbackend.friend.domain.FriendRepository;
 import com.wowtown.wowtownbackend.common.annotation.UserAvatar;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +19,6 @@ import springfox.documentation.annotations.ApiIgnore;
 @Validated
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/avatars")
 public class FriendQueryController {
     private final FriendQueryProcessor friendQueryProcessor;
 
@@ -35,7 +32,6 @@ public class FriendQueryController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(friendQueryProcessor.getFriend(avatar));
     }
-
     @ApiOperation(value = "팔로워 목록 가져오기", notes = "")
     @GetMapping(value = "/friends/follower")
     public ResponseEntity getFollower

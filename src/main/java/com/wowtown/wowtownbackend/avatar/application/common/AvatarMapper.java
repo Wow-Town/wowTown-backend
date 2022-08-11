@@ -9,7 +9,6 @@ import com.wowtown.wowtownbackend.common.domain.InterestType;
 import com.wowtown.wowtownbackend.user.domain.User;
 import org.mapstruct.Mapper;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,7 +59,6 @@ public interface AvatarMapper {
         avatar.getInterestSet().stream()
             .map(interest -> interest.getType().toString())
             .collect(Collectors.toSet());
-
     getAvatarDto.setInterests(interestList);
 
     return getAvatarDto;

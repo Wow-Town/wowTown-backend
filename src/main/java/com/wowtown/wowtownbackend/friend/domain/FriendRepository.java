@@ -16,8 +16,5 @@ public interface FriendRepository {
     Optional <Friend> checkFriendWithFollowingAndFollowerId(Long accepterId,Long requesterId);
 
 
-    //친구를 끊은 상태라면? following follower 둘 다 삭제하는 걸로
-
-
 
 }

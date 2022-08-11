@@ -13,12 +13,6 @@ import java.util.Optional;
 @Repository
 public interface JpaFriendRepository extends JpaRepository<Friend,Long>, FriendRepository {
 
-//    @Query("select f from Friend f where f.friendStatus =: APPROVED " +
-//            "and " +)
-//    Optional<Friend> checkFriendWithFollowingIdAndFollowerId( //이미
-//             @Param("followingId")Long followingId,
-//             @Param("followerId")Long followerId );
-//
 
     @Query("select f from Friend f where f.follower.id =: followingId or f.following.id =:followingId")
     List<Friend> findFriendWithId(@Param("followingId") Long AvatarId); //친구목록 불러오

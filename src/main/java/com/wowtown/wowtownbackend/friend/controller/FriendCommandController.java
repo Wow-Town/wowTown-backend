@@ -50,10 +50,31 @@ public class FriendCommandController {
     }
     //친구 삭제하기
     @ApiOperation(value = "친구 삭제", notes = "")
-    @DeleteMapping(value ="/friends/{friendId}")
+    @DeleteMapping(value ="/friends/{friendId}/delete")
     public ResponseEntity deleteFriend(
             @PathVariable("friendId") long friendId){
         friendCommandExecutor.deleteFriend(friendId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
+    }
+    @ApiOperation(value = "친구 신청 취소", notes = "")
+    @DeleteMapping(value ="/friends/{friendId}/cancel")
+    public ResponseEntity followCancel(
+            @PathVariable("friendId") long friendId){
+
+        friendCommandExecutor.followCancel(friendId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
+    }
+    @ApiOperation(value = "친구 신청 거절", notes = "")
+    @DeleteMapping(value ="/friends/{friendId}/reject")
+    public ResponseEntity followReject(
+            @PathVariable("friendId") long friendId)
+    {
+        friendCommandExecutor.followReject(friendId);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
