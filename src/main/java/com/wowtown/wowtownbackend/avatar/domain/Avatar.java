@@ -4,6 +4,7 @@ import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
 import com.wowtown.wowtownbackend.common.domain.Interest;
 import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
+import com.wowtown.wowtownbackend.friend.domain.Friend;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.Getter;
 
@@ -31,6 +32,12 @@ public class Avatar {
   @CollectionTable(name = "avatar_interest")
   private Set<Interest> interestSet = new HashSet<>();
 
+  @OneToMany(mappedBy = "avatar")
+  private Set<StudyGroup> avatarScrapStudyGroupSet = new HashSet<>();
+
+  @OneToMany(mappedBy = "avatar", cascade = CascadeType.ALL)
+  private List<AvatarChatRoom> avatarChatRoomList = new ArrayList<>();
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "USER_ID")
   private User user;
@@ -39,11 +46,13 @@ public class Avatar {
   @JoinColumn(name = "Channel_ID")
   private Channel channel;
 
-  @OneToMany(mappedBy = "avatar")
-  private Set<StudyGroup> avatarScrapStudyGroupSet = new HashSet<>();
+  @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Friend> followerFriendList = new ArrayList<>();
+  @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Friend> followingFriendList =new ArrayList<>();
 
-  @OneToMany(mappedBy = "avatar", cascade = CascadeType.ALL)
-  private List<AvatarChatRoom> avatarChatRoomList = new ArrayList<>();
+  //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
+  //  private List<CharacterChatRoom> characterChatRooms = new ArrayList<>();
 
   //  // set or list 둘중 선택
   //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
