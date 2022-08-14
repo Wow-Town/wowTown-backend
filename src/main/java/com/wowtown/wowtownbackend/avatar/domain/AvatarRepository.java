@@ -2,7 +2,6 @@ package com.wowtown.wowtownbackend.avatar.domain;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface AvatarRepository {
   Avatar save(Avatar toSave);
@@ -16,5 +15,5 @@ public interface AvatarRepository {
   Optional<Avatar> findAvatarWithChannelIdAndUserIdAndNickName(
       Long channelId, Long userId, String nickName);
 
-  List<Avatar> findAvatarByChatRoomUuid(UUID chatRoomUUID);
+  List<Avatar> findAvatarByChatRoomId(Long chatRoomId);
 }

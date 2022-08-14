@@ -1,6 +1,5 @@
 package com.wowtown.wowtownbackend.chatroom.application.dto.response;
 
-import com.wowtown.wowtownbackend.chatroom.domain.ChatRoomType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,5 +16,9 @@ public class GetChatRoomDto {
 
   private String roomName;
 
-  private ChatRoomType roomType;
+  private String latestMessage;
+
+  private int receiveMessageNum;
+
+  private String roomType;
 }

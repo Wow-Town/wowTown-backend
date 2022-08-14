@@ -1,7 +1,7 @@
 package com.wowtown.wowtownbackend.chatroom.domain;
 
 public enum MessageType {
-  ENTER,
+  CONNECT,
   SEND,
-  LEAVE
+  DISCONNECT
 }

@@ -19,7 +19,7 @@ public class CreateOrUpdateNoticeDto {
 
   private String description;
 
-  @Size(min = 3, max = 3)
+  @Size(min = 1, max = 3)
   @ValidInterestType(message = "존재하지 않는 관심사 입니다.", enumClass = InterestType.class)
   private List<String> interests;
 }

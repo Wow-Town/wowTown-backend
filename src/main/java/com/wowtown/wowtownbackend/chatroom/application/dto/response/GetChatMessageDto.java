@@ -5,12 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetChatRoomAvatarDto {
-  private long avatarId;
+public class GetChatMessageDto {
+  private String sender;
 
-  private String avatarName;
+  private String message;
+
+  private int count; // 읽지 않은 사용자 수
+
+  private LocalDateTime sendAt;
 }

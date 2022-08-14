@@ -1,10 +1,11 @@
 package com.wowtown.wowtownbackend.chatroom.domain;
 
+import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.util.Objects;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Getter
 @Entity
@@ -14,44 +15,101 @@ public class ChatRoom {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String roomName;
-  private int personnel; // 최대 인원수
-  private int participantsNum; // 현재 참여자 수
+  private Integer participantsNum; // 채팅방 참여자 수
+
+  private Integer currentJoinNum; // 현재 접속중인 인원수
 
   private UUID uuid;
 
   @Enumerated(EnumType.STRING)
-  private ChatRoomType chatRoomType;
+  private ChatRoomType roomType;
+
+  private LocalDateTime createAt;
+
+  private LocalDateTime updateAt;
+
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "CHATROOM_ID")
+  private List<ChatMessage> chatMessageList = new ArrayList<>();
+
+  @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
+  private Set<AvatarChatRoom> avatarChatRoomSet = new HashSet<>();
 
   protected ChatRoom() {}
 
-  public ChatRoom(String roomName) {
-    this.roomName = roomName;
-    this.personnel = 1;
+  public ChatRoom(ChatRoomType roomType) {
     this.participantsNum = 0;
+    this.currentJoinNum = 0;
     this.uuid = UUID.randomUUID();
-    this.chatRoomType = ChatRoomType.SINGLE;
+    this.roomType = roomType;
+    this.createAt = LocalDateTime.now();
+    this.updateAt = null;
   }
 
-  public ChatRoom(String roomName, int personnel) {
-    this.roomName = roomName;
-    this.personnel = personnel;
-    this.participantsNum = 0;
-    this.uuid = UUID.randomUUID();
-    this.chatRoomType = ChatRoomType.MULTI;
+  public void addAvatarChatRoom(String roomName, Avatar participantAvatar) {
+    AvatarChatRoom avatarChatRoom = new AvatarChatRoom(roomName, roomName);
+    avatarChatRoom.setAvatar(participantAvatar);
+    avatarChatRoom.setChatRoom(this);
+    this.avatarChatRoomSet.add(avatarChatRoom);
+    this.participantsNum++;
   }
 
-  public void updateChatRoom(String roomName, int personnel) {
-    this.roomName = roomName;
-    this.personnel = personnel;
+  public void enterChatRoom(String sessionId, long enterAvatarId) {
+    if (this.roomType == ChatRoomType.SINGLE) {
+      for (AvatarChatRoom avatarChatRoom : this.avatarChatRoomSet) {
+        if (avatarChatRoom.getAvatar().getId() == enterAvatarId) {
+
+          // 마지막 입장한 시점을 기준으로 이후에 생성된 메시지를 확인하여 읽음 표시해줌
+          LocalDateTime lastEnterTime = avatarChatRoom.getUpdateAt();
+          if (this.chatMessageList.size() != 0) {
+            for (ChatMessage chatMessage : this.chatMessageList) {
+              if (lastEnterTime == null) {
+                chatMessage.decreaseCount();
+              } else {
+                if (chatMessage.getSendAt().isAfter(lastEnterTime)) {
+                  chatMessage.decreaseCount();
+                }
+              }
+            }
+            int lastIdx = this.chatMessageList.size() - 1;
+            ChatMessage latestMessage = this.chatMessageList.get(lastIdx);
+
+            // 아바타 채팅방 마지막 메시지를 업데이트 해준다.
+            avatarChatRoom.updateLastCheckMessage(latestMessage);
+            // 아바타 채팅방 읽지 않은 메시지 수를 0 으로 초기화해준다.
+            avatarChatRoom.resetReceiveMessageNum();
+          }
+
+          // 아바타 채팅방 세션 생성하여 마지막 입장 시간은 업데이트해줌
+          avatarChatRoom.setSession(sessionId);
+        }
+      }
+    }
+    this.currentJoinNum++;
   }
 
-  public void increaseParticipantsNum() {
-    this.participantsNum += 1;
+  public void leaveChatRoom(String sessionId) {
+    for (AvatarChatRoom avatarChatRoom : this.avatarChatRoomSet) {
+      if (avatarChatRoom.getSessionId().equals(sessionId)) {
+        // 아바타 채팅방 세션을 삭제한다.
+        avatarChatRoom.setSession(null);
+        this.currentJoinNum--;
+        break;
+      }
+    }
   }
 
-  public void decreaseParticipantsNum() {
-    this.participantsNum -= 1;
+  public ChatMessage addChatMessage(ChatMessage payload) {
+    for (AvatarChatRoom avatarChatRoom : this.avatarChatRoomSet) {
+      if (avatarChatRoom.getSessionId() == null) {
+        avatarChatRoom.increaseReceiveMessageNum();
+      }
+      avatarChatRoom.setActive(true);
+      avatarChatRoom.updateLatestMessage(payload.getMessage());
+    }
+    this.chatMessageList.add(payload);
+    this.updateAt = LocalDateTime.now();
+    return payload;
   }
 
   @Override
@@ -63,13 +121,11 @@ public class ChatRoom {
       return false;
     }
     ChatRoom chatRoom = (ChatRoom) o;
-    return this.id == chatRoom.id
-        && this.uuid == chatRoom.uuid
-        && this.chatRoomType == chatRoom.chatRoomType;
+    return this.id == chatRoom.id && this.uuid == chatRoom.uuid;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id, this.uuid, this.chatRoomType);
+    return Objects.hash(this.id, this.uuid);
   }
 }

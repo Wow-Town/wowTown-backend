@@ -42,7 +42,8 @@ public class WebConfig implements WebMvcConfigurer {
             "/swagger-ui.html",
             "/v2/api-docs",
             "/swagger-resources/**",
-            "/webjars/**");
+            "/webjars/**",
+            "/ws-stomp"); // 임시로 열어놓음
     registry
         .addInterceptor(new ChannelInterceptor(channelProvider))
         .order(2)
@@ -60,7 +61,8 @@ public class WebConfig implements WebMvcConfigurer {
         .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
         .maxAge(-1) // add maxAge
         .allowCredentials(true)
-        .allowedOriginPatterns("http://localhost:3000", "http://wowtown.co.kr");
+        .allowedOriginPatterns(
+            "http://localhost:3000", "http://wowtown.co.kr");
   }
 
   @Override

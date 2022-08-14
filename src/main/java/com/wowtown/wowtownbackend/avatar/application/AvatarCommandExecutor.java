@@ -5,7 +5,6 @@ import com.wowtown.wowtownbackend.avatar.application.dto.request.CreateOrUpdateA
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.avatar.domain.AvatarRepository;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
-import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -62,15 +61,15 @@ public class AvatarCommandExecutor {
     return true;
   }
 
-  @Transactional
-  public void avatarEnterChatRoom(ChatRoom chatRoom, Avatar avatar) {
-    avatar.addAvatarChatRoom(chatRoom);
-  }
-
-  @Transactional
-  public void avatarLeaveChatRoom(ChatRoom chatRoom, Avatar avatar) {
-    avatar.removeAvatarChatRoom(chatRoom);
-  }
+  //  @Transactional
+  //  public void avatarEnterChatRoom(ChatRoom chatRoom, Avatar avatar) {
+  //    avatar.addAvatarChatRoom(chatRoom);
+  //  }
+  //
+  //  @Transactional
+  //  public void avatarLeaveChatRoom(ChatRoom chatRoom, Avatar avatar) {
+  //    avatar.removeAvatarChatRoom(chatRoom);
+  //  }
 
   //  @Transactional
   //  public void addAvatarScrapNotice(Notice notice, Avatar avatar) {

@@ -1,6 +1,7 @@
 package com.wowtown.wowtownbackend.avatar.domain;
 
 import com.wowtown.wowtownbackend.channel.domain.Channel;
+import com.wowtown.wowtownbackend.chatroom.domain.AvatarChatRoom;
 import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
 import com.wowtown.wowtownbackend.common.domain.Interest;
 import com.wowtown.wowtownbackend.friend.domain.Friend;
@@ -84,12 +85,12 @@ public class Avatar {
     this.updateAt = LocalDateTime.now();
   }
 
-  public void addAvatarChatRoom(ChatRoom payload) {
-    AvatarChatRoom avatarChatRoom = new AvatarChatRoom(payload.getRoomName());
-    avatarChatRoom.setAvatar(this);
-    avatarChatRoom.setChatRoom(payload);
-    this.avatarChatRoomList.add(avatarChatRoom);
-  }
+  //  public void addAvatarChatRoom(ChatRoom payload) {
+  //    AvatarChatRoom avatarChatRoom = new AvatarChatRoom(payload.getRoomName());
+  //    avatarChatRoom.setAvatar(this);
+  //    avatarChatRoom.setChatRoom(payload);
+  //    this.avatarChatRoomList.add(avatarChatRoom);
+  //  }
 
   public void removeAvatarChatRoom(ChatRoom payload) {
     this.avatarChatRoomList.removeIf(
