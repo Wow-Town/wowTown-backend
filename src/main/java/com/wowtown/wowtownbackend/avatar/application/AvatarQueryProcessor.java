@@ -54,4 +54,10 @@ public class AvatarQueryProcessor {
 
 
 
+  public GetAvatarDto getAvatarById(Long avatarId){
+    Avatar findAvatar = avatarRepository
+            .findById(avatarId)
+            .orElseThrow(()->new InstanceNotFoundException("아바타가 존재하지 않습니다."));
+    return avatarMapper.toGetAvatarDto(findAvatar);
+  }
 }

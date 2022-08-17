@@ -1,6 +1,6 @@
 // package com.wowtown.wowtownbackend.privateSpace.domain;
 //
-// import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
+// import com.wowtown.wowtownbackend.studyGroup.domain.Notice;
 // import lombok.Getter;
 //
 // import javax.persistence.GeneratedValue;
@@ -16,7 +16,7 @@
 //  private Long id;
 //
 //  @OneToOne(mappedBy = "privateSpace")
-//  private StudyGroup studyGroup;
+//  private Notice studyGroup;
 //
 //  public PrivateSpace() {}
 // }

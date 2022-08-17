@@ -56,6 +56,8 @@ public class AvatarQueryController {
         .body(getAvatarDto);
   }
 
+
+
   //  @GetMapping(value = "/avatars")
   //  public ResponseEntity getAvatar(@RequestParam("studyGroupId") long studyGroupId) {
   //

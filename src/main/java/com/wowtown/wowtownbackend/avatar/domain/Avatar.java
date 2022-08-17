@@ -3,7 +3,7 @@ package com.wowtown.wowtownbackend.avatar.domain;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
 import com.wowtown.wowtownbackend.common.domain.Interest;
-import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
+import com.wowtown.wowtownbackend.notice.domain.Notice;
 import com.wowtown.wowtownbackend.friend.domain.Friend;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.Getter;
@@ -33,7 +33,7 @@ public class Avatar {
   private Set<Interest> interestSet = new HashSet<>();
 
   @OneToMany(mappedBy = "avatar")
-  private Set<StudyGroup> avatarScrapStudyGroupSet = new HashSet<>();
+  private Set<Notice> avatarScrapNoticeSet = new HashSet<>();
 
   @OneToMany(mappedBy = "avatar", cascade = CascadeType.ALL)
   private List<AvatarChatRoom> avatarChatRoomList = new ArrayList<>();
@@ -102,12 +102,12 @@ public class Avatar {
         avatarChatRoom -> avatarChatRoom.getChatRoom().equals(payload));
   }
 
-  //  public void addAvatarScrapStudyGroup(StudyGroup payload) {
-  //    this.avatarScrapStudyGroupSet.add(payload);
+  //  public void addAvatarScrapStudyGroup(Notice payload) {
+  //    this.avatarScrapNoticeSet.add(payload);
   //  }
   //
-  //  public void removeAvatarScrapStudyGroup(StudyGroup payload) {
-  //    this.avatarScrapStudyGroupSet.remove(payload);
+  //  public void removeAvatarScrapStudyGroup(Notice payload) {
+  //    this.avatarScrapNoticeSet.remove(payload);
   //  }
 
   @Override
