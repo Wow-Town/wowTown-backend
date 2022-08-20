@@ -18,7 +18,7 @@ public class AvatarChatRoom {
 
   private String defaultRoomName;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "CHAT_MESSAGE_ID")
   private ChatMessage lastCheckMessage;
 

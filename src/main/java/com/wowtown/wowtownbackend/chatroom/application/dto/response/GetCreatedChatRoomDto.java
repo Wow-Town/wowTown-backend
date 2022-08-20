@@ -13,4 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class GetCreatedChatRoomDto {
   private UUID chatRoomUUID;
+
+  private String roomName;
 }

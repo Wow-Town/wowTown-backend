@@ -16,6 +16,8 @@ public class ChatMessage {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  private MessageType type;
+
   private String sender;
 
   private Long senderId;
@@ -28,7 +30,9 @@ public class ChatMessage {
 
   protected ChatMessage() {}
 
-  public ChatMessage(String sender, Long senderId, String message, Integer count) {
+  public ChatMessage(
+      MessageType type, String sender, Long senderId, String message, Integer count) {
+    this.type = type;
     this.sender = sender;
     this.senderId = senderId;
     this.message = message;

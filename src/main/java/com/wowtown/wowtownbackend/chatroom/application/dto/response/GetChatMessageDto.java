@@ -1,5 +1,6 @@
 package com.wowtown.wowtownbackend.chatroom.application.dto.response;
 
+import com.wowtown.wowtownbackend.chatroom.domain.MessageType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetChatMessageDto {
+  private MessageType type;
+
   private String sender;
 
   private String message;

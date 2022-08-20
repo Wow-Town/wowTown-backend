@@ -1,9 +1,9 @@
 package com.wowtown.wowtownbackend.chatroom.application.dto.request;
 
+import com.wowtown.wowtownbackend.chatroom.domain.MessageType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.messaging.simp.stomp.StompCommand;
 
 import java.util.UUID;
 
@@ -11,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatMessageDto {
-  private StompCommand type;
+  private MessageType type;
 
   private String sessionId;
 
