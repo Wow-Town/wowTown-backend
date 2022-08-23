@@ -3,8 +3,8 @@ package com.wowtown.wowtownbackend.avatar.domain;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
 import com.wowtown.wowtownbackend.common.domain.Interest;
-import com.wowtown.wowtownbackend.notice.domain.Notice;
 import com.wowtown.wowtownbackend.friend.domain.Friend;
+import com.wowtown.wowtownbackend.notice.domain.Notice;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.Getter;
 
@@ -48,18 +48,12 @@ public class Avatar {
 
   @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Friend> followerFriendList = new ArrayList<>();
+
   @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Friend> followingFriendList =new ArrayList<>();
+  private List<Friend> followingFriendList = new ArrayList<>();
 
   //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
-  //  private List<CharacterChatRoom> characterChatRooms = new ArrayList<>();
-
-  //  // set or list 둘중 선택
-  //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
-  //  private Set<Character> following = new HashSet<>();
-  //
-  //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
-  //  private Set<Character> follower = new HashSet<>();
+  //  //  private List<CharacterChatRoom> characterChatRooms = new ArrayList<>();
 
   protected Avatar() {}
 

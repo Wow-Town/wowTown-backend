@@ -26,7 +26,7 @@ public class NoticeCommandController {
   @ApiOperation(value = "공고 생성", notes = ".")
   @PostMapping
   public ResponseEntity createNotice(
-          @Valid @RequestBody CreateOrUpdateNoticeDto dto, @ApiIgnore @UserAvatar Avatar avatar) {
+      @Valid @RequestBody CreateOrUpdateNoticeDto dto, @ApiIgnore @UserAvatar Avatar avatar) {
     noticeCommandExecutor.createNotice(dto, avatar);
 
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -54,8 +54,7 @@ public class NoticeCommandController {
       defaultValue = "None")
   @DeleteMapping(value = "/{noticeId}")
   public ResponseEntity deleteNotice(
-      @PathVariable("noticeId") @Min(1) long noticeId,
-      @ApiIgnore @UserAvatar Avatar avatar) {
+      @PathVariable("noticeId") @Min(1) long noticeId, @ApiIgnore @UserAvatar Avatar avatar) {
     noticeCommandExecutor.deleteNotice(noticeId, avatar);
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }
@@ -64,17 +63,17 @@ public class NoticeCommandController {
 
   //  @ApiOperation(value = "공고 스크랩", notes = "")
   //  @ApiImplicitParam(
-  //      name = "studyGroupId",
+  //      name = "noticeId",
   //      value = "공고 id",
   //      required = true,
   //      dataType = "string",
   //      paramType = "path",
   //      defaultValue = "None")
-  //  @DeleteMapping(value = "/{studyGroupId}/scrap")
-  //  public ResponseEntity scrapStudyGroup(
-  //      @PathVariable("studyGroupId") @Min(1) long studyGroupId,
+  //  @DeleteMapping(value = "/{noticeId}/scrap")
+  //  public ResponseEntity scrapNotice(
+  //      @PathVariable("noticeId") @Min(1) long noticeId,
   //      @ApiIgnore @UserAvatar Avatar avatar) {
-  //    studyGroupCommandExecutor.scrapStudyGroup(studyGroupId, avatar);
+  //    noticeCommandExecutor.scrapNotice(noticeId, avatar);
   //    return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   //  }
 }

@@ -39,13 +39,13 @@ public class ChatRoomCommandExecutor {
   }
 
   @Transactional
-  public GetCreatedChatRoomDto createStudyGroupChatroom(Long studyGroupId) {
+  public GetCreatedChatRoomDto createNoticeChatroom(Long noticeId) {
 
-    Notice findNotice = noticeProvider.getNotice(studyGroupId);
+    Notice findNotice = noticeProvider.getNotice(noticeId);
 
     ChatRoom chatRoom =
         chatRoomRepository.save(
-            chatRoomMapper.toStudyGroupChatRoom(
+            chatRoomMapper.toNoticeChatRoom(
                 findNotice.getSubject(), findNotice.getPersonnel()));
 
     // 스터디그룹 채팅방 설정

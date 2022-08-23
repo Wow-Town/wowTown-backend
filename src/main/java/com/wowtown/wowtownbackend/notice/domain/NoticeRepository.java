@@ -17,7 +17,7 @@ public interface NoticeRepository {
 
   List<Notice> findByChannelId(Long channelId);
 
-  Optional<Notice> findById(Long studyGroupId);
+  Optional<Notice> findById(Long noticeId);
 
   List<Notice> findByChannelIdAndSubjectContaining(Long channelId, String subject);
 

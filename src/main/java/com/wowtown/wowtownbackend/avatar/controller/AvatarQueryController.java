@@ -55,14 +55,4 @@ public class AvatarQueryController {
         .contentType(MediaType.APPLICATION_JSON)
         .body(getAvatarDto);
   }
-
-
-
-  //  @GetMapping(value = "/avatars")
-  //  public ResponseEntity getAvatar(@RequestParam("studyGroupId") long studyGroupId) {
-  //
-  //    return ResponseEntity.status(HttpStatus.OK)
-  //        .contentType(MediaType.APPLICATION_JSON)
-  //        .body(avatarQueryProcessor.getAvatarWithStudyGroupId(studyGroupId));
-  //  }
 }

@@ -83,12 +83,12 @@ public class NoticeCommandExecutor {
   // todo 공고 스크랩 기능 나중에 추가
 
   //  @Transactional
-  //  public void scrapStudyGroup(long studyGroupId, Avatar avatar) {
-  //    Notice findStudyGroup =
+  //  public void scrapNotice(long noticeId, Avatar avatar) {
+  //    Notice findNotice =
   //        noticeRepository
-  //            .findById(studyGroupId)
+  //            .findById(noticeId)
   //            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 스터디 그룹입니다"));
   //
-  //    avatarCommandExecutor.addAvatarScrapStudyGroup(findStudyGroup, avatar);
+  //    avatarCommandExecutor.addAvatarScrapNotice(findNotice, avatar);
   //  }
 }

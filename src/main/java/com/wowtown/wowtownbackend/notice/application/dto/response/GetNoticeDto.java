@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetNoticeDto {
-  private Long NoticeId;
+  private Long noticeId;
 
   private String subject;
 

@@ -25,7 +25,7 @@ public interface ChatRoomMapper {
     return chatRoom;
   }
 
-  default ChatRoom toStudyGroupChatRoom(String roomName, Integer personnel) {
+  default ChatRoom toNoticeChatRoom(String roomName, Integer personnel) {
     if (roomName == null && personnel == null) {
       return null;
     }
