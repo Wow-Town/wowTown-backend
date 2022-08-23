@@ -38,12 +38,12 @@ public class ChatRoomCommandController {
   }
 
   @ApiOperation(value = "스터디그룹 채팅방 생성하기", notes = "유저,채널ID,dto 사용")
-  @PostMapping(value = "/create/studyGroup")
-  public ResponseEntity createStudyGroupChatroom(@RequestParam("Id") @Min(1) long studyGroupId) {
+  @PostMapping(value = "/create/notice")
+  public ResponseEntity createNoticeChatroom(@RequestParam("Id") @Min(1) long noticeId) {
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .contentType(MediaType.APPLICATION_JSON)
-        .body(chatRoomCommandExecutor.createStudyGroupChatroom(studyGroupId));
+        .body(chatRoomCommandExecutor.createNoticeChatroom(noticeId));
   }
 
   // 이 아래 두개 필요 없을수도..??

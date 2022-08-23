@@ -1,6 +1,6 @@
 package com.wowtown.wowtownbackend.channel.domain;
 
-import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
+import com.wowtown.wowtownbackend.notice.domain.Notice;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -28,7 +28,7 @@ public class Channel {
   private LocalDateTime updateAt;
 
    @OneToMany(mappedBy = "channel",cascade = CascadeType.REMOVE)
-   private List<StudyGroup> studyGroups = new ArrayList<>();
+   private List<Notice> notices = new ArrayList<>();
 
   protected Channel() {}
 

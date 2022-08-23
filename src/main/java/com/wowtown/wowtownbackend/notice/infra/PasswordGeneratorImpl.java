@@ -1,6 +1,6 @@
-package com.wowtown.wowtownbackend.studyGroup.infra;
+package com.wowtown.wowtownbackend.notice.infra;
 
-import com.wowtown.wowtownbackend.studyGroup.application.common.PasswordGenerator;
+import com.wowtown.wowtownbackend.notice.application.common.PasswordGenerator;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;

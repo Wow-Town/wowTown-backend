@@ -73,7 +73,7 @@ public class AvatarCommandExecutor {
   }
 
   //  @Transactional
-  //  public void addAvatarScrapStudyGroup(StudyGroup studyGroup, Avatar avatar) {
-  //    avatar.addAvatarScrapStudyGroup(studyGroup);
+  //  public void addAvatarScrapNotice(Notice notice, Avatar avatar) {
+  //    avatar.addAvatarScrapNotice(notice);
   //  }
 }

@@ -1,4 +1,4 @@
-package com.wowtown.wowtownbackend.studyGroup.application.common;
+package com.wowtown.wowtownbackend.notice.application.common;
 
 public interface PasswordGenerator {
   String generateRandomPassword();

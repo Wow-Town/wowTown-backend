@@ -1,11 +1,11 @@
-package com.wowtown.wowtownbackend.studyGroup.controller;
+package com.wowtown.wowtownbackend.notice.controller;
 
 import com.wowtown.wowtownbackend.avatar.application.AvatarQueryProcessor;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.common.annotation.UserChannel;
 import com.wowtown.wowtownbackend.common.annotation.ValidInterestType;
 import com.wowtown.wowtownbackend.common.domain.InterestType;
-import com.wowtown.wowtownbackend.studyGroup.application.StudyGroupQueryProcessor;
+import com.wowtown.wowtownbackend.notice.application.NoticeQueryProcessor;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,24 +23,24 @@ import java.util.List;
 
 @Controller
 @Slf4j
-@RequestMapping("/studyGroups")
+@RequestMapping("/notices")
 @RequiredArgsConstructor
-public class StudyGroupQueryController {
+public class NoticeQueryController {
 
-  private final StudyGroupQueryProcessor studyGroupQueryProcessor;
+  private final NoticeQueryProcessor noticeQueryProcessor;
   private final AvatarQueryProcessor avatarQueryProcessor;
 
   @ApiOperation(value = "모든 공고 조회", notes = ".")
   @GetMapping
-  public ResponseEntity getAllStudyGroup(@ApiIgnore @UserChannel Channel channel) {
+  public ResponseEntity getAllNotice(@ApiIgnore @UserChannel Channel channel) {
     return ResponseEntity.status(HttpStatus.OK)
         .contentType(MediaType.APPLICATION_JSON)
-        .body(studyGroupQueryProcessor.getAllStudyGroupInChannel(channel));
+        .body(noticeQueryProcessor.getAllNoticeInChannel(channel));
   }
 
   @ApiOperation(value = "제목,관심사를 통해 공고 조회", notes = "")
   @GetMapping(value = "/search")
-  public ResponseEntity getStudyGroupWithQuery(
+  public ResponseEntity getNoticeWithQuery(
       @ApiIgnore @UserChannel Channel channel,
       @RequestParam(required = false, value = "subject") @NotEmpty String subject,
       @RequestParam(required = false, value = "interests")
@@ -50,17 +50,17 @@ public class StudyGroupQueryController {
       return ResponseEntity.status(HttpStatus.OK)
           .contentType(MediaType.APPLICATION_JSON)
           .body(
-              studyGroupQueryProcessor.getStudyGroupWithSubjectAndInterestInChannel(
+              noticeQueryProcessor.getNoticeWithSubjectAndInterestInChannel(
                   channel, subject, interests));
     }
     if (subject != null) {
       return ResponseEntity.status(HttpStatus.OK)
           .contentType(MediaType.APPLICATION_JSON)
-          .body(studyGroupQueryProcessor.getStudyGroupWithSubjectInChannel(channel, subject));
+          .body(noticeQueryProcessor.getNoticeWithSubjectInChannel(channel, subject));
     } else {
       return ResponseEntity.status(HttpStatus.OK)
           .contentType(MediaType.APPLICATION_JSON)
-          .body(studyGroupQueryProcessor.getStudyGroupWithInterestInChannel(channel, interests));
+          .body(noticeQueryProcessor.getNoticeWithInterestInChannel(channel, interests));
     }
   }
 }

@@ -1,4 +1,4 @@
-package com.wowtown.wowtownbackend.studyGroup.domain;
+package com.wowtown.wowtownbackend.notice.domain;
 
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Getter
 @Entity
-public class StudyGroup {
+public class Notice {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +26,10 @@ public class StudyGroup {
   private UUID chatRoomUUID;
 
   @Enumerated(EnumType.STRING)
-  private StudyGroupStatus studyGroupStatus;
+  private NoticeStatus NoticeStatus;
 
   @ElementCollection
-  @CollectionTable(name = "study_group_interest")
+  @CollectionTable(name = "notice_interest")
   private Set<Interest> interestSet = new HashSet<>();
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -45,19 +45,19 @@ public class StudyGroup {
   //  private PrivateSpace privateSpace;
   //
 
-  protected StudyGroup() {}
+  protected Notice() {}
 
-  public StudyGroup(
+  public Notice(
       String subject,
       Integer personnel,
       String description,
       Set<Interest> interestSet,
-      StudyGroupStatus studyGroupStatus) {
+      NoticeStatus NoticeStatus) {
     this.subject = subject;
     this.personnel = personnel;
     this.description = description;
     this.interestSet = interestSet;
-    this.studyGroupStatus = studyGroupStatus;
+    this.NoticeStatus = NoticeStatus;
   }
 
   public void setDefaultPW(String randomPW) {
@@ -80,11 +80,11 @@ public class StudyGroup {
     return false;
   }
 
-  public void updateStudyGroup(StudyGroup studyGroup) {
-    this.subject = studyGroup.subject;
-    this.personnel = studyGroup.personnel;
-    this.description = studyGroup.description;
-    this.studyGroupStatus = studyGroup.studyGroupStatus;
+  public void updateNotice(Notice notice) {
+    this.subject = notice.subject;
+    this.personnel = notice.personnel;
+    this.description = notice.description;
+    this.NoticeStatus = notice.NoticeStatus;
   }
 
   public void addChatRoomInfo(UUID chatRoomUUID) {
@@ -96,14 +96,14 @@ public class StudyGroup {
     if (o == this) {
       return true;
     }
-    if (!(o instanceof StudyGroup)) {
+    if (!(o instanceof Notice)) {
       return false;
     }
-    StudyGroup studyGroup = (StudyGroup) o;
-    return this.id == studyGroup.id
-        && this.subject == studyGroup.subject
-        && this.personnel == studyGroup.personnel
-        && this.description == studyGroup.description;
+    Notice notice = (Notice) o;
+    return this.id == notice.id
+        && this.subject == notice.subject
+        && this.personnel == notice.personnel
+        && this.description == notice.description;
   }
 
   @Override

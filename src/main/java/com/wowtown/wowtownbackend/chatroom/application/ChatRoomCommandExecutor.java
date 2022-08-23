@@ -8,9 +8,9 @@ import com.wowtown.wowtownbackend.chatroom.application.dto.response.GetCreatedCh
 import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
 import com.wowtown.wowtownbackend.chatroom.domain.ChatRoomRepository;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
-import com.wowtown.wowtownbackend.studyGroup.application.StudyGroupCommandExecutor;
-import com.wowtown.wowtownbackend.studyGroup.application.common.StudyGroupProvider;
-import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroup;
+import com.wowtown.wowtownbackend.notice.application.NoticeCommandExecutor;
+import com.wowtown.wowtownbackend.notice.application.common.NoticeProvider;
+import com.wowtown.wowtownbackend.notice.domain.Notice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +21,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatRoomCommandExecutor {
   private final AvatarProvider avatarProvider;
-  private final StudyGroupProvider studyGroupProvider;
+  private final NoticeProvider noticeProvider;
   private final ChatRoomRepository chatRoomRepository;
   private final ChatRoomMapper chatRoomMapper;
   private final AvatarCommandExecutor avatarCommandExecutor;
-  private final StudyGroupCommandExecutor studyGroupCommandExecutor;
+  private final NoticeCommandExecutor noticeCommandExecutor;
 
   @Transactional
   public GetCreatedChatRoomDto createAvatarChatroom(Long avatarId) {
@@ -39,17 +39,17 @@ public class ChatRoomCommandExecutor {
   }
 
   @Transactional
-  public GetCreatedChatRoomDto createStudyGroupChatroom(Long studyGroupId) {
+  public GetCreatedChatRoomDto createNoticeChatroom(Long noticeId) {
 
-    StudyGroup findStudyGroup = studyGroupProvider.getStudyGroup(studyGroupId);
+    Notice findNotice = noticeProvider.getNotice(noticeId);
 
     ChatRoom chatRoom =
         chatRoomRepository.save(
-            chatRoomMapper.toStudyGroupChatRoom(
-                findStudyGroup.getSubject(), findStudyGroup.getPersonnel()));
+            chatRoomMapper.toNoticeChatRoom(
+                findNotice.getSubject(), findNotice.getPersonnel()));
 
     // 스터디그룹 채팅방 설정
-    studyGroupCommandExecutor.addChatRoomInfo(findStudyGroup, chatRoom.getUuid());
+    noticeCommandExecutor.addChatRoomInfo(findNotice, chatRoom.getUuid());
 
     return chatRoomMapper.toGetCreatedChatRoomDto(chatRoom.getUuid());
   }

@@ -1,6 +1,6 @@
-package com.wowtown.wowtownbackend.studyGroup.application.dto.response;
+package com.wowtown.wowtownbackend.notice.application.dto.response;
 
-import com.wowtown.wowtownbackend.studyGroup.domain.StudyGroupStatus;
+import com.wowtown.wowtownbackend.notice.domain.NoticeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +12,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetStudyGroupDto {
-  private Long studyGroupId;
+public class GetNoticeDto {
+  private Long noticeId;
 
   private String subject;
 
@@ -23,5 +23,5 @@ public class GetStudyGroupDto {
 
   private List<String> interests;
 
-  private StudyGroupStatus status;
+  private NoticeStatus status;
 }

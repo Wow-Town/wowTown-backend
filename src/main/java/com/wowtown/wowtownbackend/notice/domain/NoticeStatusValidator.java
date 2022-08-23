@@ -1,16 +1,16 @@
-package com.wowtown.wowtownbackend.studyGroup.domain;
+package com.wowtown.wowtownbackend.notice.domain;
 
-import com.wowtown.wowtownbackend.common.annotation.ValidStudyGroupStatus;
+import com.wowtown.wowtownbackend.common.annotation.ValidNoticeStatus;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class StudyGroupStatusValidator
-    implements ConstraintValidator<ValidStudyGroupStatus, String> {
-  private ValidStudyGroupStatus annotation;
+public class NoticeStatusValidator
+    implements ConstraintValidator<ValidNoticeStatus, String> {
+  private ValidNoticeStatus annotation;
 
   @Override
-  public void initialize(ValidStudyGroupStatus constraintAnnotation) {
+  public void initialize(ValidNoticeStatus constraintAnnotation) {
     this.annotation = constraintAnnotation;
   }
 

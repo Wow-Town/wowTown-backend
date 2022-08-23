@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -40,18 +39,13 @@ public class AvatarQueryProcessor {
   public List<AvatarChatRoom> getAvatarChatRoomWithAvatar(Avatar avatar) {
     return avatarChatRoomRepository.findChatRoomAvatarByAvatarId(avatar.getId());
   }
-  ///친구 관련
-  public List<GetAvatarDto> getFriendAvatarDto(List<Avatar> avatarList){
+  /// 친구 관련
+  public List<GetAvatarDto> getFriendAvatarDto(List<Avatar> avatarList) {
     List<GetAvatarDto> avatarDtoList = new ArrayList<>();
-    for(Avatar findAvatar : avatarList){
+    for (Avatar findAvatar : avatarList) {
 
       avatarDtoList.add(avatarMapper.toGetAvatarDto(findAvatar));
-
     }
     return avatarDtoList;
   }
-
-
-
-
 }
