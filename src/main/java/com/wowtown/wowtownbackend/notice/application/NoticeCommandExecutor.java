@@ -2,8 +2,8 @@ package com.wowtown.wowtownbackend.notice.application;
 
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
-import com.wowtown.wowtownbackend.notice.application.common.PasswordGenerator;
 import com.wowtown.wowtownbackend.notice.application.common.NoticeMapper;
+import com.wowtown.wowtownbackend.notice.application.common.PasswordGenerator;
 import com.wowtown.wowtownbackend.notice.application.dto.request.CreateOrUpdateNoticeDto;
 import com.wowtown.wowtownbackend.notice.domain.Notice;
 import com.wowtown.wowtownbackend.notice.domain.NoticeRepository;
@@ -24,12 +24,7 @@ public class NoticeCommandExecutor {
   public long createNotice(CreateOrUpdateNoticeDto dto, Avatar avatar) { // 공고등록
     // 같은 공고 제목은 체크하지 않습니다. 제목은 unique한 것이 아니기 때문입니다.
     Notice notice =
-        noticeMapper.toNotice(
-            dto.getSubject(),
-            dto.getPersonnel(),
-            dto.getDescription(),
-            dto.getInterests(),
-            dto.getStatus());
+        noticeMapper.toNotice(dto.getSubject(), dto.getDescription(), dto.getInterests());
 
     // 공고 주인 설정.
     notice.addOwner(avatar);
@@ -42,8 +37,7 @@ public class NoticeCommandExecutor {
   }
 
   @Transactional
-  public boolean updateNotice(
-          long noticeId, CreateOrUpdateNoticeDto dto, Avatar avatar) {
+  public boolean updateNotice(long noticeId, CreateOrUpdateNoticeDto dto, Avatar avatar) {
     Notice findNotice =
         noticeRepository
             .findById(noticeId)
@@ -51,12 +45,7 @@ public class NoticeCommandExecutor {
 
     if (findNotice.isSameOwner(avatar)) {
       findNotice.updateNotice(
-          noticeMapper.toNotice(
-              dto.getSubject(),
-              dto.getPersonnel(),
-              dto.getDescription(),
-              dto.getInterests(),
-              dto.getStatus()));
+          noticeMapper.toNotice(dto.getSubject(), dto.getDescription(), dto.getInterests()));
       return true;
     }
     throw new InstanceNotFoundException("게시물 소유자가 아닙니다.");
