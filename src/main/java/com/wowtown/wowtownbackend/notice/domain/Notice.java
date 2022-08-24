@@ -46,7 +46,10 @@ public class Notice {
 
   protected Notice() {}
 
-  public Notice(String subject, String description, Set<Interest> interestSet) {
+  public Notice(
+      String subject,
+      String description,
+      Set<Interest> interestSet) {
     this.subject = subject;
     this.description = description;
     this.interestSet = interestSet;

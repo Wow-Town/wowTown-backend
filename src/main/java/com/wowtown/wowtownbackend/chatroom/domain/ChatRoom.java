@@ -56,35 +56,38 @@ public class ChatRoom {
   }
 
   public void enterChatRoom(String sessionId, long enterAvatarId) {
-    if (this.roomType == ChatRoomType.SINGLE) {
-      for (AvatarChatRoom avatarChatRoom : this.avatarChatRoomSet) {
-        if (avatarChatRoom.getAvatar().getId() == enterAvatarId) {
-
-          // 마지막 입장한 시점을 기준으로 이후에 생성된 메시지를 확인하여 읽음 표시해줌
-          ChatMessage lastCheckMessage = avatarChatRoom.getLastCheckMessage();
-          if (lastCheckMessage != null) {
-            List<ChatMessage> toUpdateMessage =
-                this.chatMessageList.stream()
-                    .filter(
-                        chatMessage ->
-                            chatMessage.getSendAt().isAfter(lastCheckMessage.getSendAt()))
-                    .collect(Collectors.toList());
-
-            for (ChatMessage chatMessage : toUpdateMessage) {
-              chatMessage.decreaseCount();
-            }
-          } else {
-            for (ChatMessage chatMessage : this.chatMessageList) {
-              chatMessage.decreaseCount();
-            }
-          }
-          // 아바타 채팅방 읽지 않은 메시지 수를 0 으로 초기화해준다.
-          avatarChatRoom.resetReceiveMessageNum();
-          // 아바타 채팅방 세션 생성하여 마지막 입장 시간은 업데이트해줌
-          avatarChatRoom.setSession(sessionId);
+    for (AvatarChatRoom avatarChatRoom : this.avatarChatRoomSet) {
+      if (avatarChatRoom.getAvatar().getId() == enterAvatarId) {
+        if (this.roomType == ChatRoomType.MULTI && !avatarChatRoom.isActive()) { // 단톡에 처음 입장했을 경우
           this.currentJoinNum++;
-          break;
+          avatarChatRoom.setActive(true);
+          avatarChatRoom.setSession(sessionId);
+          return;
         }
+
+        // 마지막 입장한 시점을 기준으로 이후에 생성된 메시지를 확인하여 읽음 표시해줌
+        ChatMessage lastCheckMessage = avatarChatRoom.getLastCheckMessage();
+        if (lastCheckMessage != null) {
+          List<ChatMessage> toUpdateMessage =
+              this.chatMessageList.stream()
+                  .filter(
+                      chatMessage -> chatMessage.getSendAt().isAfter(lastCheckMessage.getSendAt()))
+                  .collect(Collectors.toList());
+
+          for (ChatMessage chatMessage : toUpdateMessage) {
+            chatMessage.decreaseCount();
+          }
+        } else {
+          for (ChatMessage chatMessage : this.chatMessageList) {
+            chatMessage.decreaseCount();
+          }
+        }
+        // 아바타 채팅방 읽지 않은 메시지 수를 0 으로 초기화해준다.
+        avatarChatRoom.resetReceiveMessageNum();
+        // 아바타 채팅방 세션 생성하여 마지막 입장 시간은 업데이트해줌
+        avatarChatRoom.setSession(sessionId);
+        this.currentJoinNum++;
+        break;
       }
     }
   }

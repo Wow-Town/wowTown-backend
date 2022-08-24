@@ -1,6 +1,5 @@
 package com.wowtown.wowtownbackend.chatroom.application;
 
-import com.wowtown.wowtownbackend.avatar.application.AvatarCommandExecutor;
 import com.wowtown.wowtownbackend.avatar.application.common.AvatarProvider;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.chatroom.application.common.ChatRoomMapper;
@@ -9,25 +8,21 @@ import com.wowtown.wowtownbackend.chatroom.application.dto.request.InviteAvatar;
 import com.wowtown.wowtownbackend.chatroom.application.dto.response.GetCreatedChatRoomDto;
 import com.wowtown.wowtownbackend.chatroom.domain.*;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
-import com.wowtown.wowtownbackend.studyGroup.application.StudyGroupCommandExecutor;
-import com.wowtown.wowtownbackend.studyGroup.application.common.StudyGroupProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ChatRoomCommandExecutor {
   private final AvatarProvider avatarProvider;
-  private final StudyGroupProvider studyGroupProvider;
   private final ChatRoomRepository chatRoomRepository;
   private final AvatarChatRoomRepository avatarChatRoomRepository;
   private final ChatRoomMapper chatRoomMapper;
-  private final AvatarCommandExecutor avatarCommandExecutor;
-  private final StudyGroupCommandExecutor studyGroupCommandExecutor;
   private final SimpMessageSendingOperations sendingOperations;
 
   @Transactional
@@ -48,21 +43,25 @@ public class ChatRoomCommandExecutor {
     return chatRoomMapper.toGetCreatedChatRoomDto(invitedAvatar.getNickName(), chatRoom.getUuid());
   }
 
-  //  @Transactional
-  //  public GetCreatedChatRoomDto createStudyGroupChatroom(Long studyGroupId) {
-  //
-  //    StudyGroup findStudyGroup = studyGroupProvider.getStudyGroup(studyGroupId);
-  //
-  //    ChatRoom chatRoom =
-  //        chatRoomRepository.save(
-  //            chatRoomMapper.toStudyGroupChatRoom(
-  //                findStudyGroup.getSubject(), findStudyGroup.getPersonnel()));
-  //
-  //    // 스터디그룹 채팅방 설정
-  //    studyGroupCommandExecutor.addChatRoomInfo(findStudyGroup, chatRoom.getUuid());
-  //
-  //    return chatRoomMapper.toGetCreatedChatRoomDto(chatRoom.getUuid());
-  //  }
+  @Transactional
+  public UUID createNoticeChatroom() {
+
+    ChatRoomType chatRoomType = ChatRoomType.MULTI;
+
+    ChatRoom chatRoom = new ChatRoom(chatRoomType);
+
+    return chatRoomRepository.save(chatRoom).getUuid();
+  }
+
+  @Transactional
+  public void joinNoticeChatroom(UUID chatRoomUUID, String roomName, Avatar avatar) {
+    ChatRoom findChatRoom =
+        chatRoomRepository
+            .findChatRoomByUuid(chatRoomUUID)
+            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 채팅방 입니다."));
+
+    findChatRoom.addAvatarChatRoom(roomName, avatar);
+  }
 
   @Transactional
   public void enterChatRoom(ChatMessageDto message) {
@@ -82,7 +81,14 @@ public class ChatRoomCommandExecutor {
         avatarChatRoomRepository.findAvatarChatRoomWithSessionId(message.getSessionId());
 
     findAvatarChatroom.ifPresent(
-        avatarChatRoom -> avatarChatRoom.getChatRoom().leaveChatRoom(message.getSessionId()));
+        avatarChatRoom -> {
+          ChatRoom findChatRoom = avatarChatRoom.getChatRoom();
+          findChatRoom.leaveChatRoom(message.getSessionId());
+          if (findChatRoom.getCurrentJoinNum() == 0
+              && findChatRoom.getChatMessageList().size() == 0) {
+            chatRoomRepository.delete(findChatRoom);
+          }
+        });
   }
 
   @Transactional
