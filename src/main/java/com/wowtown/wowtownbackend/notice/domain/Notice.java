@@ -20,13 +20,12 @@ public class Notice {
   private Long id;
 
   private String subject; // 이름보다 주제라는 용어가 괜찮은거 같다.
-  private int personnel; // 구하는 인원수
   private String description; // 스터디 그룹 설명
   private String randomPW;
   private UUID chatRoomUUID;
 
   @Enumerated(EnumType.STRING)
-  private NoticeStatus NoticeStatus;
+  private NoticeStatus noticeStatus;
 
   @ElementCollection
   @CollectionTable(name = "notice_interest")
@@ -47,17 +46,11 @@ public class Notice {
 
   protected Notice() {}
 
-  public Notice(
-      String subject,
-      Integer personnel,
-      String description,
-      Set<Interest> interestSet,
-      NoticeStatus NoticeStatus) {
+  public Notice(String subject, String description, Set<Interest> interestSet) {
     this.subject = subject;
-    this.personnel = personnel;
     this.description = description;
     this.interestSet = interestSet;
-    this.NoticeStatus = NoticeStatus;
+    this.noticeStatus = NoticeStatus.OPEN;
   }
 
   public void setDefaultPW(String randomPW) {
@@ -82,9 +75,8 @@ public class Notice {
 
   public void updateNotice(Notice notice) {
     this.subject = notice.subject;
-    this.personnel = notice.personnel;
     this.description = notice.description;
-    this.NoticeStatus = notice.NoticeStatus;
+    this.noticeStatus = notice.noticeStatus;
   }
 
   public void addChatRoomInfo(UUID chatRoomUUID) {
@@ -102,12 +94,11 @@ public class Notice {
     Notice notice = (Notice) o;
     return this.id == notice.id
         && this.subject == notice.subject
-        && this.personnel == notice.personnel
         && this.description == notice.description;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id, this.subject, this.personnel, this.description);
+    return Objects.hash(this.id, this.subject, this.description);
   }
 }

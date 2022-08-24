@@ -59,6 +59,23 @@ public class NoticeCommandController {
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }
 
+  //  @ApiOperation(value = "공고 채팅방 비밀번호 확인", notes = "")
+  //  @ApiImplicitParam(
+  //      name = "noticeId",
+  //      value = "공고 id",
+  //      required = true,
+  //      dataType = "string",
+  //      paramType = "path",
+  //      defaultValue = "None")
+  //  @PostMapping(value = "/{noticeId}")
+  //  public ResponseEntity checkChatRoomPassword(
+  //      @PathVariable("noticeId") @Min(1) long noticeId,
+  //      @RequestBody NoticePasswordDto dto,
+  //      @ApiIgnore @UserAvatar Avatar avatar) {
+  //    noticeCommandExecutor.checkPassword(noticeId, dto, avatar);
+  //    return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
+  //  }
+
   // todo 공고 스크랩 기능 나중에 추가
 
   //  @ApiOperation(value = "공고 스크랩", notes = "")
