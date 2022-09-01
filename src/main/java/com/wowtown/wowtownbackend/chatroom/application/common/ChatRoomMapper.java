@@ -3,7 +3,6 @@ package com.wowtown.wowtownbackend.chatroom.application.common;
 import com.wowtown.wowtownbackend.chatroom.application.dto.response.*;
 import com.wowtown.wowtownbackend.chatroom.domain.ChatMessage;
 import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
-import com.wowtown.wowtownbackend.chatroom.domain.ChatRoomType;
 import com.wowtown.wowtownbackend.chatroom.domain.MessageType;
 import org.mapstruct.Mapper;
 
@@ -75,7 +74,8 @@ public interface ChatRoomMapper {
       String roomName,
       String latestMessage,
       Integer receiveMessageNum,
-      ChatRoomType chatRoomType);
+      Integer participantsNum,
+      String chatRoomType);
 
   GetCreatedChatRoomDto toGetCreatedChatRoomDto(String roomName, UUID chatRoomUUID);
 }

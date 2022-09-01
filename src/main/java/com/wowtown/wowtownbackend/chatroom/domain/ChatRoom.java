@@ -49,6 +49,9 @@ public class ChatRoom {
 
   public void addAvatarChatRoom(String roomName, Avatar participantAvatar) {
     AvatarChatRoom avatarChatRoom = new AvatarChatRoom(roomName, roomName);
+    if (this.getRoomType().equals(ChatRoomType.MULTI)) {
+      avatarChatRoom.setActive(true);
+    }
     avatarChatRoom.setAvatar(participantAvatar);
     avatarChatRoom.setChatRoom(this);
     this.avatarChatRoomSet.add(avatarChatRoom);
@@ -58,12 +61,6 @@ public class ChatRoom {
   public void enterChatRoom(String sessionId, long enterAvatarId) {
     for (AvatarChatRoom avatarChatRoom : this.avatarChatRoomSet) {
       if (avatarChatRoom.getAvatar().getId() == enterAvatarId) {
-        if (this.roomType == ChatRoomType.MULTI && !avatarChatRoom.isActive()) { // 단톡에 처음 입장했을 경우
-          this.currentJoinNum++;
-          avatarChatRoom.setActive(true);
-          avatarChatRoom.setSession(sessionId);
-          return;
-        }
 
         // 마지막 입장한 시점을 기준으로 이후에 생성된 메시지를 확인하여 읽음 표시해줌
         ChatMessage lastCheckMessage = avatarChatRoom.getLastCheckMessage();
@@ -96,10 +93,12 @@ public class ChatRoom {
     for (AvatarChatRoom avatarChatRoom : this.avatarChatRoomSet) {
       if (avatarChatRoom.getSessionId() != null) {
         if (avatarChatRoom.getSessionId().equals(sessionId)) {
-          // 채팅방 나갈때 마지막 메시지를 업데이트 해준다.
-          int lastIdx = this.chatMessageList.size() - 1;
-          ChatMessage latestMessage = this.chatMessageList.get(lastIdx);
-          avatarChatRoom.updateLastCheckMessage(latestMessage);
+          // 채팅방 나갈때 마지막 메시지가 존재하면를 메시지를 업데이트 해준다.
+          if (this.chatMessageList.size() != 0) {
+            int lastIdx = this.chatMessageList.size() - 1;
+            ChatMessage latestMessage = this.chatMessageList.get(lastIdx);
+            avatarChatRoom.updateLastCheckMessage(latestMessage);
+          }
 
           // 아바타 채팅방 세션을 삭제한다.
           avatarChatRoom.setSession(null);

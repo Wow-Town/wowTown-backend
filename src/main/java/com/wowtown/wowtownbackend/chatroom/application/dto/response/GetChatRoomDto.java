@@ -20,5 +20,7 @@ public class GetChatRoomDto {
 
   private int receiveMessageNum;
 
-  private String roomType;
+  private int participantsNum;
+
+  private String chatRoomType;
 }

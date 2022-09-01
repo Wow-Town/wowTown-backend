@@ -83,10 +83,14 @@ public class ChatRoomCommandExecutor {
     findAvatarChatroom.ifPresent(
         avatarChatRoom -> {
           ChatRoom findChatRoom = avatarChatRoom.getChatRoom();
-          findChatRoom.leaveChatRoom(message.getSessionId());
-          if (findChatRoom.getCurrentJoinNum() == 0
-              && findChatRoom.getChatMessageList().size() == 0) {
-            chatRoomRepository.delete(findChatRoom);
+          if (findChatRoom.getRoomType().equals(ChatRoomType.SINGLE)) {
+            findChatRoom.leaveChatRoom(message.getSessionId());
+            if (findChatRoom.getCurrentJoinNum() == 0
+                && findChatRoom.getChatMessageList().size() == 0) {
+              chatRoomRepository.delete(findChatRoom);
+            }
+          } else if (findChatRoom.getRoomType().equals(ChatRoomType.MULTI)) {
+            findChatRoom.leaveChatRoom(message.getSessionId());
           }
         });
   }
@@ -111,39 +115,5 @@ public class ChatRoomCommandExecutor {
     sendingOperations.convertAndSend(
         "/sub/chatRooms/" + message.getChatRoomUUID().toString(),
         chatRoomMapper.toGetChatMessageDto(chatMessageToSend));
-
-    //    ChatRoom findChatRoom =
-    //        chatRoomRepository
-    //            .findChatRoomByUuid(chatRoomUUID)
-    //            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 채팅방 입니다."));
-    //
-    //    findChatRoom.increaseParticipantsNum();
-
-    // 아바타가 참여중인 채팅방 목록에 추가
-    // avatarCommandExecutor.avatarEnterChatRoom(findChatRoom, avatar);
   }
-
-  //  @Transactional
-  //  public void leaveChatRoom(ChatMessageDto message) {
-  //    ChatRoom findChatRoom =
-  //        chatRoomRepository
-  //            .findChatRoomByUuid(chatRoomUUID)
-  //            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 채팅방 입니다."));
-  //
-  //    findChatRoom.decreaseParticipantsNum();
-  //
-  //    // 아바타가 참여중인 채팅방 목록에서 제거
-  //    avatarCommandExecutor.avatarLeaveChatRoom(findChatRoom, avatar);
-  //  }
-  //
-  //  @Transactional
-  //  public boolean updateChatRoom(UUID chatRoomUUID, String roomName, int personnel) {
-  //    ChatRoom findChatRoom =
-  //        chatRoomRepository
-  //            .findChatRoomByUuid(chatRoomUUID)
-  //            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 채팅방 입니다."));
-  //
-  //    findChatRoom.updateChatRoom(roomName, personnel);
-  //    return true;
-  //  }
 }

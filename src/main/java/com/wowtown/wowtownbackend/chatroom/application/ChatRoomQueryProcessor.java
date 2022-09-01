@@ -1,6 +1,5 @@
 package com.wowtown.wowtownbackend.chatroom.application;
 
-import com.wowtown.wowtownbackend.avatar.application.AvatarQueryProcessor;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.chatroom.application.common.ChatRoomMapper;
 import com.wowtown.wowtownbackend.chatroom.application.dto.response.GetChatRoomDetailDto;
@@ -22,7 +21,6 @@ public class ChatRoomQueryProcessor {
   private final ChatRoomRepository chatRoomRepository;
   private final AvatarChatRoomRepository avatarChatRoomRepository;
   private final ChatRoomMapper chatRoomMapper;
-  private final AvatarQueryProcessor avatarQueryProcessor;
 
   public GetChatRoomDetailDto getChatRoom(UUID chatRoomUUID) {
     ChatRoom findChatRoom =
@@ -43,7 +41,8 @@ public class ChatRoomQueryProcessor {
                         avatarChatRoom.getCustomRoomName(),
                         avatarChatRoom.getLatestMessage(),
                         avatarChatRoom.getReceiveMessageNum(),
-                        avatarChatRoom.getChatRoom().getRoomType()))
+                        avatarChatRoom.getChatRoom().getParticipantsNum(),
+                        avatarChatRoom.getChatRoom().getRoomType().toString()))
             .collect(Collectors.toList());
 
     return findAvatarChatRooms;
