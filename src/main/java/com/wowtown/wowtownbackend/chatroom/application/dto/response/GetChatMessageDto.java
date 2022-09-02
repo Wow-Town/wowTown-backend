@@ -1,25 +1,25 @@
-package com.wowtown.wowtownbackend.chatroom.application.dto.request;
+package com.wowtown.wowtownbackend.chatroom.application.dto.response;
 
 import com.wowtown.wowtownbackend.chatroom.domain.MessageType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatMessageDto {
+public class GetChatMessageDto {
   private MessageType type;
-
-  private String sessionId;
-
-  private UUID chatRoomUUID;
 
   private String sender;
 
-  private Long senderId;
-
   private String message;
+
+  private int count; // 읽지 않은 사용자 수
+
+  private LocalDateTime sendAt;
 }

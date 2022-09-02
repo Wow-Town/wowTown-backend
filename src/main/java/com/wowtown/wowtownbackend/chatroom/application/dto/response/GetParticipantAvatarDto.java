@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetChatRoomAvatarDto {
+public class GetParticipantAvatarDto {
   private long avatarId;
 
-  private String avatarName;
+  private String nickName;
 }

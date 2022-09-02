@@ -63,30 +63,4 @@ public class NoticeQueryController {
         .contentType(MediaType.APPLICATION_JSON)
         .body(noticeQueryProcessor.getNoticeDetail(noticeId));
   }
-
-  //  @ApiOperation(value = "제목,관심사를 통해 공고 조회", notes = "")
-  //  @GetMapping(value = "/search")
-  //  public ResponseEntity getNoticeWithQuery(
-  //      @ApiIgnore @UserChannel Channel channel,
-  //      @RequestParam(required = false, value = "subject") @NotEmpty String subject,
-  //      @RequestParam(required = false, value = "interests")
-  //          @ValidInterestType(message = "존재하지 않는 관심사 입니다.", enumClass = InterestType.class)
-  //          List<String> interests) {
-  //    if (subject != null && interests != null) {
-  //      return ResponseEntity.status(HttpStatus.OK)
-  //          .contentType(MediaType.APPLICATION_JSON)
-  //          .body(
-  //              noticeQueryProcessor.getNoticeWithSubjectAndInterestInChannel(
-  //                  channel, subject, interests));
-  //    }
-  //    if (subject != null) {
-  //      return ResponseEntity.status(HttpStatus.OK)
-  //          .contentType(MediaType.APPLICATION_JSON)
-  //          .body(noticeQueryProcessor.getNoticeWithSubjectInChannel(channel, subject));
-  //    } else {
-  //      return ResponseEntity.status(HttpStatus.OK)
-  //          .contentType(MediaType.APPLICATION_JSON)
-  //          .body(noticeQueryProcessor.getNoticeWithInterestInChannel(channel, interests));
-  //    }
-  //  }
 }
