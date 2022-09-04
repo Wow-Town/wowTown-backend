@@ -1,6 +1,5 @@
 package com.wowtown.wowtownbackend.common.interceptor;
 
-import com.wowtown.wowtownbackend.common.redis.RedisService;
 import com.wowtown.wowtownbackend.user.application.common.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginInterceptor implements HandlerInterceptor {
 
   private final JwtTokenProvider jwtTokenProvider;
-  private final RedisService redisService;
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object obj)
@@ -34,14 +32,10 @@ public class LoginInterceptor implements HandlerInterceptor {
       }
     }
 
+    // refreshToken이 만료되지 않았을경우
     if (!jwtTokenProvider.validateToken(accessToken)) {
-      String email = redisService.getValues(refreshToken);
-      if (email != null) {
-        // Todo refreshToken이 유효하면 exception 발생시키고 exception 처리하는 핸들러에서 새로운 토큰을 발행해준다.
-        return true;
-      }
-      // Todo refreshToken이 유효하지 않으면 exception 발생시키고 exception 처리하는 핸들러에서 다시 로그인 하라는 에러 메시지를 발행해준다.
-      return false;
+      String updateToken = jwtTokenProvider.updateAccessToken(refreshToken);
+      response.setHeader("Authorization", updateToken);
     }
     return true;
   }

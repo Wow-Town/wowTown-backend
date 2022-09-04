@@ -1,5 +1,7 @@
 package com.wowtown.wowtownbackend.user.infra;
 
+import com.wowtown.wowtownbackend.common.redis.RedisService;
+import com.wowtown.wowtownbackend.error.exception.AuthenticationException;
 import com.wowtown.wowtownbackend.user.application.common.JwtTokenProvider;
 import com.wowtown.wowtownbackend.user.domain.User;
 import com.wowtown.wowtownbackend.user.domain.UserRepository;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
 
@@ -30,6 +33,8 @@ public class JwtTokenProviderImpl
 
   private final UserRepository userRepository;
 
+  private final RedisService redisService;
+
   @PostConstruct
   protected void init() {
     secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
@@ -43,7 +48,10 @@ public class JwtTokenProviderImpl
   // Refresh Token 생성.
   @Override
   public String createRefreshToken(String userEmail) {
-    return this.createToken(userEmail, refreshTokenValidTime);
+    String refreshToken = this.createToken(userEmail, refreshTokenValidTime);
+
+    redisService.setValues(refreshToken, userEmail, Duration.ofMillis(refreshTokenValidTime));
+    return refreshToken;
   }
   // Jwt 토큰 생성
   private String createToken(String userEmail, long tokenValidTime) {
@@ -72,12 +80,30 @@ public class JwtTokenProviderImpl
 
   // Jwt Token의 유효성 및 만료 기간 검사
   @Override
-  public boolean validateToken(String accessToken) {
+  public boolean validateToken(String token) {
     try {
-      Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken);
+      Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
       return claims.getBody().getExpiration().after(new Date());
     } catch (Exception e) {
       return false;
     }
+  }
+
+  public String updateAccessToken(String refreshToken) {
+    String email = redisService.getValues(refreshToken);
+    if (email == null) {
+      throw new AuthenticationException("토큰이 만료되었습니다. 다시 로그인 해주세요.");
+    }
+
+    String newAccessToken = this.createAccessToken(email);
+
+    Jws<Claims> accessClaims =
+        Jwts.parser().setSigningKey(secretKey).parseClaimsJws(newAccessToken);
+    Jws<Claims> refreshClaims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(refreshToken);
+    if (accessClaims.getBody().getExpiration().after(refreshClaims.getBody().getExpiration())) {
+      throw new AuthenticationException("토큰이 만료되었습니다. 다시 로그인 해주세요.");
+    }
+
+    return newAccessToken;
   }
 }

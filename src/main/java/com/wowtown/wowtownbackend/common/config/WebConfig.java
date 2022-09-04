@@ -8,7 +8,6 @@ import com.wowtown.wowtownbackend.common.argumentresolver.UserChannelArgumentRes
 import com.wowtown.wowtownbackend.common.interceptor.AvatarInterceptor;
 import com.wowtown.wowtownbackend.common.interceptor.ChannelInterceptor;
 import com.wowtown.wowtownbackend.common.interceptor.LoginInterceptor;
-import com.wowtown.wowtownbackend.common.redis.RedisService;
 import com.wowtown.wowtownbackend.user.application.common.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -24,14 +23,13 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
   private final JwtTokenProvider jwtTokenProvider;
-  private final RedisService redisService;
   private final AvatarProvider avatarProvider;
   private final ChannelProvider channelProvider;
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry
-        .addInterceptor(new LoginInterceptor(jwtTokenProvider, redisService))
+        .addInterceptor(new LoginInterceptor(jwtTokenProvider))
         .order(1)
         .addPathPatterns("/**")
         .excludePathPatterns(
@@ -61,8 +59,8 @@ public class WebConfig implements WebMvcConfigurer {
         .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
         .maxAge(-1) // add maxAge
         .allowCredentials(true)
-        .allowedOriginPatterns(
-            "http://localhost:3000", "http://wowtown.co.kr");
+        .exposedHeaders("Authorization")
+        .allowedOriginPatterns("http://localhost:3000", "http://wowtown.co.kr");
   }
 
   @Override
