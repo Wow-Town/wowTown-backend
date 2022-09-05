@@ -3,13 +3,15 @@ package com.wowtown.wowtownbackend.user.application.common;
 import com.wowtown.wowtownbackend.user.domain.User;
 
 public interface JwtTokenProvider {
-  public String createAccessToken(String userEmail);
+  String createAccessToken(String userEmail);
 
-  public String createRefreshToken(String userEmail);
+  String createRefreshToken(String userEmail);
 
-  public User getAuthenticatedUser(String token);
+  User getAuthenticatedUser(String token);
 
-  public String getUserEmail(String token);
+  String getUserEmail(String token);
 
-  public boolean validateToken(String accessToken);
+  boolean validateToken(String accessToken);
+
+  String updateAccessToken(String refreshToken);
 }

@@ -3,7 +3,6 @@ package com.wowtown.wowtownbackend.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wowtown.wowtownbackend.avatar.application.common.AvatarProvider;
 import com.wowtown.wowtownbackend.channel.application.common.ChannelProvider;
-import com.wowtown.wowtownbackend.common.redis.RedisService;
 import com.wowtown.wowtownbackend.user.application.UserCommandExecutor;
 import com.wowtown.wowtownbackend.user.application.common.JwtTokenProvider;
 import com.wowtown.wowtownbackend.user.application.common.PasswordEncoder;
@@ -45,8 +44,6 @@ public class UserCommandControllerTest {
   @MockBean AvatarProvider avatarProvider;
 
   @MockBean ChannelProvider channelProvider;
-
-  @MockBean RedisService redisService;
 
   @Test
   public void signUp() throws Exception {
@@ -92,7 +89,7 @@ public class UserCommandControllerTest {
     // given
     Long userId = 1L;
 
-    ChangeUserPWDto changeUserPWDto = new ChangeUserPWDto("1234", "5678");
+    ChangeUserPWDto changeUserPWDto = new ChangeUserPWDto("1111111qa@", "1111111qa@");
 
     // when
     doReturn(true)

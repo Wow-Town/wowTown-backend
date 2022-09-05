@@ -2,7 +2,9 @@ package com.wowtown.wowtownbackend.error.controller;
 
 import com.wowtown.wowtownbackend.error.common.BadRequest;
 import com.wowtown.wowtownbackend.error.common.NotFound;
+import com.wowtown.wowtownbackend.error.common.Unauthorized;
 import com.wowtown.wowtownbackend.error.dto.ErrorResponseDto;
+import com.wowtown.wowtownbackend.error.exception.AuthenticationException;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,5 +71,12 @@ public class GlobalExceptionHandler {
     NotFound notFound = NotFound.builder().code(404).message(e.getMessage()).build();
     final ErrorResponseDto errorResponse = ErrorResponseDto.builder().error(notFound).build();
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+  }
+
+  @ExceptionHandler(AuthenticationException.class)
+  protected ResponseEntity<?> handleInstanceNotFoundException(AuthenticationException e) {
+    Unauthorized unauthorized = Unauthorized.builder().code(401).message(e.getMessage()).build();
+    final ErrorResponseDto errorResponse = ErrorResponseDto.builder().error(unauthorized).build();
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
   }
 }

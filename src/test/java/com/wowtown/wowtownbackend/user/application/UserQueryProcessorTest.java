@@ -31,7 +31,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,7 +82,6 @@ class UserQueryProcessorTest {
     doReturn(Optional.of(savedUser)).when(userRepository).findUserByEmail(any(String.class));
     doReturn("accessToken").when(jwtTokenProvider).createAccessToken(any(String.class));
     doReturn("refreshToken").when(jwtTokenProvider).createRefreshToken(any(String.class));
-    doNothing().when(redisService).setValues(any(String.class), any(String.class));
     doReturn(getJwtTokenDto)
         .when(userMapper)
         .toGetJwtTokenDto(any(String.class), any(String.class));

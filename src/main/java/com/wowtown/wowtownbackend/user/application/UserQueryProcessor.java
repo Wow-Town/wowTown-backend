@@ -1,6 +1,5 @@
 package com.wowtown.wowtownbackend.user.application;
 
-import com.wowtown.wowtownbackend.common.redis.RedisService;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import com.wowtown.wowtownbackend.user.application.common.JwtTokenProvider;
 import com.wowtown.wowtownbackend.user.application.common.PasswordEncoder;
@@ -28,7 +27,6 @@ public class UserQueryProcessor {
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenProvider jwtTokenProvider;
-  private final RedisService redisService;
 
   public GetJwtTokenDto login(LoginUserDto dto) {
     User findUser =
@@ -42,9 +40,6 @@ public class UserQueryProcessor {
     if (loginPassword.equals(findUser.getHashedPW())) {
       String accessToken = jwtTokenProvider.createAccessToken(findUser.getEmail());
       String refreshToken = jwtTokenProvider.createRefreshToken(findUser.getEmail());
-
-      // Redis 인메모리에 리프레시 토큰 저장
-      redisService.setValues(refreshToken, findUser.getEmail());
 
       return userMapper.toGetJwtTokenDto(accessToken, refreshToken);
     }
