@@ -14,6 +14,8 @@ import java.util.List;
 public class GetNoticeDto {
   private Long noticeId;
 
+  private String ownerNickName;
+
   private String subject;
 
   private List<String> interests;
