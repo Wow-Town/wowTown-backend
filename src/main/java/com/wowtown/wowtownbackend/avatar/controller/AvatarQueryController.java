@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.Cookie;
@@ -50,6 +51,17 @@ public class AvatarQueryController {
     cookie.setHttpOnly(true);
     cookie.setDomain(domain);
     response.addCookie(cookie);
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(getAvatarDto);
+  }
+
+  @ApiOperation(value = "channelId와 user를 통해 아바타 가져오기", notes = "")
+  @GetMapping(value = "/avatars/{avatarId}")
+  public ResponseEntity getAvatar(@PathVariable("avatarId") Long avatarId) {
+
+    GetAvatarDto getAvatarDto = avatarQueryProcessor.getAvatar(avatarId);
 
     return ResponseEntity.status(HttpStatus.OK)
         .contentType(MediaType.APPLICATION_JSON)

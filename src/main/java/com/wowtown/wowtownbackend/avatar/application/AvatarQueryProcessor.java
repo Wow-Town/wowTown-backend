@@ -28,6 +28,14 @@ public class AvatarQueryProcessor {
     return avatarMapper.toGetAvatarDto(findAvatar);
   }
 
+  public GetAvatarDto getAvatar(long avatarId) {
+    Avatar findAvatar =
+        avatarRepository
+            .findById(avatarId)
+            .orElseThrow(() -> new InstanceNotFoundException("아바타가 존재하지 않습니다."));
+    return avatarMapper.toGetAvatarDto(findAvatar);
+  }
+
   /// 친구 관련
   public List<GetAvatarDto> getFriendAvatarDto(List<Avatar> avatarList) {
     List<GetAvatarDto> avatarDtoList = new ArrayList<>();
