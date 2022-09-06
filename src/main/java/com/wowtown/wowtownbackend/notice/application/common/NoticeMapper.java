@@ -40,6 +40,7 @@ public interface NoticeMapper {
 
     getNoticeDto.setNoticeId(notice.getId());
     getNoticeDto.setSubject(notice.getSubject());
+    getNoticeDto.setOwnerNickName((notice.getAvatar().getNickName()));
     List<String> interestList =
         notice.getInterestSet().stream()
             .map(interest -> interest.getType().toString())
