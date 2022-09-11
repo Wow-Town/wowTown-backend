@@ -1,10 +1,22 @@
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: devconf5296@gmail.com
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   redis:
     host: redis
     port: 6379
 
   datasource:
-    url: jdbc:mysql://mysql_db:3306/wow_town?useSSL=false&characterEncoding=UTF-8&serverTimeZone=UTC&&allowPublicKeyRetrieval=true
+    url: ${SPRING_DATASOURCE_URL}
     username: root
     password: wowTown123
     driver-class-name: com.mysql.cj.jdbc.Driver

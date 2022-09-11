@@ -2,9 +2,9 @@ package com.wowtown.wowtownbackend.notice.application;
 
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.chatroom.application.ChatRoomCommandExecutor;
+import com.wowtown.wowtownbackend.common.codeGenerator.CodeGenerator;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import com.wowtown.wowtownbackend.notice.application.common.NoticeMapper;
-import com.wowtown.wowtownbackend.notice.application.common.PasswordGenerator;
 import com.wowtown.wowtownbackend.notice.application.dto.request.CreateOrUpdateNoticeDto;
 import com.wowtown.wowtownbackend.notice.application.dto.request.NoticePasswordDto;
 import com.wowtown.wowtownbackend.notice.domain.Notice;
@@ -20,7 +20,7 @@ import java.util.UUID;
 public class NoticeCommandExecutor {
   private final NoticeRepository noticeRepository;
   private final NoticeMapper noticeMapper;
-  private final PasswordGenerator passwordGenerator;
+  private final CodeGenerator codeGenerator;
   private final ChatRoomCommandExecutor chatRoomCommandExecutor;
 
   @Transactional
@@ -36,7 +36,7 @@ public class NoticeCommandExecutor {
     // 공고 주인 설정.
     notice.addOwner(avatar);
     // 공고 비밀번호 설정, 오픈채팅방에 입장하려면 방장으로부터 비밀번호를 받고 일치해야 입장 가능하다.
-    notice.setDefaultPW(passwordGenerator.generateRandomPassword());
+    notice.setDefaultPW(codeGenerator.generateRandomCode());
 
     noticeRepository.save(notice);
 

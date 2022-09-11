@@ -8,5 +8,5 @@ RUN  apk update \
 
 COPY ./build/libs/ ./deploy/wowtown_backend/
 
-ENTRYPOINT ["java", "-jar", "/deploy/wowtown_backend/wowTown-backen-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=prod"]
+ENTRYPOINT ["java", "-jar", "/deploy/wowtown_backend/wowTown-backen-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=prod", "--spring.mail.password=${MAIL_PASSWORD}"]
 

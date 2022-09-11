@@ -5,6 +5,8 @@ import com.wowtown.wowtownbackend.avatar.application.dto.request.CreateOrUpdateA
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.avatar.domain.AvatarRepository;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
+import com.wowtown.wowtownbackend.common.codeGenerator.CodeGenerator;
+import com.wowtown.wowtownbackend.common.email.InviteEmailSender;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,8 @@ public class AvatarCommandExecutor {
 
   private final AvatarRepository avatarRepository;
   private final AvatarMapper avatarMapper;
+  private final InviteEmailSender inviteEmailSender;
+  private final CodeGenerator codeGenerator;
 
   @Transactional
   public long createAvatar(CreateOrUpdateAvatarDto dto, Channel channel, User user) {
@@ -58,6 +62,18 @@ public class AvatarCommandExecutor {
             .findAvatarWithChannelIdAndUserId(channel.getId(), user.getId())
             .orElseThrow(() -> new InstanceNotFoundException("아바타가 존재하지 않습니다."));
     avatarRepository.delete(findAvatar);
+    return true;
+  }
+
+  @Transactional
+  public boolean sendEmail(Channel channel, User user) {
+    Avatar findAvatar =
+        avatarRepository
+            .findAvatarWithChannelIdAndUserId(channel.getId(), user.getId())
+            .orElseThrow(() -> new InstanceNotFoundException("아바타가 존재하지 않습니다."));
+    String inviteCode = codeGenerator.generateRandomCode();
+    findAvatar.updateInviteCode(inviteCode);
+    inviteEmailSender.invite(user.getEmail(), inviteCode);
     return true;
   }
 
