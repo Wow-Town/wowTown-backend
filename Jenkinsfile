@@ -11,14 +11,13 @@ pipeline {
             }
         }
         stage('Docker Image Build') {
-            when{ branch "main"}
+
             steps {
                 echo 'Build Start!!!'
                 sh 'docker build -t wowtown_backend:latest ./'
             }
         }
         stage('Docker Hub Push') {
-            when{ branch "main"}
             steps {
                 echo 'Image Push Start!!!'
                 sh 'docker image tag wowtown_backend:latest devconf5296/wowtown_backend:latest'

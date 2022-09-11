@@ -24,6 +24,8 @@ public class Avatar {
 
   private String description;
 
+  private String inviteCode;
+
   private LocalDateTime createAt;
 
   private LocalDateTime updateAt;
@@ -83,6 +85,10 @@ public class Avatar {
     this.description = updatePayload.getDescription();
     this.interestSet = updatePayload.getInterestSet();
     this.updateAt = LocalDateTime.now();
+  }
+
+  public void updateInviteCode(String code) {
+    this.inviteCode = code;
   }
 
   //  public void addAvatarChatRoom(ChatRoom payload) {

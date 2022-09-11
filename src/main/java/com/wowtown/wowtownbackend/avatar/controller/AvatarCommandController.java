@@ -89,4 +89,13 @@ public class AvatarCommandController {
 
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }
+
+  @ApiOperation(value = "아바타 게임 입장코드 메일 전송", notes = "유저,채널ID 사용")
+  @PostMapping(value = "/avatars/sendEmail")
+  public ResponseEntity sendEmail(
+      @ApiIgnore @UserChannel Channel channel, @ApiIgnore @LoginUser User user) {
+    avatarCommandExecutor.sendEmail(channel, user);
+
+    return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
+  }
 }

@@ -25,6 +25,12 @@ dependencies {
 
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
+
+    compileOnly group: 'org.apache.poi', name: 'poi', version: '4.1.2'
+    compileOnly group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'
+    
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
     implementation("io.jsonwebtoken:jjwt:0.9.1") // jwt 방식을 사용
 
 

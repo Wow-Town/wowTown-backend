@@ -1,14 +1,14 @@
-package com.wowtown.wowtownbackend.notice.infra;
+package com.wowtown.wowtownbackend.common.codeGenerator.infra;
 
-import com.wowtown.wowtownbackend.notice.application.common.PasswordGenerator;
+import com.wowtown.wowtownbackend.common.codeGenerator.CodeGenerator;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 
 @Component
-public class PasswordGeneratorImpl implements PasswordGenerator {
+public class CodeGeneratorImpl implements CodeGenerator {
   @Override
-  public String generateRandomPassword() {
+  public String generateRandomCode() {
     // ASCII range – alphanumeric (0-9, a-z, A-Z)
     final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
