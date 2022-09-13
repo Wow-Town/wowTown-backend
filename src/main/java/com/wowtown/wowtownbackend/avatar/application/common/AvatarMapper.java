@@ -2,7 +2,9 @@ package com.wowtown.wowtownbackend.avatar.application.common;
 
 import com.wowtown.wowtownbackend.avatar.application.dto.request.CreateOrUpdateAvatarDto;
 import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarDto;
+import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarFriendDto;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
+import com.wowtown.wowtownbackend.avatar.domain.AvatarFriend;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.common.domain.Interest;
 import com.wowtown.wowtownbackend.common.domain.InterestType;
@@ -62,5 +64,18 @@ public interface AvatarMapper {
     getAvatarDto.setInterests(interestList);
 
     return getAvatarDto;
+  }
+
+  default GetAvatarFriendDto toGetAvatarFriendDto(AvatarFriend avatarFriend) {
+    if (avatarFriend == null) {
+      return null;
+    }
+
+    GetAvatarFriendDto getAvatarFriendDto = new GetAvatarFriendDto();
+    getAvatarFriendDto.setFriendId(avatarFriend.getFriend().getId());
+    getAvatarFriendDto.setFriendNickName(avatarFriend.getFriend().getNickName());
+    getAvatarFriendDto.setStatus(avatarFriend.getAvatarFriendStatus().toString());
+
+    return getAvatarFriendDto;
   }
 }

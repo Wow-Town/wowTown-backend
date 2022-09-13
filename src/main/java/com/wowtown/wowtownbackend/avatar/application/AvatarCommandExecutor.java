@@ -2,7 +2,9 @@ package com.wowtown.wowtownbackend.avatar.application;
 
 import com.wowtown.wowtownbackend.avatar.application.common.AvatarMapper;
 import com.wowtown.wowtownbackend.avatar.application.dto.request.CreateOrUpdateAvatarDto;
+import com.wowtown.wowtownbackend.avatar.application.dto.request.FriendAvatarDto;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
+import com.wowtown.wowtownbackend.avatar.domain.AvatarFriend;
 import com.wowtown.wowtownbackend.avatar.domain.AvatarRepository;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.common.codeGenerator.CodeGenerator;
@@ -63,6 +65,53 @@ public class AvatarCommandExecutor {
             .orElseThrow(() -> new InstanceNotFoundException("아바타가 존재하지 않습니다."));
     avatarRepository.delete(findAvatar);
     return true;
+  }
+
+  @Transactional
+  public void addFriend(FriendAvatarDto dto, Avatar avatar) {
+    if (avatar.getId().equals(dto.getFriendAvatarId())) {
+      throw new IllegalStateException("자신한테는 친구 신청을 할 수 없습니다.");
+    }
+
+    Avatar friend =
+        avatarRepository
+            .findById(dto.getFriendAvatarId())
+            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 아바타 입니다."));
+
+    // 상대방 친구 목록에 자신이 있으면 이미 친구이거나 친구신청함.
+    // 상대방 친구 목록에 자신이 있는데 자신의 친구목록에 상대방이 없는경우는 있을수 없음.(동기화 해줘야함) -> 아마도 친구 삭제 로직을 구현한다면 거기서 작성해야 할듯
+    // 상대방 친구 목록에 자신이 없다면 상대방 친구 목록에 자신 넣어줌
+    if (friend.checkFriendInAvatarFriendList(avatar)) {
+      throw new IllegalStateException("이미 친구이거나 친구신청을 하였습니다.");
+    }
+    // 우선 상대방 친구 목록에 자신을 넣어준다.  나중에 상대방이 친구 수락을 하면 자신의 친구 목록에 추가됨
+    AvatarFriend avatarFriend = new AvatarFriend(friend, avatar);
+    friend.addAvatarFriend(avatarFriend);
+  }
+
+  @Transactional
+  public void approveFriendRequest(FriendAvatarDto dto, Avatar avatar) {
+    if (avatar.getId().equals(dto.getFriendAvatarId())) {
+      throw new IllegalStateException("자신한테는 친구 신청을 할 수 없습니다.");
+    }
+
+    Avatar friend =
+        avatarRepository
+            .findById(dto.getFriendAvatarId())
+            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 아바타 입니다."));
+
+    // 자신의 친구 목록에 상대방이 있는지 확인후 있으면 친구수락
+    avatar.approveAvatarFriend(friend);
+
+    // 만약 상대방과 자신이 동시에 친구 신청을 하였을경우 상대방 친구 목록에 자신이 있는지 확인후 있다면 본인 친구 수락과 동시에 상대방 친구 목록에 자신 친구 수락으로
+    // 표시
+    if (friend.checkFriendInAvatarFriendList(avatar)) {
+      friend.approveAvatarFriend(avatar);
+    } else {
+      AvatarFriend avatarFriend = new AvatarFriend(friend, avatar);
+      avatarFriend.approveFriendRequest();
+      friend.addAvatarFriend(avatarFriend);
+    }
   }
 
   @Transactional

@@ -4,7 +4,6 @@ import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.chatroom.domain.AvatarChatRoom;
 import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
 import com.wowtown.wowtownbackend.common.domain.Interest;
-import com.wowtown.wowtownbackend.friend.domain.Friend;
 import com.wowtown.wowtownbackend.notice.domain.Notice;
 import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.Getter;
@@ -49,11 +48,11 @@ public class Avatar {
   @JoinColumn(name = "Channel_ID")
   private Channel channel;
 
-  @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Friend> followerFriendList = new ArrayList<>();
+  @OneToMany(mappedBy = "avatar", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<AvatarFriend> avatarFriendList = new ArrayList<>();
 
-  @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Friend> followingFriendList = new ArrayList<>();
+  //  @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
+  //  private List<Friend> followingFriendList = new ArrayList<>();
 
   //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
   //  //  private List<CharacterChatRoom> characterChatRooms = new ArrayList<>();
@@ -101,6 +100,28 @@ public class Avatar {
   public void removeAvatarChatRoom(ChatRoom payload) {
     this.avatarChatRoomList.removeIf(
         avatarChatRoom -> avatarChatRoom.getChatRoom().equals(payload));
+  }
+
+  public void addAvatarFriend(AvatarFriend payload) {
+    this.avatarFriendList.add(payload);
+  }
+
+  public boolean checkFriendInAvatarFriendList(Avatar friend) {
+    for (AvatarFriend avatarFriend : this.avatarFriendList) {
+      if (avatarFriend.getAvatar().equals(this) && avatarFriend.getFriend().equals(friend)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public void approveAvatarFriend(Avatar friend) {
+    for (AvatarFriend avatarFriend : this.avatarFriendList) {
+      if (avatarFriend.getAvatar().equals(this) && avatarFriend.getFriend().equals(friend)) {
+        avatarFriend.approveFriendRequest();
+        break;
+      }
+    }
   }
 
   //  public void addAvatarScrapStudyGroup(Notice payload) {

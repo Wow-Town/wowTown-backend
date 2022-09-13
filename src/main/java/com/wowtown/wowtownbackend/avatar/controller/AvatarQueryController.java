@@ -2,8 +2,11 @@ package com.wowtown.wowtownbackend.avatar.controller;
 
 import com.wowtown.wowtownbackend.avatar.application.AvatarQueryProcessor;
 import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarDto;
+import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarFriendDto;
+import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.common.annotation.LoginUser;
+import com.wowtown.wowtownbackend.common.annotation.UserAvatar;
 import com.wowtown.wowtownbackend.common.annotation.UserChannel;
 import com.wowtown.wowtownbackend.user.domain.User;
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +23,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Validated
 @Controller
@@ -57,7 +61,7 @@ public class AvatarQueryController {
         .body(getAvatarDto);
   }
 
-  @ApiOperation(value = "channelId와 user를 통해 아바타 가져오기", notes = "")
+  @ApiOperation(value = "avatarId를 통해 아바타 가져오기", notes = "")
   @GetMapping(value = "/avatars/{avatarId}")
   public ResponseEntity getAvatar(@PathVariable("avatarId") Long avatarId) {
 
@@ -66,5 +70,17 @@ public class AvatarQueryController {
     return ResponseEntity.status(HttpStatus.OK)
         .contentType(MediaType.APPLICATION_JSON)
         .body(getAvatarDto);
+  }
+
+  @ApiOperation(value = "아바타 친구목록 가져오기", notes = "")
+  @GetMapping(value = "/avatars/friends")
+  public ResponseEntity getAvatarFriend(@ApiIgnore @UserAvatar Avatar avatar) {
+
+    List<GetAvatarFriendDto> getAvatarFriendDtoList =
+        avatarQueryProcessor.getAvatarFriendList(avatar);
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(getAvatarFriendDtoList);
   }
 }

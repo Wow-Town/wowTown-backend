@@ -4,15 +4,22 @@ import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
-public class AvatarChatRoom {
+@IdClass(AvatarChatRoom.class)
+public class AvatarChatRoom implements Serializable {
+  @Id
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "CHATROOM_ID")
+  private ChatRoom chatRoom;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  Long id;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "AVATAR_ID")
+  private Avatar avatar;
 
   private String customRoomName;
 
@@ -33,14 +40,6 @@ public class AvatarChatRoom {
   private LocalDateTime createAt;
 
   private LocalDateTime updateAt;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "CHATROOM_ID")
-  private ChatRoom chatRoom;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "AVATAR_ID")
-  private Avatar avatar;
 
   protected AvatarChatRoom() {}
 
