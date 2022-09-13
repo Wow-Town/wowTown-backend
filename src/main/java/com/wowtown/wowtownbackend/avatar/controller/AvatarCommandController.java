@@ -2,8 +2,11 @@ package com.wowtown.wowtownbackend.avatar.controller;
 
 import com.wowtown.wowtownbackend.avatar.application.AvatarCommandExecutor;
 import com.wowtown.wowtownbackend.avatar.application.dto.request.CreateOrUpdateAvatarDto;
+import com.wowtown.wowtownbackend.avatar.application.dto.request.FriendAvatarDto;
+import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.common.annotation.LoginUser;
+import com.wowtown.wowtownbackend.common.annotation.UserAvatar;
 import com.wowtown.wowtownbackend.common.annotation.UserChannel;
 import com.wowtown.wowtownbackend.user.domain.User;
 import io.swagger.annotations.ApiOperation;
@@ -86,6 +89,27 @@ public class AvatarCommandController {
     Cookie avatarCookie = new Cookie("avatarId", null);
     avatarCookie.setMaxAge(0);
     response.addCookie(avatarCookie);
+
+    return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
+  }
+
+  @ApiOperation(value = "친구 신청", notes = "")
+  @PostMapping(value = "/avatars/friends/add")
+  public ResponseEntity addFriend(
+      @Valid @RequestBody FriendAvatarDto dto, @ApiIgnore @UserAvatar Avatar avatar) {
+
+    avatarCommandExecutor.addFriend(dto, avatar);
+
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .contentType(MediaType.APPLICATION_JSON)
+        .build();
+  }
+  // 친구 받아주기
+  @ApiOperation(value = "친구 신청 승락", notes = "")
+  @PostMapping(value = "/avatars/friends/approve")
+  public ResponseEntity approveFriendRequest(
+      @Valid @RequestBody FriendAvatarDto dto, @ApiIgnore @UserAvatar Avatar avatar) {
+    avatarCommandExecutor.approveFriendRequest(dto, avatar);
 
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }

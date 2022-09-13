@@ -2,6 +2,7 @@ package com.wowtown.wowtownbackend.avatar.application;
 
 import com.wowtown.wowtownbackend.avatar.application.common.AvatarMapper;
 import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarDto;
+import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarFriendDto;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.avatar.domain.AvatarRepository;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
@@ -10,8 +11,8 @@ import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,12 +38,12 @@ public class AvatarQueryProcessor {
   }
 
   /// 친구 관련
-  public List<GetAvatarDto> getFriendAvatarDto(List<Avatar> avatarList) {
-    List<GetAvatarDto> avatarDtoList = new ArrayList<>();
-    for (Avatar findAvatar : avatarList) {
+  public List<GetAvatarFriendDto> getAvatarFriendList(Avatar avatar) {
+    List<GetAvatarFriendDto> avatarFriendDtoList =
+        avatar.getAvatarFriendList().stream()
+            .map(avatarFriend -> avatarMapper.toGetAvatarFriendDto(avatarFriend))
+            .collect(Collectors.toList());
 
-      avatarDtoList.add(avatarMapper.toGetAvatarDto(findAvatar));
-    }
-    return avatarDtoList;
+    return avatarFriendDtoList;
   }
 }
