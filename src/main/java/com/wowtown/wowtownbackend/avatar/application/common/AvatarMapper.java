@@ -1,10 +1,12 @@
 package com.wowtown.wowtownbackend.avatar.application.common;
 
 import com.wowtown.wowtownbackend.avatar.application.dto.request.CreateOrUpdateAvatarDto;
-import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarDto;
 import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarFriendDto;
+import com.wowtown.wowtownbackend.avatar.application.dto.response.GetMyAvatarDto;
+import com.wowtown.wowtownbackend.avatar.application.dto.response.GetOtherAvatarDto;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.avatar.domain.AvatarFriend;
+import com.wowtown.wowtownbackend.avatar.domain.AvatarFriendStatus;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.common.domain.Interest;
 import com.wowtown.wowtownbackend.common.domain.InterestType;
@@ -48,22 +50,41 @@ public interface AvatarMapper {
     return avatar;
   }
 
-  default GetAvatarDto toGetAvatarDto(Avatar avatar) {
+  default GetMyAvatarDto toGetMyAvatarDto(Avatar avatar) {
     if (avatar == null) {
       return null;
     }
 
-    GetAvatarDto getAvatarDto = new GetAvatarDto();
-    getAvatarDto.setAvatarId(avatar.getId());
-    getAvatarDto.setNickName(avatar.getNickName());
-    getAvatarDto.setDescription(avatar.getDescription());
+    GetMyAvatarDto getMyAvatarDto = new GetMyAvatarDto();
+    getMyAvatarDto.setAvatarId(avatar.getId());
+    getMyAvatarDto.setNickName(avatar.getNickName());
+    getMyAvatarDto.setDescription(avatar.getDescription());
     Set<String> interestList =
         avatar.getInterestSet().stream()
             .map(interest -> interest.getType().toString())
             .collect(Collectors.toSet());
-    getAvatarDto.setInterests(interestList);
+    getMyAvatarDto.setInterests(interestList);
 
-    return getAvatarDto;
+    return getMyAvatarDto;
+  }
+
+  default GetOtherAvatarDto toGetOtherAvatarDto(Avatar avatar, AvatarFriendStatus status) {
+    if (avatar == null) {
+      return null;
+    }
+
+    GetOtherAvatarDto getOtherAvatarDto = new GetOtherAvatarDto();
+    getOtherAvatarDto.setAvatarId(avatar.getId());
+    getOtherAvatarDto.setNickName(avatar.getNickName());
+    getOtherAvatarDto.setDescription(avatar.getDescription());
+    Set<String> interestList =
+        avatar.getInterestSet().stream()
+            .map(interest -> interest.getType().toString())
+            .collect(Collectors.toSet());
+    getOtherAvatarDto.setInterests(interestList);
+    getOtherAvatarDto.setFriendStatus(status.toString());
+
+    return getOtherAvatarDto;
   }
 
   default GetAvatarFriendDto toGetAvatarFriendDto(AvatarFriend avatarFriend) {

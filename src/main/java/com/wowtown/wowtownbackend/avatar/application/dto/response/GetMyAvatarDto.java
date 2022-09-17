@@ -12,7 +12,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetAvatarDto {
+public class GetMyAvatarDto {
   private Long avatarId;
 
   private String nickName;

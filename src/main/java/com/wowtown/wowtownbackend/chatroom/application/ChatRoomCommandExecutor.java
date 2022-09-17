@@ -13,6 +13,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,16 +31,28 @@ public class ChatRoomCommandExecutor {
     // 초대한 아바타를 참여한 아바타 리스트를 만든다.
     Avatar invitedAvatar = avatarProvider.getAvatar(dto.getAvatarId());
 
-    ChatRoomType chatRoomType = ChatRoomType.SINGLE;
+    ChatRoom chatRoom = null;
+    List<AvatarChatRoom> myAvatarChatRoomList =
+        avatarChatRoomRepository.findAvatarChatRoomByAvatarId(avatar.getId());
 
-    // 채팅방을 만든다.
-    ChatRoom chatRoom = new ChatRoom(chatRoomType);
+    for (AvatarChatRoom avatarChatRoom : myAvatarChatRoomList) {
+      if (avatarChatRoom.getDefaultRoomName().equals(invitedAvatar.getNickName())) {
+        chatRoom = avatarChatRoom.getChatRoom();
+        break;
+      }
+    }
 
-    chatRoom.addAvatarChatRoom(invitedAvatar.getNickName(), avatar);
-    chatRoom.addAvatarChatRoom(avatar.getNickName(), invitedAvatar);
+    if (chatRoom == null) {
+      ChatRoomType chatRoomType = ChatRoomType.SINGLE;
 
-    chatRoomRepository.save(chatRoom);
+      // 채팅방을 만든다.
+      chatRoom = new ChatRoom(chatRoomType);
 
+      chatRoom.addAvatarChatRoom(invitedAvatar.getNickName(), avatar);
+      chatRoom.addAvatarChatRoom(avatar.getNickName(), invitedAvatar);
+
+      chatRoomRepository.save(chatRoom);
+    }
     return chatRoomMapper.toGetCreatedChatRoomDto(invitedAvatar.getNickName(), chatRoom.getUuid());
   }
 

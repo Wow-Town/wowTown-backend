@@ -114,6 +114,16 @@ public class AvatarCommandController {
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
   }
 
+  // 친구 거절하기
+  @ApiOperation(value = "친구 신청 거절", notes = "")
+  @PostMapping(value = "/avatars/friends/reject")
+  public ResponseEntity rejectFriendRequest(
+      @Valid @RequestBody FriendAvatarDto dto, @ApiIgnore @UserAvatar Avatar avatar) {
+    avatarCommandExecutor.rejectFriendRequest(dto, avatar);
+
+    return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
+  }
+
   @ApiOperation(value = "아바타 게임 입장코드 메일 전송", notes = "유저,채널ID 사용")
   @PostMapping(value = "/avatars/sendEmail")
   public ResponseEntity sendEmail(

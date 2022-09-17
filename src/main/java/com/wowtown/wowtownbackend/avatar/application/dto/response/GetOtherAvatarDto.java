@@ -1,4 +1,4 @@
-package com.wowtown.wowtownbackend.notice.application.dto.response;
+package com.wowtown.wowtownbackend.avatar.application.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,12 +11,14 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetNoticeDto {
-  private Long noticeId;
+public class GetOtherAvatarDto {
+  private Long avatarId;
 
-  private String ownerNickName;
+  private String nickName;
 
-  private String subject;
+  private String description;
 
   private Set<String> interests;
+
+  private String friendStatus;
 }

@@ -1,9 +1,11 @@
 package com.wowtown.wowtownbackend.avatar.application;
 
 import com.wowtown.wowtownbackend.avatar.application.common.AvatarMapper;
-import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarDto;
 import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarFriendDto;
+import com.wowtown.wowtownbackend.avatar.application.dto.response.GetMyAvatarDto;
+import com.wowtown.wowtownbackend.avatar.application.dto.response.GetOtherAvatarDto;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
+import com.wowtown.wowtownbackend.avatar.domain.AvatarFriendStatus;
 import com.wowtown.wowtownbackend.avatar.domain.AvatarRepository;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
@@ -11,7 +13,8 @@ import com.wowtown.wowtownbackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,28 +24,29 @@ public class AvatarQueryProcessor {
   private final AvatarRepository avatarRepository;
   private final AvatarMapper avatarMapper;
 
-  public GetAvatarDto getAvatar(Channel channel, User user) {
+  public GetMyAvatarDto getMyAvatar(Channel channel, User user) {
     Avatar findAvatar =
         avatarRepository
             .findAvatarWithChannelIdAndUserId(channel.getId(), user.getId())
             .orElseThrow(() -> new InstanceNotFoundException("아바타가 존재하지 않습니다."));
-    return avatarMapper.toGetAvatarDto(findAvatar);
+    return avatarMapper.toGetMyAvatarDto(findAvatar);
   }
 
-  public GetAvatarDto getAvatar(long avatarId) {
+  public GetOtherAvatarDto getOtherAvatar(long avatarId, Avatar avatar) {
     Avatar findAvatar =
         avatarRepository
             .findById(avatarId)
             .orElseThrow(() -> new InstanceNotFoundException("아바타가 존재하지 않습니다."));
-    return avatarMapper.toGetAvatarDto(findAvatar);
+    AvatarFriendStatus friendStatus = avatar.checkFriendInAvatarFriendSet(findAvatar);
+    return avatarMapper.toGetOtherAvatarDto(findAvatar, friendStatus);
   }
 
   /// 친구 관련
-  public List<GetAvatarFriendDto> getAvatarFriendList(Avatar avatar) {
-    List<GetAvatarFriendDto> avatarFriendDtoList =
-        avatar.getAvatarFriendList().stream()
+  public Set<GetAvatarFriendDto> getAvatarFriendList(Avatar avatar) {
+    Set<GetAvatarFriendDto> avatarFriendDtoList =
+        avatar.getAvatarFriendSet().stream()
             .map(avatarFriend -> avatarMapper.toGetAvatarFriendDto(avatarFriend))
-            .collect(Collectors.toList());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
 
     return avatarFriendDtoList;
   }

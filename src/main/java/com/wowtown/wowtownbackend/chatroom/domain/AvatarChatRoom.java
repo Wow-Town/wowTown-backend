@@ -9,14 +9,15 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@IdClass(AvatarChatRoom.class)
 public class AvatarChatRoom implements Serializable {
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "CHATROOM_ID")
   private ChatRoom chatRoom;
 
-  @Id
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "AVATAR_ID")
   private Avatar avatar;
