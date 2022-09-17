@@ -20,6 +20,7 @@ public class ChatRoom {
 
   private Integer currentJoinNum; // 현재 접속중인 인원수
 
+  @Column(columnDefinition = "BINARY(16)")
   private UUID uuid;
 
   @Enumerated(EnumType.STRING)
