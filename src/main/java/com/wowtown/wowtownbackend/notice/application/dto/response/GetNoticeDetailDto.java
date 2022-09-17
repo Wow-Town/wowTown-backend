@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -19,7 +19,7 @@ public class GetNoticeDetailDto {
 
   private String description;
 
-  private List<String> interests;
+  private Set<String> interests;
 
   private String randomPW;
 

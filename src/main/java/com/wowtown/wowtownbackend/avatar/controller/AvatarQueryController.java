@@ -1,8 +1,9 @@
 package com.wowtown.wowtownbackend.avatar.controller;
 
 import com.wowtown.wowtownbackend.avatar.application.AvatarQueryProcessor;
-import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarDto;
 import com.wowtown.wowtownbackend.avatar.application.dto.response.GetAvatarFriendDto;
+import com.wowtown.wowtownbackend.avatar.application.dto.response.GetMyAvatarDto;
+import com.wowtown.wowtownbackend.avatar.application.dto.response.GetOtherAvatarDto;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
 import com.wowtown.wowtownbackend.common.annotation.LoginUser;
@@ -23,7 +24,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.util.Set;
 
 @Validated
 @Controller
@@ -39,7 +40,7 @@ public class AvatarQueryController {
       HttpServletRequest request,
       HttpServletResponse response) {
 
-    GetAvatarDto getAvatarDto = avatarQueryProcessor.getAvatar(channel, user);
+    GetMyAvatarDto getMyAvatarDto = avatarQueryProcessor.getMyAvatar(channel, user);
 
     String origin = request.getHeader("Origin");
 
@@ -50,7 +51,7 @@ public class AvatarQueryController {
             ? "localhost"
             : origin.substring(7);
 
-    Cookie cookie = new Cookie("avatarId", String.valueOf(getAvatarDto.getAvatarId()));
+    Cookie cookie = new Cookie("avatarId", String.valueOf(getMyAvatarDto.getAvatarId()));
     cookie.setPath("/");
     cookie.setHttpOnly(true);
     cookie.setDomain(domain);
@@ -58,29 +59,30 @@ public class AvatarQueryController {
 
     return ResponseEntity.status(HttpStatus.OK)
         .contentType(MediaType.APPLICATION_JSON)
-        .body(getAvatarDto);
+        .body(getMyAvatarDto);
   }
 
   @ApiOperation(value = "avatarId를 통해 아바타 가져오기", notes = "")
   @GetMapping(value = "/avatars/{avatarId}")
-  public ResponseEntity getAvatar(@PathVariable("avatarId") Long avatarId) {
+  public ResponseEntity getAvatar(
+      @PathVariable("avatarId") Long avatarId, @ApiIgnore @UserAvatar Avatar avatar) {
 
-    GetAvatarDto getAvatarDto = avatarQueryProcessor.getAvatar(avatarId);
+    GetOtherAvatarDto getOtherAvatarDto = avatarQueryProcessor.getOtherAvatar(avatarId, avatar);
 
     return ResponseEntity.status(HttpStatus.OK)
         .contentType(MediaType.APPLICATION_JSON)
-        .body(getAvatarDto);
+        .body(getOtherAvatarDto);
   }
 
   @ApiOperation(value = "아바타 친구목록 가져오기", notes = "")
   @GetMapping(value = "/avatars/friends")
   public ResponseEntity getAvatarFriend(@ApiIgnore @UserAvatar Avatar avatar) {
 
-    List<GetAvatarFriendDto> getAvatarFriendDtoList =
+    Set<GetAvatarFriendDto> getAvatarFriendDtoSet =
         avatarQueryProcessor.getAvatarFriendList(avatar);
 
     return ResponseEntity.status(HttpStatus.OK)
         .contentType(MediaType.APPLICATION_JSON)
-        .body(getAvatarFriendDtoList);
+        .body(getAvatarFriendDtoSet);
   }
 }

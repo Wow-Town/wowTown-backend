@@ -17,6 +17,8 @@ public class GetChatMessageDto {
 
   private String sender;
 
+  private Long senderId;
+
   private String message;
 
   private int count; // 읽지 않은 사용자 수

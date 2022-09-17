@@ -6,7 +6,7 @@ import com.wowtown.wowtownbackend.common.domain.Interest;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -29,7 +29,7 @@ public class Notice {
 
   @ElementCollection
   @CollectionTable(name = "notice_interest")
-  private Set<Interest> interestSet = new HashSet<>();
+  private Set<Interest> interestSet = new LinkedHashSet<>();
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "Channel_ID")
@@ -46,10 +46,7 @@ public class Notice {
 
   protected Notice() {}
 
-  public Notice(
-      String subject,
-      String description,
-      Set<Interest> interestSet) {
+  public Notice(String subject, String description, Set<Interest> interestSet) {
     this.subject = subject;
     this.description = description;
     this.interestSet = interestSet;

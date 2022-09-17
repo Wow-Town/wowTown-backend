@@ -49,7 +49,7 @@ public class Avatar {
   private Channel channel;
 
   @OneToMany(mappedBy = "avatar", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<AvatarFriend> avatarFriendList = new ArrayList<>();
+  private Set<AvatarFriend> avatarFriendSet = new LinkedHashSet<>();
 
   //  @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
   //  private List<Friend> followingFriendList = new ArrayList<>();
@@ -103,25 +103,31 @@ public class Avatar {
   }
 
   public void addAvatarFriend(AvatarFriend payload) {
-    this.avatarFriendList.add(payload);
+    this.avatarFriendSet.add(payload);
   }
 
-  public boolean checkFriendInAvatarFriendList(Avatar friend) {
-    for (AvatarFriend avatarFriend : this.avatarFriendList) {
+  public AvatarFriendStatus checkFriendInAvatarFriendSet(Avatar friend) {
+    for (AvatarFriend avatarFriend : this.avatarFriendSet) {
       if (avatarFriend.getAvatar().equals(this) && avatarFriend.getFriend().equals(friend)) {
-        return true;
+        return avatarFriend.getAvatarFriendStatus();
       }
     }
-    return false;
+    return AvatarFriendStatus.BLANK;
   }
 
   public void approveAvatarFriend(Avatar friend) {
-    for (AvatarFriend avatarFriend : this.avatarFriendList) {
+    for (AvatarFriend avatarFriend : this.avatarFriendSet) {
       if (avatarFriend.getAvatar().equals(this) && avatarFriend.getFriend().equals(friend)) {
         avatarFriend.approveFriendRequest();
         break;
       }
     }
+  }
+
+  public void rejectAvatarFriend(Avatar friend) {
+    this.avatarFriendSet.removeIf(
+        avatarFriend ->
+            avatarFriend.getAvatar().equals(this) && avatarFriend.getFriend().equals(friend));
   }
 
   //  public void addAvatarScrapStudyGroup(Notice payload) {

@@ -8,6 +8,7 @@ import com.wowtown.wowtownbackend.notice.domain.Notice;
 import org.mapstruct.Mapper;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,12 +42,12 @@ public interface NoticeMapper {
     getNoticeDto.setNoticeId(notice.getId());
     getNoticeDto.setSubject(notice.getSubject());
     getNoticeDto.setOwnerNickName((notice.getAvatar().getNickName()));
-    List<String> interestList =
+    Set<String> interestSet =
         notice.getInterestSet().stream()
             .map(interest -> interest.getType().toString())
-            .collect(Collectors.toList());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
 
-    getNoticeDto.setInterests(interestList);
+    getNoticeDto.setInterests(interestSet);
 
     return getNoticeDto;
   }
@@ -61,12 +62,12 @@ public interface NoticeMapper {
     getNoticeDetailDto.setOwnerId(notice.getAvatar().getId());
     getNoticeDetailDto.setSubject(notice.getSubject());
     getNoticeDetailDto.setDescription((notice.getDescription()));
-    List<String> interestList =
+    Set<String> interestSet =
         notice.getInterestSet().stream()
             .map(interest -> interest.getType().toString())
-            .collect(Collectors.toList());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
 
-    getNoticeDetailDto.setInterests(interestList);
+    getNoticeDetailDto.setInterests(interestSet);
     getNoticeDetailDto.setRandomPW(notice.getRandomPW());
     getNoticeDetailDto.setChatRoomUUID(notice.getChatRoomUUID());
 
