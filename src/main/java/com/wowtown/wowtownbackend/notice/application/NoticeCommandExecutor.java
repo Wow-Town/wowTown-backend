@@ -29,7 +29,7 @@ public class NoticeCommandExecutor {
     Notice notice =
         noticeMapper.toNotice(dto.getSubject(), dto.getDescription(), dto.getInterests());
 
-    UUID chatRoomUUID = chatRoomCommandExecutor.createNoticeChatroom();
+    UUID chatRoomUUID = chatRoomCommandExecutor.createNoticeChatroom(dto.getSubject(), avatar);
 
     notice.addChatRoomUUID(chatRoomUUID);
 

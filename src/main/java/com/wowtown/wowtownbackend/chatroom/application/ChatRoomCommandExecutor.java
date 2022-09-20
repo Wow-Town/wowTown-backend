@@ -57,11 +57,13 @@ public class ChatRoomCommandExecutor {
   }
 
   @Transactional
-  public UUID createNoticeChatroom() {
+  public UUID createNoticeChatroom(String subject, Avatar avatar) {
 
     ChatRoomType chatRoomType = ChatRoomType.MULTI;
 
     ChatRoom chatRoom = new ChatRoom(chatRoomType);
+
+    chatRoom.addAvatarChatRoom(subject, avatar);
 
     return chatRoomRepository.save(chatRoom).getUuid();
   }
