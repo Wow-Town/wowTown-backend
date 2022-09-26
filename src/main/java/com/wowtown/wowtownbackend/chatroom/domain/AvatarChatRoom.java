@@ -30,7 +30,7 @@ public class AvatarChatRoom implements Serializable {
   @JoinColumn(name = "CHAT_MESSAGE_ID")
   private ChatMessage lastCheckMessage;
 
-  private String latestMessage;
+  @Lob private byte[] latestMessage;
 
   private Integer receiveMessageNum;
 
@@ -48,7 +48,7 @@ public class AvatarChatRoom implements Serializable {
     this.customRoomName = customRoomName;
     this.defaultRoomName = defaultRoomName;
     this.lastCheckMessage = null;
-    this.latestMessage = "";
+    this.latestMessage = null;
     this.receiveMessageNum = 0;
     this.sessionId = null;
     this.active = false;
@@ -68,7 +68,7 @@ public class AvatarChatRoom implements Serializable {
     this.lastCheckMessage = chatMessage;
   }
 
-  public void updateLatestMessage(String latestMessage) {
+  public void updateLatestMessage(byte[] latestMessage) {
     this.latestMessage = latestMessage;
   }
 

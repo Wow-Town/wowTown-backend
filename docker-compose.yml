@@ -8,6 +8,8 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/wow_town?useSSL=false&characterEncoding=UTF-8&serverTimeZone=UTC&&allowPublicKeyRetrieval=true
       - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRETE_KEY=${AWS_SECRETE_KEY}
     working_dir: /deploy/wowtown
     depends_on:
       - redis

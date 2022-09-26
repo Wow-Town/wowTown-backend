@@ -4,6 +4,7 @@ import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -116,7 +117,17 @@ public class ChatRoom {
         avatarChatRoom.increaseReceiveMessageNum();
       }
       avatarChatRoom.setActive(true);
-      avatarChatRoom.updateLatestMessage(payload.getMessage());
+      if (payload.getType() == MessageType.APPLICATION) {
+        avatarChatRoom.updateLatestMessage("파일".getBytes(StandardCharsets.UTF_8));
+      } else if (payload.getType() == MessageType.TEXT) {
+        avatarChatRoom.updateLatestMessage("파일".getBytes(StandardCharsets.UTF_8));
+      } else if (payload.getType() == MessageType.IMAGE) {
+        avatarChatRoom.updateLatestMessage("사진".getBytes(StandardCharsets.UTF_8));
+      } else if (payload.getType() == MessageType.VIDEO) {
+        avatarChatRoom.updateLatestMessage("동영상".getBytes(StandardCharsets.UTF_8));
+      } else {
+        avatarChatRoom.updateLatestMessage(payload.getMessage());
+      }
     }
     this.chatMessageList.add(payload);
     this.updateAt = LocalDateTime.now();

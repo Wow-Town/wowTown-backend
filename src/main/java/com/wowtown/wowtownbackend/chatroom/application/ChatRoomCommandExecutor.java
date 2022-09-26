@@ -1,18 +1,27 @@
 package com.wowtown.wowtownbackend.chatroom.application;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.wowtown.wowtownbackend.avatar.application.common.AvatarProvider;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.chatroom.application.common.ChatRoomMapper;
 import com.wowtown.wowtownbackend.chatroom.application.dto.request.ChatMessageDto;
 import com.wowtown.wowtownbackend.chatroom.application.dto.request.InviteAvatar;
 import com.wowtown.wowtownbackend.chatroom.application.dto.response.GetCreatedChatRoomDto;
+import com.wowtown.wowtownbackend.chatroom.application.dto.response.GetUploadFileDto;
 import com.wowtown.wowtownbackend.chatroom.domain.*;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,6 +34,7 @@ public class ChatRoomCommandExecutor {
   private final AvatarChatRoomRepository avatarChatRoomRepository;
   private final ChatRoomMapper chatRoomMapper;
   private final SimpMessageSendingOperations sendingOperations;
+  private final AmazonS3 amazonS3;
 
   @Transactional
   public GetCreatedChatRoomDto createAvatarChatroom(InviteAvatar dto, Avatar avatar) {
@@ -79,33 +89,33 @@ public class ChatRoomCommandExecutor {
   }
 
   @Transactional
-  public void enterChatRoom(ChatMessageDto message) {
+  public void enterChatRoom(ChatMessageDto message, String sessionId) {
     ChatRoom findChatRoom =
         chatRoomRepository
             .findChatRoomByUuid(message.getChatRoomUUID())
             .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 채팅방 입니다."));
 
-    findChatRoom.enterChatRoom(message.getSessionId(), message.getSenderId());
+    findChatRoom.enterChatRoom(sessionId, message.getSenderId());
     sendingOperations.convertAndSend(
         "/sub/chatRooms/" + message.getChatRoomUUID().toString(), message);
   }
 
   @Transactional
-  public void leaveChatRoom(ChatMessageDto message) {
+  public void leaveChatRoom(String sessionId) {
     Optional<AvatarChatRoom> findAvatarChatroom =
-        avatarChatRoomRepository.findAvatarChatRoomWithSessionId(message.getSessionId());
+        avatarChatRoomRepository.findAvatarChatRoomWithSessionId(sessionId);
 
     findAvatarChatroom.ifPresent(
         avatarChatRoom -> {
           ChatRoom findChatRoom = avatarChatRoom.getChatRoom();
           if (findChatRoom.getRoomType().equals(ChatRoomType.SINGLE)) {
-            findChatRoom.leaveChatRoom(message.getSessionId());
+            findChatRoom.leaveChatRoom(sessionId);
             if (findChatRoom.getCurrentJoinNum() == 0
                 && findChatRoom.getChatMessageList().size() == 0) {
               chatRoomRepository.delete(findChatRoom);
             }
           } else if (findChatRoom.getRoomType().equals(ChatRoomType.MULTI)) {
-            findChatRoom.leaveChatRoom(message.getSessionId());
+            findChatRoom.leaveChatRoom(sessionId);
           }
         });
   }
@@ -130,5 +140,45 @@ public class ChatRoomCommandExecutor {
     sendingOperations.convertAndSend(
         "/sub/chatRooms/" + message.getChatRoomUUID().toString(),
         chatRoomMapper.toGetChatMessageDto(chatMessageToSend));
+  }
+
+  @Transactional
+  public List<GetUploadFileDto> fileUpload(
+      UUID chatRoomUUID, MultipartFile[] files, Avatar avatar) {
+    try {
+      ChatRoom findChatRoom =
+          chatRoomRepository
+              .findChatRoomByUuid(chatRoomUUID)
+              .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 채팅방입니다."));
+
+      String bucket = "wowtown";
+      String chatRoomId = findChatRoom.getId().toString();
+      List<GetUploadFileDto> getUploadFileDtos = new ArrayList<>();
+
+      for (MultipartFile file : files) {
+        String fileIdx = UUID.randomUUID().toString();
+        String key = chatRoomId + "/" + fileIdx + "/" + file.getOriginalFilename();
+
+        File uploadFile = convert(file);
+        amazonS3.putObject(
+            new PutObjectRequest(bucket, key, uploadFile)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
+
+        String url = amazonS3.getUrl(bucket, key).toString();
+        getUploadFileDtos.add(chatRoomMapper.toGetUploadFileDto(file.getContentType(), url));
+      }
+
+      return getUploadFileDtos;
+    } catch (Exception e) {
+      throw new IllegalArgumentException(e.getMessage());
+    }
+  }
+
+  private File convert(MultipartFile multiFile) throws IOException {
+    File uploadFile = new File(multiFile.getOriginalFilename());
+    FileOutputStream fos = new FileOutputStream(uploadFile);
+    fos.write(multiFile.getBytes());
+    fos.close();
+    return uploadFile;
   }
 }
