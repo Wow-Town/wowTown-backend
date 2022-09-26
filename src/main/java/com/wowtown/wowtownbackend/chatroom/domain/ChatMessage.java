@@ -2,10 +2,7 @@ package com.wowtown.wowtownbackend.chatroom.domain;
 
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -22,7 +19,7 @@ public class ChatMessage {
 
   private Long senderId;
 
-  private String message;
+  @Lob private byte[] message;
 
   private Integer count; // 읽지 않은 사용자 수
 
@@ -31,7 +28,7 @@ public class ChatMessage {
   protected ChatMessage() {}
 
   public ChatMessage(
-      MessageType type, String sender, Long senderId, String message, Integer count) {
+      MessageType type, String sender, Long senderId, byte[] message, Integer count) {
     this.type = type;
     this.sender = sender;
     this.senderId = senderId;

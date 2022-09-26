@@ -1,4 +1,9 @@
 spring:
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -39,3 +44,22 @@ spring:
   decorator:
     datasource:
       p6spy.enable-logging: true
+
+cloud:
+  aws:
+    stack:
+      auto: false
+    s3:
+      bucket: wowtown
+    region:
+      static: ap-northeast-2
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRETE_KEY}
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
