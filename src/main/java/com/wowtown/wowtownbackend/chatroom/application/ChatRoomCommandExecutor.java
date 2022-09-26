@@ -1,8 +1,7 @@
 package com.wowtown.wowtownbackend.chatroom.application;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.wowtown.wowtownbackend.avatar.application.common.AvatarProvider;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.chatroom.application.common.ChatRoomMapper;
@@ -18,9 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -158,11 +154,11 @@ public class ChatRoomCommandExecutor {
       for (MultipartFile file : files) {
         String fileIdx = UUID.randomUUID().toString();
         String key = chatRoomId + "/" + fileIdx + "/" + file.getOriginalFilename();
+        ObjectMetadata data = new ObjectMetadata();
+        data.setContentType(file.getContentType());
+        data.setContentLength(file.getSize());
 
-        File uploadFile = convert(file);
-        amazonS3.putObject(
-            new PutObjectRequest(bucket, key, uploadFile)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
+        amazonS3.putObject(bucket, key, file.getInputStream(), data);
 
         String url = amazonS3.getUrl(bucket, key).toString();
         getUploadFileDtos.add(chatRoomMapper.toGetUploadFileDto(file.getContentType(), url));
@@ -172,13 +168,5 @@ public class ChatRoomCommandExecutor {
     } catch (Exception e) {
       throw new IllegalArgumentException(e.getMessage());
     }
-  }
-
-  private File convert(MultipartFile multiFile) throws IOException {
-    File uploadFile = new File(multiFile.getOriginalFilename());
-    FileOutputStream fos = new FileOutputStream(uploadFile);
-    fos.write(multiFile.getBytes());
-    fos.close();
-    return uploadFile;
   }
 }
