@@ -2,7 +2,8 @@ package com.wowtown.wowtownbackend.chatroom.application;
 
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.chatroom.application.common.ChatRoomMapper;
-import com.wowtown.wowtownbackend.chatroom.application.dto.response.GetChatRoomDetailDto;
+import com.wowtown.wowtownbackend.chatroom.application.dto.response.GetChatMessageDto;
+import com.wowtown.wowtownbackend.chatroom.application.dto.response.GetChatRoomAvatarDto;
 import com.wowtown.wowtownbackend.chatroom.application.dto.response.GetChatRoomDto;
 import com.wowtown.wowtownbackend.chatroom.domain.AvatarChatRoomRepository;
 import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
@@ -22,13 +23,31 @@ public class ChatRoomQueryProcessor {
   private final AvatarChatRoomRepository avatarChatRoomRepository;
   private final ChatRoomMapper chatRoomMapper;
 
-  public GetChatRoomDetailDto getChatRoom(UUID chatRoomUUID) {
+  public List<GetChatMessageDto> getChatRoomMessage(UUID chatRoomUUID) {
     ChatRoom findChatRoom =
         chatRoomRepository
             .findChatRoomByUuid(chatRoomUUID)
             .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 채팅방 입니다."));
 
-    return chatRoomMapper.toGetChatRoomDetailDto(findChatRoom);
+    return findChatRoom.getChatMessageList().stream()
+        .map(chatMessage -> chatRoomMapper.toGetChatMessageDto(chatMessage))
+        .collect(Collectors.toList());
+  }
+
+  public List<GetChatRoomAvatarDto> getChatRoomAvatar(UUID chatRoomUUID) {
+    ChatRoom findChatRoom =
+        chatRoomRepository
+            .findChatRoomByUuid(chatRoomUUID)
+            .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 채팅방 입니다."));
+
+    return findChatRoom.getAvatarChatRoomSet().stream()
+        .map(
+            avatarChatRoom ->
+                chatRoomMapper.toGetChatRoomAvatarDto(
+                    avatarChatRoom.getAvatar().getId(),
+                    avatarChatRoom.getAvatar().getNickName(),
+                    avatarChatRoom.getSessionId() != null))
+        .collect(Collectors.toList());
   }
 
   public List<GetChatRoomDto> getChatRoomListByAvatar(Avatar avatar) {

@@ -1,22 +1,20 @@
 package com.wowtown.wowtownbackend.chatroom.application.common;
 
+import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.chatroom.application.dto.response.*;
 import com.wowtown.wowtownbackend.chatroom.domain.ChatMessage;
-import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
 import com.wowtown.wowtownbackend.chatroom.domain.MessageType;
 import org.mapstruct.Mapper;
 
 import java.util.Base64;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface ChatRoomMapper {
 
   default ChatMessage toChatMessage(
-      MessageType type, String sender, Long senderId, byte[] message, Integer count) {
-    if (type == null && sender == null && senderId == null && message == null && count == null) {
+      MessageType type, Avatar sender, byte[] message, Integer count) {
+    if (type == null && sender == null && message == null && count == null) {
       return null;
     }
 
@@ -24,13 +22,9 @@ public interface ChatRoomMapper {
     if (type != null) {
       type1 = type;
     }
-    String sender1 = null;
+    Avatar sender1 = null;
     if (sender != null) {
       sender1 = sender;
-    }
-    Long senderId1 = null;
-    if (senderId != null) {
-      senderId1 = senderId;
     }
     byte[] message1 = null;
     if (message != null) {
@@ -41,40 +35,10 @@ public interface ChatRoomMapper {
       count1 = count;
     }
 
-    ChatMessage chatMessage = new ChatMessage(type1, sender1, senderId1, message1, count1);
+    ChatMessage chatMessage = new ChatMessage(type1, sender1, message1, count1);
 
     return chatMessage;
   }
-
-  default GetChatRoomDetailDto toGetChatRoomDetailDto(ChatRoom chatRoom) {
-    if (chatRoom == null) {
-      return null;
-    }
-
-    GetChatRoomDetailDto getChatRoomDetailDto = new GetChatRoomDetailDto();
-
-    List<GetChatMessageDto> getChatMessageDtoList =
-        chatRoom.getChatMessageList().stream()
-            .map(chatMessage -> toGetChatMessageDto(chatMessage))
-            .collect(Collectors.toList());
-
-    getChatRoomDetailDto.setChatMessageList(getChatMessageDtoList);
-
-    List<GetParticipantAvatarDto> getParticipantAvatarDtoList =
-        chatRoom.getAvatarChatRoomSet().stream()
-            .map(
-                avatarChatRoom ->
-                    toGetParticipantAvatarDto(
-                        avatarChatRoom.getAvatar().getId(),
-                        avatarChatRoom.getAvatar().getNickName()))
-            .collect(Collectors.toList());
-
-    getChatRoomDetailDto.setAvatarList(getParticipantAvatarDtoList);
-
-    return getChatRoomDetailDto;
-  }
-
-  GetParticipantAvatarDto toGetParticipantAvatarDto(Long avatarId, String nickName);
 
   default GetChatMessageDto toGetChatMessageDto(ChatMessage chatMessage) {
     if (chatMessage == null) {
@@ -84,8 +48,8 @@ public interface ChatRoomMapper {
     GetChatMessageDto getChatMessageDto = new GetChatMessageDto();
 
     getChatMessageDto.setType(chatMessage.getType());
-    getChatMessageDto.setSender(chatMessage.getSender());
-    getChatMessageDto.setSenderId(chatMessage.getSenderId());
+    getChatMessageDto.setSender(chatMessage.getSender().getNickName());
+    getChatMessageDto.setSenderId(chatMessage.getSender().getId());
     byte[] message = chatMessage.getMessage();
     if (message != null) {
       if (chatMessage.getType() != MessageType.TALK) {
@@ -101,6 +65,8 @@ public interface ChatRoomMapper {
 
     return getChatMessageDto;
   }
+
+  GetChatRoomAvatarDto toGetChatRoomAvatarDto(Long avatarId, String nickName, boolean connectState);
 
   default GetChatRoomDto toGetChatRoomDto(
       UUID chatRoomUUID,
