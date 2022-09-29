@@ -22,12 +22,20 @@ import java.util.UUID;
 public class ChatRoomQueryController {
   private final ChatRoomQueryProcessor chatRoomQueryProcessor;
 
-  @ApiOperation(value = "채팅방 조회", notes = "U.")
-  @GetMapping(value = "/{uuid}")
-  public ResponseEntity getChatRoom(@PathVariable("uuid") UUID chatRoomUUID) {
+  @ApiOperation(value = "채팅방 메시지 조회", notes = "U.")
+  @GetMapping(value = "/{uuid}/message")
+  public ResponseEntity getChatRoomMessage(@PathVariable("uuid") UUID chatRoomUUID) {
     return ResponseEntity.status(HttpStatus.OK)
         .contentType(MediaType.APPLICATION_JSON)
-        .body(chatRoomQueryProcessor.getChatRoom(chatRoomUUID));
+        .body(chatRoomQueryProcessor.getChatRoomMessage(chatRoomUUID));
+  }
+
+  @ApiOperation(value = "채팅방 조회", notes = "U.")
+  @GetMapping(value = "/{uuid}/avatar")
+  public ResponseEntity getChatRoomAvatar(@PathVariable("uuid") UUID chatRoomUUID) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(chatRoomQueryProcessor.getChatRoomAvatar(chatRoomUUID));
   }
 
   @ApiOperation(value = "아바타가 참여중인 채팅방 조회", notes = "U.")

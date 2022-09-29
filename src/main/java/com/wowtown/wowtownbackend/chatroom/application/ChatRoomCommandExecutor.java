@@ -122,14 +122,12 @@ public class ChatRoomCommandExecutor {
         chatRoomRepository
             .findChatRoomByUuid(message.getChatRoomUUID())
             .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 채팅방 입니다."));
+
+    Avatar sender = avatarProvider.getAvatar(message.getSenderId());
+
     int count = findChatRoom.getParticipantsNum() - findChatRoom.getCurrentJoinNum();
     ChatMessage chatMessage =
-        chatRoomMapper.toChatMessage(
-            message.getType(),
-            message.getSender(),
-            message.getSenderId(),
-            message.getMessage(),
-            count);
+        chatRoomMapper.toChatMessage(message.getType(), sender, message.getMessage(), count);
 
     ChatMessage chatMessageToSend = findChatRoom.addChatMessage(chatMessage);
 

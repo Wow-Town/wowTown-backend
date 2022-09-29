@@ -1,5 +1,6 @@
 package com.wowtown.wowtownbackend.chatroom.domain;
 
+import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -15,9 +16,9 @@ public class ChatMessage {
 
   private MessageType type;
 
-  private String sender;
-
-  private Long senderId;
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "SENDER_ID")
+  private Avatar sender;
 
   @Lob private byte[] message;
 
@@ -27,11 +28,9 @@ public class ChatMessage {
 
   protected ChatMessage() {}
 
-  public ChatMessage(
-      MessageType type, String sender, Long senderId, byte[] message, Integer count) {
+  public ChatMessage(MessageType type, Avatar sender, byte[] message, Integer count) {
     this.type = type;
     this.sender = sender;
-    this.senderId = senderId;
     this.message = message;
     this.count = count;
     this.sendAt = LocalDateTime.now();

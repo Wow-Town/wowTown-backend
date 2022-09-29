@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class GetChatRoomDetailDto {
-  private List<GetChatMessageDto> chatMessageList;
-  private List<GetParticipantAvatarDto> avatarList;
+@AllArgsConstructor
+public class GetChatRoomAvatarDto {
+  private long avatarId;
+
+  private String nickName;
+
+  private boolean connectState;
 }
