@@ -25,6 +25,9 @@ public class Avatar {
 
   private String inviteCode;
 
+  // 현재는 의상에 별도의 상세정보가 없어 embedding 시킨다.
+  private Integer costumeIdx;
+
   private LocalDateTime createAt;
 
   private LocalDateTime updateAt;
@@ -59,16 +62,19 @@ public class Avatar {
 
   protected Avatar() {}
 
-  public Avatar(String nickName, String description) {
+  public Avatar(String nickName, String description, Integer costumeIdx) {
     this.nickName = nickName;
     this.description = description;
+    this.costumeIdx = costumeIdx;
     this.createAt = LocalDateTime.now();
     this.updateAt = null;
   }
 
-  public Avatar(String nickName, String description, User user, Channel channel) {
+  public Avatar(
+      String nickName, String description, Integer costumeIdx, User user, Channel channel) {
     this.nickName = nickName;
     this.description = description;
+    this.costumeIdx = costumeIdx;
     this.user = user;
     this.channel = channel;
     this.createAt = LocalDateTime.now();
@@ -83,6 +89,7 @@ public class Avatar {
     this.nickName = updatePayload.getNickName();
     this.description = updatePayload.getDescription();
     this.interestSet = updatePayload.getInterestSet();
+    this.costumeIdx = updatePayload.getCostumeIdx();
     this.updateAt = LocalDateTime.now();
   }
 

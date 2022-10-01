@@ -21,11 +21,13 @@ public interface AvatarMapper {
   default Avatar toAvatar(CreateOrUpdateAvatarDto dto, User user, Channel channel) {
     if (dto.getNickName() == null
         && dto.getDescription() == null
-        && dto.getInterestList() == null) {
+        && dto.getInterestList() == null
+        && dto.getCostumeIdx() == null) {
       return null;
     }
 
-    Avatar avatar = new Avatar(dto.getNickName(), dto.getDescription(), user, channel);
+    Avatar avatar =
+        new Avatar(dto.getNickName(), dto.getDescription(), dto.getCostumeIdx(), user, channel);
     for (String getInterest : dto.getInterestList()) {
       Interest interest = new Interest(InterestType.valueOf(getInterest));
       avatar.addInterest(interest);
@@ -37,11 +39,12 @@ public interface AvatarMapper {
   default Avatar toUpdateAvatar(CreateOrUpdateAvatarDto dto) {
     if (dto.getNickName() == null
         && dto.getDescription() == null
-        && dto.getInterestList() == null) {
+        && dto.getInterestList() == null
+        && dto.getCostumeIdx() == null) {
       return null;
     }
 
-    Avatar avatar = new Avatar(dto.getNickName(), dto.getDescription());
+    Avatar avatar = new Avatar(dto.getNickName(), dto.getDescription(), dto.getCostumeIdx());
     for (String getInterest : dto.getInterestList()) {
       Interest interest = new Interest(InterestType.valueOf(getInterest));
       avatar.addInterest(interest);
@@ -59,6 +62,7 @@ public interface AvatarMapper {
     getMyAvatarDto.setAvatarId(avatar.getId());
     getMyAvatarDto.setNickName(avatar.getNickName());
     getMyAvatarDto.setDescription(avatar.getDescription());
+    getMyAvatarDto.setCostumeIdx(avatar.getCostumeIdx());
     Set<String> interestList =
         avatar.getInterestSet().stream()
             .map(interest -> interest.getType().toString())
