@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(AuthenticationException.class)
   protected ResponseEntity<?> handleInstanceNotFoundException(AuthenticationException e) {
-    Unauthorized unauthorized = Unauthorized.builder().code(401).message(e.getMessage()).build();
+    Unauthorized unauthorized = Unauthorized.builder().code(403).message(e.getMessage()).build();
     final ErrorResponseDto errorResponse = ErrorResponseDto.builder().error(unauthorized).build();
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
   }

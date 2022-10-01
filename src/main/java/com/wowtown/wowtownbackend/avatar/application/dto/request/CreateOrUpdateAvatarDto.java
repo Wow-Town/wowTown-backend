@@ -22,4 +22,6 @@ public class CreateOrUpdateAvatarDto {
   @Size(min = 3, max = 3)
   @ValidInterestType(message = "존재하지 않는 관심사 입니다.", enumClass = InterestType.class)
   private List<String> interestList;
+
+  private Integer costumeIdx;
 }

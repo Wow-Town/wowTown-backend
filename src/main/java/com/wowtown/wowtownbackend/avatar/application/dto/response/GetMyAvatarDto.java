@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 import java.util.Set;
 
 @Getter
@@ -20,4 +19,6 @@ public class GetMyAvatarDto {
   private String description;
 
   private Set<String> interests;
+
+  private Integer costumeIdx;
 }
