@@ -9,6 +9,7 @@ import com.wowtown.wowtownbackend.notice.application.dto.request.CreateOrUpdateN
 import com.wowtown.wowtownbackend.notice.application.dto.request.NoticePasswordDto;
 import com.wowtown.wowtownbackend.notice.domain.Notice;
 import com.wowtown.wowtownbackend.notice.domain.NoticeRepository;
+import com.wowtown.wowtownbackend.privateSpace.application.PrivateSpaceCommandExecutor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ public class NoticeCommandExecutor {
   private final NoticeMapper noticeMapper;
   private final CodeGenerator codeGenerator;
   private final ChatRoomCommandExecutor chatRoomCommandExecutor;
+  private final PrivateSpaceCommandExecutor privateSpaceCommandExecutor;
 
   @Transactional
   public long createNotice(CreateOrUpdateNoticeDto dto, Avatar avatar) { // 공고등록
@@ -32,6 +34,11 @@ public class NoticeCommandExecutor {
     UUID chatRoomUUID = chatRoomCommandExecutor.createNoticeChatroom(dto.getSubject(), avatar);
 
     notice.addChatRoomUUID(chatRoomUUID);
+
+    UUID privateSpaceUUID =
+        privateSpaceCommandExecutor.createPrivateSpace(dto.getSubject(), avatar);
+
+    notice.addPrivateSpaceUUID(privateSpaceUUID);
 
     // 공고 주인 설정.
     notice.addOwner(avatar);
@@ -81,6 +88,8 @@ public class NoticeCommandExecutor {
     if (findNotice.getRandomPW().equals(dto.getPassword())) {
       chatRoomCommandExecutor.joinNoticeChatroom(
           findNotice.getChatRoomUUID(), findNotice.getSubject(), avatar);
+      privateSpaceCommandExecutor.joinNoticePrivateSpace(
+          findNotice.getPrivateSpaceUUID(), findNotice.getSubject(), avatar);
       return true;
     }
     throw new InstanceNotFoundException("비밀번호가 일치 하지 않습니다.");

@@ -1,6 +1,6 @@
 package com.wowtown.wowtownbackend.chatroom.application.dto.response;
 
-import com.wowtown.wowtownbackend.chatroom.domain.MessageType;
+import com.wowtown.wowtownbackend.common.event.MessageType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

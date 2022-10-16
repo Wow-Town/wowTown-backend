@@ -23,6 +23,7 @@ public class Notice {
   private String description; // 스터디 그룹 설명
   private String randomPW;
   private UUID chatRoomUUID;
+  private UUID privateSpaceUUID;
 
   @Enumerated(EnumType.STRING)
   private NoticeStatus noticeStatus;
@@ -64,6 +65,10 @@ public class Notice {
 
   public void addChatRoomUUID(UUID chatRoomUUID) {
     this.chatRoomUUID = chatRoomUUID;
+  }
+
+  public void addPrivateSpaceUUID(UUID privateSpaceUUID) {
+    this.privateSpaceUUID = privateSpaceUUID;
   }
 
   public boolean isSameOwner(Avatar avatar) {

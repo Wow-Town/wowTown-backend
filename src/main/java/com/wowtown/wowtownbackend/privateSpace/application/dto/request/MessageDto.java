@@ -1,4 +1,4 @@
-package com.wowtown.wowtownbackend.chatroom.application.dto.request;
+package com.wowtown.wowtownbackend.privateSpace.application.dto.request;
 
 import com.wowtown.wowtownbackend.common.event.MessageType;
 import lombok.AllArgsConstructor;
@@ -10,14 +10,10 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatMessageDto {
+public class MessageDto {
   private MessageType type;
 
-  private UUID chatRoomUUID;
-
-  private String sender;
+  private UUID privateSpaceUUID;
 
   private Long senderId;
-
-  private byte[] message;
 }
