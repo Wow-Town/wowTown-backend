@@ -1,3 +1,6 @@
+# certificates
+*.p12
+
 HELP.md
 .gradle
 .env
