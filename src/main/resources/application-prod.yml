@@ -18,7 +18,7 @@ spring:
 
   redis:
     host: redis
-    port: 6379
+    port: 7000
 
   datasource:
     url: ${SPRING_DATASOURCE_URL}
@@ -30,7 +30,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -39,6 +39,17 @@ spring:
   decorator:
     datasource:
       p6spy.enable-logging: true
+
+server:
+  port: 443
+  ssl:
+    enabled: true
+    enabled-protocols:
+      - TLSv1.1
+      - TLSv1.2
+    key-store: ${SSL_PKCS12_STORE}
+    key-store-type: PKCS12
+    key-store-password: ${SSL_PKCS12_PASSWORD}
 
 cloud:
   aws:
