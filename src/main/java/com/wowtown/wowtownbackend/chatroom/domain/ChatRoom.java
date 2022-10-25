@@ -1,6 +1,7 @@
 package com.wowtown.wowtownbackend.chatroom.domain;
 
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
+import com.wowtown.wowtownbackend.common.event.MessageType;
 import lombok.Getter;
 
 import javax.persistence.*;

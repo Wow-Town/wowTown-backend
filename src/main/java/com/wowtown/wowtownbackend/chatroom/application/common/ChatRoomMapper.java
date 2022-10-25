@@ -3,7 +3,7 @@ package com.wowtown.wowtownbackend.chatroom.application.common;
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.chatroom.application.dto.response.*;
 import com.wowtown.wowtownbackend.chatroom.domain.ChatMessage;
-import com.wowtown.wowtownbackend.chatroom.domain.MessageType;
+import com.wowtown.wowtownbackend.common.event.MessageType;
 import org.mapstruct.Mapper;
 
 import java.util.Base64;

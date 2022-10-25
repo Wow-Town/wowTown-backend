@@ -24,4 +24,6 @@ public class GetNoticeDetailDto {
   private String randomPW;
 
   private UUID chatRoomUUID;
+
+  private UUID privateSpaceUUID;
 }

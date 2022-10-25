@@ -1,4 +1,4 @@
-package com.wowtown.wowtownbackend.chatroom.domain;
+package com.wowtown.wowtownbackend.common.event;
 
 public enum MessageType {
   ENTER,
