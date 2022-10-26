@@ -60,7 +60,7 @@ public class WebConfig implements WebMvcConfigurer {
         .maxAge(-1) // add maxAge
         .allowCredentials(true)
         .exposedHeaders("Authorization")
-        .allowedOriginPatterns("http://localhost:3000", "http://wowtown.co.kr");
+        .allowedOriginPatterns("https://localhost:3000", "https://wowtown.co.kr");
   }
 
   @Override
