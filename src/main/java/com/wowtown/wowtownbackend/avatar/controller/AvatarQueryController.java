@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Set;
@@ -47,15 +47,18 @@ public class AvatarQueryController {
     String domain =
         (origin == null
                 || origin.equals("http://localhost:3000")
-                || origin.equals("http://localhost:8080"))
+                || origin.equals("https://localhost:3000")
+                || origin.equals("https://localhost:443"))
             ? "localhost"
-            : origin.substring(7);
+            : origin.substring(8);
 
-    Cookie cookie = new Cookie("avatarId", String.valueOf(getMyAvatarDto.getAvatarId()));
-    cookie.setPath("/");
-    cookie.setHttpOnly(true);
-    cookie.setDomain(domain);
-    response.addCookie(cookie);
+    ResponseCookie cookie =
+        ResponseCookie.from("avatarId", String.valueOf(getMyAvatarDto.getAvatarId()))
+            .path("/")
+            .httpOnly(true)
+            .domain(domain)
+            .build();
+    response.addHeader("Set-Cookie", cookie.toString());
 
     return ResponseEntity.status(HttpStatus.OK)
         .contentType(MediaType.APPLICATION_JSON)

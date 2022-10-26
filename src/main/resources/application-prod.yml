@@ -41,7 +41,7 @@ spring:
       p6spy.enable-logging: true
 
 server:
-  port: 443
+  port: 8443
   ssl:
     enabled: true
     enabled-protocols:

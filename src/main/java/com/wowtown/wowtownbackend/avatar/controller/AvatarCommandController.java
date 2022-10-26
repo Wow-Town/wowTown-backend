@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -48,15 +49,18 @@ public class AvatarCommandController {
     String domain =
         (origin == null
                 || origin.equals("http://localhost:3000")
-                || origin.equals("http://localhost:8080"))
+                || origin.equals("https://localhost:3000")
+                || origin.equals("https://localhost:443"))
             ? "localhost"
-            : origin.substring(7);
+            : origin.substring(8);
 
-    Cookie cookie = new Cookie("avatarId", String.valueOf(avatarId));
-    cookie.setPath("/");
-    cookie.setHttpOnly(true);
-    cookie.setDomain(domain);
-    response.addCookie(cookie);
+    ResponseCookie cookie =
+        ResponseCookie.from("avatarId", String.valueOf(avatarId))
+            .path("/")
+            .httpOnly(true)
+            .domain(domain)
+            .build();
+    response.addHeader("Set-Cookie", cookie.toString());
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .contentType(MediaType.APPLICATION_JSON)

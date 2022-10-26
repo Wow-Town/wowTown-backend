@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -50,17 +50,19 @@ public class UserQueryController {
     String domain =
         (origin == null
                 || origin.equals("http://localhost:3000")
-                || origin.equals("http://localhost:8080"))
+                || origin.equals("https://localhost:3000")
+                || origin.equals("https://localhost:443"))
             ? "localhost"
-            : origin.substring(7);
+            : origin.substring(8);
 
-    Cookie cookie = new Cookie("api-key", getJwtTokenDto.getRefreshToken());
-    cookie.setMaxAge(60 * 60 * 24 * 30);
-    cookie.setPath("/");
-    cookie.setDomain(domain);
-    cookie.setHttpOnly(true);
-
-    response.addCookie(cookie);
+    ResponseCookie cookie =
+        ResponseCookie.from("api-key", getJwtTokenDto.getRefreshToken())
+            .path("/")
+            .maxAge(60 * 60 * 24 * 30)
+            .httpOnly(true)
+            .domain(domain)
+            .build();
+    response.addHeader("Set-Cookie", cookie.toString());
 
     GetAccessToken getAccessToken = new GetAccessToken(getJwtTokenDto.getAccessToken());
 
