@@ -4,13 +4,15 @@ services:
   app:
     image: devconf5296/wowtown_backend:latest
     ports:
-      - 81:8080
+      - 443:443 # Support HTTPS
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/wow_town?useSSL=false&characterEncoding=UTF-8&serverTimeZone=UTC&&allowPublicKeyRetrieval=true
       - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - SSL_PKCS12_PASSWORD=${SSL_PKCS12_PASSWORD}
+      - SSL_PKCS12_STORE=${SSL_PKCS12_STORE}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRETE_KEY=${AWS_SECRETE_KEY}
-    working_dir: /deploy/wowtown
+    working_dir: /deploy/wowtown_backend
     depends_on:
       - redis
       - mysql
