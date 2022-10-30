@@ -46,7 +46,7 @@ public class ChatRoomQueryProcessor {
                 chatRoomMapper.toGetChatRoomAvatarDto(
                     avatarChatRoom.getAvatar().getId(),
                     avatarChatRoom.getAvatar().getNickName(),
-                    avatarChatRoom.getSessionId() != null))
+                    avatarChatRoom.getSessionList().size() != 0))
         .collect(Collectors.toList());
   }
 
