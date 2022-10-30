@@ -13,7 +13,8 @@ import java.util.Optional;
 @Repository
 public interface JpaAvatarChatRoomRepository
     extends JpaRepository<AvatarChatRoom, Long>, AvatarChatRoomRepository {
-  @Query("select ac from AvatarChatRoom as ac where ac.sessionId =:sessionId")
+  @Query(
+      "select distinct ac from AvatarChatRoom as ac join ac.sessionList as s where s in :sessionId")
   Optional<AvatarChatRoom> findAvatarChatRoomWithSessionId(@Param("sessionId") String sessionId);
 
   @Query("select ac from AvatarChatRoom as ac where ac.avatar.id =:avatarId and ac.active = true")

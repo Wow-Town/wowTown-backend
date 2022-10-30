@@ -6,6 +6,8 @@ import lombok.Getter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -34,7 +36,9 @@ public class AvatarChatRoom implements Serializable {
 
   private Integer receiveMessageNum;
 
-  private String sessionId;
+  @ElementCollection
+  @CollectionTable(name = "avatar_chat_room_session")
+  private List<String> sessionList = new ArrayList<>();
 
   private boolean active;
 
@@ -50,7 +54,6 @@ public class AvatarChatRoom implements Serializable {
     this.lastCheckMessage = null;
     this.latestMessage = null;
     this.receiveMessageNum = 0;
-    this.sessionId = null;
     this.active = false;
     this.createAt = LocalDateTime.now();
     this.updateAt = null;
@@ -72,11 +75,15 @@ public class AvatarChatRoom implements Serializable {
     this.latestMessage = latestMessage;
   }
 
-  public void setSession(String sessionId) {
-    this.sessionId = sessionId;
-    if (this.sessionId != null) {
-      this.updateAt = LocalDateTime.now();
+  public void addSession(String sessionId) {
+    if (!this.sessionList.contains(sessionId)) {
+      this.sessionList.add(sessionId);
     }
+    this.updateAt = LocalDateTime.now();
+  }
+
+  public void removeSession(String sessionId) {
+    this.sessionList.remove(sessionId);
   }
 
   public void setActive(boolean active) {
