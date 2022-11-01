@@ -63,7 +63,7 @@ public class ChatRoomCommandExecutor {
   }
 
   @Transactional
-  public UUID createNoticeChatroom(String subject, Avatar avatar) {
+  public ChatRoom createNoticeChatroom(String subject, Avatar avatar) {
 
     ChatRoomType chatRoomType = ChatRoomType.MULTI;
 
@@ -71,7 +71,7 @@ public class ChatRoomCommandExecutor {
 
     chatRoom.addAvatarChatRoom(subject, avatar);
 
-    return chatRoomRepository.save(chatRoom).getUuid();
+    return chatRoomRepository.save(chatRoom);
   }
 
   @Transactional

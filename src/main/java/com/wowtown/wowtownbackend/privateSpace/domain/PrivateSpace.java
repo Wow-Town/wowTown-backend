@@ -1,6 +1,7 @@
 package com.wowtown.wowtownbackend.privateSpace.domain;
 
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
+import com.wowtown.wowtownbackend.notice.domain.Notice;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -32,12 +33,18 @@ public class PrivateSpace {
   @OneToMany(mappedBy = "privateSpace", cascade = CascadeType.ALL)
   private Set<AvatarPrivateSpace> avatarPrivateSpaceSet = new HashSet<>();
 
-  public PrivateSpace() {
+  @OneToOne(mappedBy = "privateSpace")
+  private Notice notice;
+
+  protected PrivateSpace() {}
+
+  public PrivateSpace(Notice notice) {
     this.participantsNum = 0;
     this.currentJoinNum = 0;
     this.uuid = UUID.randomUUID();
     this.createAt = LocalDateTime.now();
     this.updateAt = null;
+    this.notice = notice;
   }
 
   public void addAvatarPrivateSpace(String roomName, Avatar participantAvatar) {

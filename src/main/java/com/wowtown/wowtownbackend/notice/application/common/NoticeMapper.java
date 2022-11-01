@@ -69,8 +69,8 @@ public interface NoticeMapper {
 
     getNoticeDetailDto.setInterests(interestSet);
     getNoticeDetailDto.setRandomPW(notice.getRandomPW());
-    getNoticeDetailDto.setChatRoomUUID(notice.getChatRoomUUID());
-    getNoticeDetailDto.setPrivateSpaceUUID(notice.getPrivateSpaceUUID());
+    getNoticeDetailDto.setChatRoomUUID(notice.getChatRoom().getUuid());
+    getNoticeDetailDto.setPrivateSpaceUUID(notice.getPrivateSpace().getUuid());
 
     return getNoticeDetailDto;
   }

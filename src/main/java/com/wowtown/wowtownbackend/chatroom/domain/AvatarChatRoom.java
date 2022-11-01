@@ -16,7 +16,7 @@ public class AvatarChatRoom implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "CHATROOM_ID")
   private ChatRoom chatRoom;
 

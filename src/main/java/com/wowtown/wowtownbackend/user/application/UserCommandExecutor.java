@@ -26,11 +26,15 @@ public class UserCommandExecutor {
 
   @Transactional
   public long createUser(CreateUserDto dto) {
+    if (userRepository.findUserByEmail(dto.getEmail()).isPresent()) {
+      throw new InstanceNotFoundException("이미 존재하는 이메일 입니다.");
+    }
+
     String salt = passwordEncoder.getSalt();
     String hashedPW = passwordEncoder.encode(dto.getPassword(), salt);
     User user =
         userRepository.save(userMapper.toUser(dto.getEmail(), dto.getUserName(), hashedPW, salt));
-    System.out.println("userId=" +user.getId());
+    System.out.println("userId=" + user.getId());
     return user.getId();
   }
 

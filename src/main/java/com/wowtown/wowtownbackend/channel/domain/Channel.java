@@ -27,8 +27,8 @@ public class Channel {
 
   private LocalDateTime updateAt;
 
-   @OneToMany(mappedBy = "channel",cascade = CascadeType.REMOVE)
-   private List<Notice> notices = new ArrayList<>();
+  @OneToMany(mappedBy = "channel")
+  private List<Notice> notices = new ArrayList<>();
 
   protected Channel() {}
 

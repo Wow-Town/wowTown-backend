@@ -13,7 +13,7 @@ public class AvatarPrivateSpace {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "PRIVATE_SPACE_ID")
   private PrivateSpace privateSpace;
 

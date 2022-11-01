@@ -2,6 +2,7 @@ package com.wowtown.wowtownbackend.notice.application;
 
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.chatroom.application.ChatRoomCommandExecutor;
+import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
 import com.wowtown.wowtownbackend.common.codeGenerator.CodeGenerator;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
 import com.wowtown.wowtownbackend.notice.application.common.NoticeMapper;
@@ -10,11 +11,10 @@ import com.wowtown.wowtownbackend.notice.application.dto.request.NoticePasswordD
 import com.wowtown.wowtownbackend.notice.domain.Notice;
 import com.wowtown.wowtownbackend.notice.domain.NoticeRepository;
 import com.wowtown.wowtownbackend.privateSpace.application.PrivateSpaceCommandExecutor;
+import com.wowtown.wowtownbackend.privateSpace.domain.PrivateSpace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,14 +31,14 @@ public class NoticeCommandExecutor {
     Notice notice =
         noticeMapper.toNotice(dto.getSubject(), dto.getDescription(), dto.getInterests());
 
-    UUID chatRoomUUID = chatRoomCommandExecutor.createNoticeChatroom(dto.getSubject(), avatar);
+    ChatRoom chatRoom = chatRoomCommandExecutor.createNoticeChatroom(dto.getSubject(), avatar);
 
-    notice.addChatRoomUUID(chatRoomUUID);
+    notice.addChatRoom(chatRoom);
 
-    UUID privateSpaceUUID =
-        privateSpaceCommandExecutor.createPrivateSpace(dto.getSubject(), avatar);
+    PrivateSpace privateSpace =
+        privateSpaceCommandExecutor.createPrivateSpace(dto.getSubject(), avatar, notice);
 
-    notice.addPrivateSpaceUUID(privateSpaceUUID);
+    notice.addPrivateSpace(privateSpace);
 
     // 공고 주인 설정.
     notice.addOwner(avatar);
@@ -87,9 +87,9 @@ public class NoticeCommandExecutor {
 
     if (findNotice.getRandomPW().equals(dto.getPassword())) {
       chatRoomCommandExecutor.joinNoticeChatroom(
-          findNotice.getChatRoomUUID(), findNotice.getSubject(), avatar);
+          findNotice.getChatRoom().getUuid(), findNotice.getSubject(), avatar);
       privateSpaceCommandExecutor.joinNoticePrivateSpace(
-          findNotice.getPrivateSpaceUUID(), findNotice.getSubject(), avatar);
+          findNotice.getPrivateSpace().getUuid(), findNotice.getSubject(), avatar);
       return true;
     }
     throw new InstanceNotFoundException("비밀번호가 일치 하지 않습니다.");

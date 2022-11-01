@@ -2,6 +2,7 @@ package com.wowtown.wowtownbackend.chatroom.domain;
 
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.common.event.MessageType;
+import com.wowtown.wowtownbackend.notice.domain.Notice;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -39,6 +40,9 @@ public class ChatRoom {
   @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
   private Set<AvatarChatRoom> avatarChatRoomSet = new HashSet<>();
 
+  @OneToOne(mappedBy = "chatRoom")
+  private Notice notice;
+
   protected ChatRoom() {}
 
   public ChatRoom(ChatRoomType roomType) {
@@ -48,6 +52,16 @@ public class ChatRoom {
     this.roomType = roomType;
     this.createAt = LocalDateTime.now();
     this.updateAt = null;
+  }
+
+  public ChatRoom(ChatRoomType roomType, Notice notice) {
+    this.participantsNum = 0;
+    this.currentJoinNum = 0;
+    this.uuid = UUID.randomUUID();
+    this.roomType = roomType;
+    this.createAt = LocalDateTime.now();
+    this.updateAt = null;
+    this.notice = notice;
   }
 
   public void addAvatarChatRoom(String roomName, Avatar participantAvatar) {

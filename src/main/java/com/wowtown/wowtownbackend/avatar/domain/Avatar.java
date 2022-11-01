@@ -1,8 +1,6 @@
 package com.wowtown.wowtownbackend.avatar.domain;
 
 import com.wowtown.wowtownbackend.channel.domain.Channel;
-import com.wowtown.wowtownbackend.chatroom.domain.AvatarChatRoom;
-import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
 import com.wowtown.wowtownbackend.common.domain.Interest;
 import com.wowtown.wowtownbackend.notice.domain.Notice;
 import com.wowtown.wowtownbackend.user.domain.User;
@@ -10,7 +8,10 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -40,9 +41,6 @@ public class Avatar {
   @OneToMany(mappedBy = "avatar")
   private Set<Notice> avatarScrapNoticeSet = new HashSet<>();
 
-  @OneToMany(mappedBy = "avatar", cascade = CascadeType.ALL)
-  private List<AvatarChatRoom> avatarChatRoomList = new ArrayList<>();
-
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "USER_ID")
   private User user;
@@ -53,12 +51,6 @@ public class Avatar {
 
   @OneToMany(mappedBy = "avatar", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<AvatarFriend> avatarFriendSet = new LinkedHashSet<>();
-
-  //  @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
-  //  private List<Friend> followingFriendList = new ArrayList<>();
-
-  //  @OneToMany(mappedBy = "character", cascade = CascadeType.ALL)
-  //  //  private List<CharacterChatRoom> characterChatRooms = new ArrayList<>();
 
   protected Avatar() {}
 
@@ -103,11 +95,6 @@ public class Avatar {
   //    avatarChatRoom.setChatRoom(payload);
   //    this.avatarChatRoomList.add(avatarChatRoom);
   //  }
-
-  public void removeAvatarChatRoom(ChatRoom payload) {
-    this.avatarChatRoomList.removeIf(
-        avatarChatRoom -> avatarChatRoom.getChatRoom().equals(payload));
-  }
 
   public void addAvatarFriend(AvatarFriend payload) {
     this.avatarFriendSet.add(payload);

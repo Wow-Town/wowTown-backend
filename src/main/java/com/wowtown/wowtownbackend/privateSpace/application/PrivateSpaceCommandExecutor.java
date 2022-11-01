@@ -5,6 +5,7 @@ import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.chatroom.application.common.ChatRoomMapper;
 import com.wowtown.wowtownbackend.common.event.MessageType;
 import com.wowtown.wowtownbackend.error.exception.InstanceNotFoundException;
+import com.wowtown.wowtownbackend.notice.domain.Notice;
 import com.wowtown.wowtownbackend.privateSpace.application.dto.request.MessageDto;
 import com.wowtown.wowtownbackend.privateSpace.domain.AvatarPrivateSpace;
 import com.wowtown.wowtownbackend.privateSpace.domain.AvatarPrivateSpaceRepository;
@@ -28,13 +29,13 @@ public class PrivateSpaceCommandExecutor {
   private final SimpMessageSendingOperations sendingOperations;
 
   @Transactional
-  public UUID createPrivateSpace(String subject, Avatar avatar) {
+  public PrivateSpace createPrivateSpace(String subject, Avatar avatar, Notice notice) {
 
-    PrivateSpace privateSpace = new PrivateSpace();
+    PrivateSpace privateSpace = new PrivateSpace(notice);
 
     privateSpace.addAvatarPrivateSpace(subject, avatar);
 
-    return privateSpaceRepository.save(privateSpace).getUuid();
+    return privateSpaceRepository.save(privateSpace);
   }
 
   @Transactional

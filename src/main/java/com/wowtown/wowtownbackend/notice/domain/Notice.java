@@ -2,14 +2,15 @@ package com.wowtown.wowtownbackend.notice.domain;
 
 import com.wowtown.wowtownbackend.avatar.domain.Avatar;
 import com.wowtown.wowtownbackend.channel.domain.Channel;
+import com.wowtown.wowtownbackend.chatroom.domain.ChatRoom;
 import com.wowtown.wowtownbackend.common.domain.Interest;
+import com.wowtown.wowtownbackend.privateSpace.domain.PrivateSpace;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @Entity
@@ -22,8 +23,6 @@ public class Notice {
   private String subject; // 이름보다 주제라는 용어가 괜찮은거 같다.
   private String description; // 스터디 그룹 설명
   private String randomPW;
-  private UUID chatRoomUUID;
-  private UUID privateSpaceUUID;
 
   @Enumerated(EnumType.STRING)
   private NoticeStatus noticeStatus;
@@ -40,10 +39,13 @@ public class Notice {
   @JoinColumn(name = "Avatar_ID")
   private Avatar avatar;
 
-  //  @OneToOne(fetch = FetchType.LAZY)
-  //  @JoinColumn(name = "PRIVATE_SPACE_ID")
-  //  private PrivateSpace privateSpace;
-  //
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "CHATROOM_ID")
+  ChatRoom chatRoom;
+
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "PRIVATE_SPACE_ID")
+  private PrivateSpace privateSpace;
 
   protected Notice() {}
 
@@ -63,12 +65,12 @@ public class Notice {
     this.channel = avatar.getChannel();
   }
 
-  public void addChatRoomUUID(UUID chatRoomUUID) {
-    this.chatRoomUUID = chatRoomUUID;
+  public void addChatRoom(ChatRoom chatRoom) {
+    this.chatRoom = chatRoom;
   }
 
-  public void addPrivateSpaceUUID(UUID privateSpaceUUID) {
-    this.privateSpaceUUID = privateSpaceUUID;
+  public void addPrivateSpace(PrivateSpace privateSpace) {
+    this.privateSpace = privateSpace;
   }
 
   public boolean isSameOwner(Avatar avatar) {
@@ -82,10 +84,6 @@ public class Notice {
     this.subject = notice.subject;
     this.description = notice.description;
     this.noticeStatus = notice.noticeStatus;
-  }
-
-  public void addChatRoomInfo(UUID chatRoomUUID) {
-    this.chatRoomUUID = chatRoomUUID;
   }
 
   @Override
