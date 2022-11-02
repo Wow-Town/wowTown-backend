@@ -16,4 +16,6 @@ public class MessageDto {
   private UUID privateSpaceUUID;
 
   private Long senderId;
+
+  private UUID peerUUID;
 }

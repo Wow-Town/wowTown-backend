@@ -55,11 +55,12 @@ public class PrivateSpace {
     this.participantsNum++;
   }
 
-  public void enterPrivateSpace(String sessionId, long enterAvatarId) {
+  public void enterPrivateSpace(String sessionId, long enterAvatarId, UUID peerUUID) {
     for (AvatarPrivateSpace avatarPrivateSpace : this.avatarPrivateSpaceSet) {
       if (avatarPrivateSpace.getAvatar().getId() == enterAvatarId) {
         // 아바타 프라이빗 스페이스 세션 생성하여 마지막 입장 시간은 업데이트해줌
         avatarPrivateSpace.setSession(sessionId);
+        avatarPrivateSpace.setPeer(peerUUID);
         this.currentJoinNum++;
         break;
       }
@@ -72,6 +73,7 @@ public class PrivateSpace {
         if (avatarPrivateSpace.getSessionId().equals(sessionId)) {
           // 아바타 프라이빗 스페이스 세션을 삭제한다.
           avatarPrivateSpace.setSession(null);
+          avatarPrivateSpace.setPeer(null);
           this.currentJoinNum--;
           break;
         }

@@ -39,10 +39,10 @@ public class PrivateSpaceCommandExecutor {
   }
 
   @Transactional
-  public void joinNoticePrivateSpace(UUID chatRoomUUID, String roomName, Avatar avatar) {
+  public void joinNoticePrivateSpace(UUID privateSpaceUUID, String roomName, Avatar avatar) {
     PrivateSpace findPrivateSpace =
         privateSpaceRepository
-            .findPrivateSpaceByUuid(chatRoomUUID)
+            .findPrivateSpaceByUuid(privateSpaceUUID)
             .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 프라이빗 스페이스 입니다."));
 
     findPrivateSpace.addAvatarPrivateSpace(roomName, avatar);
@@ -55,7 +55,7 @@ public class PrivateSpaceCommandExecutor {
             .findPrivateSpaceByUuid(message.getPrivateSpaceUUID())
             .orElseThrow(() -> new InstanceNotFoundException("존재하지 않는 프라이빗 스페이스 입니다."));
 
-    findPrivateSpace.enterPrivateSpace(sessionId, message.getSenderId());
+    findPrivateSpace.enterPrivateSpace(sessionId, message.getSenderId(), message.getPeerUUID());
     sendingOperations.convertAndSend(
         "/sub/privateSpace/" + message.getPrivateSpaceUUID().toString(), message);
   }
@@ -71,7 +71,8 @@ public class PrivateSpaceCommandExecutor {
               new MessageDto(
                   MessageType.LEAVE,
                   avatarPrivateSpace.getPrivateSpace().getUuid(),
-                  avatarPrivateSpace.getAvatar().getId());
+                  avatarPrivateSpace.getAvatar().getId(),
+                  avatarPrivateSpace.getPeerUUID());
           PrivateSpace findPrivateSpace = avatarPrivateSpace.getPrivateSpace();
           findPrivateSpace.leavePrivateSpace(sessionId);
 

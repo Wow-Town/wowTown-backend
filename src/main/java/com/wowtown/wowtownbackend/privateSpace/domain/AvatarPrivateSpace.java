@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Entity
@@ -24,6 +25,9 @@ public class AvatarPrivateSpace {
   private String roomName;
 
   private String sessionId;
+
+  @Column(columnDefinition = "BINARY(16)")
+  private UUID peerUUID;
 
   private LocalDateTime createAt;
 
@@ -49,6 +53,13 @@ public class AvatarPrivateSpace {
   public void setSession(String sessionId) {
     this.sessionId = sessionId;
     if (this.sessionId != null) {
+      this.updateAt = LocalDateTime.now();
+    }
+  }
+
+  public void setPeer(UUID peerUUID) {
+    this.peerUUID = peerUUID;
+    if (this.peerUUID != null) {
       this.updateAt = LocalDateTime.now();
     }
   }
