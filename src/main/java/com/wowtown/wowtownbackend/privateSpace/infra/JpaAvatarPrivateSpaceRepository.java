@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface JpaAvatarPrivateSpaceRepository
@@ -19,4 +20,9 @@ public interface JpaAvatarPrivateSpaceRepository
 
   @Query("select aps from AvatarPrivateSpace as aps where aps.avatar.id =:avatarId")
   List<AvatarPrivateSpace> findAvatarPrivateSpaceByAvatarId(@Param("avatarId") Long avatarId);
+
+  @Query(
+      "select aps from AvatarPrivateSpace as aps join PrivateSpace as ps on ps.id = aps.privateSpace.id where ps.uuid =:privateSpaceUUID and aps.avatar.id =:avatarId")
+  Optional<AvatarPrivateSpace> findAvatarPrivateSpaceByPrivateSpaceUUIDAndAvatarId(
+      @Param("privateSpaceUUID") UUID privateSpaceUUID, @Param("avatarId") Long avatarId);
 }
