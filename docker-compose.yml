@@ -5,6 +5,7 @@ services:
     image: devconf5296/wowtown_backend:latest
     ports:
       - 443:8443 # Support HTTPS
+      - 1234:1234
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/wow_town?useSSL=false&characterEncoding=UTF-8&serverTimeZone=UTC&&allowPublicKeyRetrieval=true
       - MAIL_PASSWORD=${MAIL_PASSWORD}
